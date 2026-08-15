@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coffee — Lights Coffee</title>
+<meta name="description" content="Everything we have on the shelf right now, roasted to order and shipped within the week.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<div class="page">
+
+  <div class="announce">Freshly roasted every Monday — free shipping over $40</div>
+
+  <header class="sheet masthead" style="--z:6">
+    <div class="sheet__body">
+      <a class="brand" href="index.html">
+        <span class="brand__dot" aria-hidden="true"></span>
+        <span class="brand__word">Lights</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="coffee.html" class="is-current">Coffee</a>
+        <a href="brew.html">Learn</a>
+        <a href="cafe.html">Café</a>
+        <span>About</span>
+      </nav>
+      <div class="masthead__end">
+        <span>Search</span>
+        <span>Account</span>
+        <span class="cart">Cart · <span data-cart-count>0</span></span>
+      </div>
+    </div>
+  </header>
+
+  <section class="sheet sheet--paper sheet--skirt" style="--z:4">
+    <div class="sheet__body band" data-listing>
+
+      <div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:20px;margin-bottom:8px">
+        <h1 class="h-page" style="font-size:clamp(30px,3.6vw,40px)">Coffee</h1>
+        <p class="meta" style="margin:0;text-transform:uppercase"><span data-lot-count>6 lots</span> · updated weekly</p>
+      </div>
+      <p class="prose" style="margin:0 0 34px">Everything we have on the shelf right now, roasted to order and shipped within the week.</p>
+
+      <div class="listing">
+
+        <div class="filters">
+          <div class="filters__group">
+            <h2 class="label label--rule">Origin</h2>
+            <button class="filter" type="button" data-facet="origin" data-value="all" aria-pressed="true">All</button>
+            <button class="filter" type="button" data-facet="origin" data-value="ethiopia" aria-pressed="false">Ethiopia</button>
+            <button class="filter" type="button" data-facet="origin" data-value="colombia" aria-pressed="false">Colombia</button>
+            <button class="filter" type="button" data-facet="origin" data-value="kenya" aria-pressed="false">Kenya</button>
+            <button class="filter" type="button" data-facet="origin" data-value="peru" aria-pressed="false">Peru</button>
+            <button class="filter" type="button" data-facet="origin" data-value="burundi" aria-pressed="false">Burundi</button>
+            <button class="filter" type="button" data-facet="origin" data-value="blend" aria-pressed="false">Blend</button>
+          </div>
+
+          <div class="filters__group">
+            <h2 class="label label--rule">Process</h2>
+            <button class="filter" type="button" data-facet="process" data-value="all" aria-pressed="true">All</button>
+            <button class="filter" type="button" data-facet="process" data-value="washed" aria-pressed="false">Washed</button>
+            <button class="filter" type="button" data-facet="process" data-value="honey" aria-pressed="false">Honey</button>
+            <button class="filter" type="button" data-facet="process" data-value="natural" aria-pressed="false">Natural</button>
+          </div>
+
+          <div class="filters__group">
+            <h2 class="label label--rule">Roast</h2>
+            <button class="filter" type="button" data-facet="roast" data-value="all" aria-pressed="true">All</button>
+            <button class="filter" type="button" data-facet="roast" data-value="filter" aria-pressed="false">Filter</button>
+            <button class="filter" type="button" data-facet="roast" data-value="espresso" aria-pressed="false">Espresso</button>
+          </div>
+        </div>
+
+        <div class="listing__results">
+          <div class="listing__grid">
+
+            <a class="product-card" href="product.html?id=sidama-dusk" data-coffee data-origin="Ethiopia" data-process="Washed" data-roast="Filter">
+              <span class="product-card__well"><img src="uploads/Juice-Box_Transparant-Thumb_min4000_xlcfyw.webp" alt="Sidama Dusk — pack shot"></span>
+              <span class="product-card__origin">Ethiopia · Washed</span>
+              <span class="product-card__name">Sidama Dusk</span>
+              <span class="product-card__notes">Bergamot, apricot, honey</span>
+              <span class="product-card__price">$21 · 250g</span>
+            </a>
+
+            <a class="product-card" href="product.html?id=narino-night" data-coffee data-origin="Colombia" data-process="Honey" data-roast="Espresso">
+              <span class="product-card__well"><img src="uploads/IMG_8872.jpg" alt="Nariño Night — pack shot"></span>
+              <span class="product-card__origin">Colombia · Honey</span>
+              <span class="product-card__name">Nariño Night</span>
+              <span class="product-card__notes">Red plum, panela, cacao</span>
+              <span class="product-card__price">$19 · 250g</span>
+            </a>
+
+            <a class="product-card" href="product.html?id=nyeri-lamplight" data-coffee data-origin="Kenya" data-process="Washed" data-roast="Filter">
+              <span class="product-card__well"><img src="uploads/Juice-Box_Transparant-Thumb_min4000_xlcfyw.webp" alt="Nyeri Lamplight — pack shot"></span>
+              <span class="product-card__origin">Kenya · Washed</span>
+              <span class="product-card__name">Nyeri Lamplight</span>
+              <span class="product-card__notes">Blackcurrant, grapefruit, cane</span>
+              <span class="product-card__price">$23 · 250g</span>
+            </a>
+
+            <a class="product-card" href="product.html?id=llaqta-cold-brew" data-coffee data-origin="Peru" data-process="Washed" data-roast="Filter">
+              <span class="product-card__well"><img src="uploads/IMG_8878.jpg" alt="Llaqta Cold Brew — pack shot"></span>
+              <span class="product-card__origin">Peru · Washed</span>
+              <span class="product-card__name">Llaqta Cold Brew</span>
+              <span class="product-card__notes">Violet, candied orange, lemon</span>
+              <span class="product-card__price">$24 · 250g</span>
+            </a>
+
+            <a class="product-card" href="product.html?id=nemba-morning" data-coffee data-origin="Burundi" data-process="Natural" data-roast="Filter">
+              <span class="product-card__well"><img src="uploads/Juice-Box_Transparant-Thumb_min4000_xlcfyw.webp" alt="Nemba Morning — pack shot"></span>
+              <span class="product-card__origin">Burundi · Natural</span>
+              <span class="product-card__name">Nemba Morning</span>
+              <span class="product-card__notes">Dried apricot, honey, white flowers</span>
+              <span class="product-card__price">$21 · 250g</span>
+            </a>
+
+            <a class="product-card" href="product.html?id=house-daylight" data-coffee data-origin="Blend" data-process="Blend" data-roast="Filter">
+              <span class="product-card__well"><img src="uploads/IMG_8876.jpg" alt="House Daylight — pack shot"></span>
+              <span class="product-card__origin">Blend · Filter</span>
+              <span class="product-card__name">House Daylight</span>
+              <span class="product-card__notes">Cane sugar, almond, orange</span>
+              <span class="product-card__price">$17 · 250g</span>
+            </a>
+
+          </div>
+
+          <p class="listing__empty" data-listing-empty hidden>Nothing on the shelf matches that combination — try widening one of the filters.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <a class="footer__brand" href="index.html">Lights</a>
+    <a href="coffee.html">Coffee</a>
+    <a href="brew.html">Learn</a>
+    <a href="cafe.html">Café</a>
+    <span>About</span>
+    <span>Shipping</span>
+    <span>Privacy</span>
+    <span class="footer__copy">© 2026 Lights Coffee</span>
+  </footer>
+
+</div>
+
+<script src="assets/data.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

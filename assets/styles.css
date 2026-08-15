@@ -1,0 +1,990 @@
+/* ==========================================================================
+   Lights Coffee — 陆光咖啡
+   Design system extracted from "Lights Coffee Roadmap.dc.html", option 2a
+   (light theme: paper ground, torn maple sheets, coral / amber / sage).
+   ========================================================================== */
+
+:root {
+  /* Ground */
+  --paper:      #f8f5ef;  /* page ground / alternating band */
+  --sheet:      #fffdf9;  /* raised paper sheet */
+  --tint:       #f2efe8;  /* image well */
+
+  /* Ink */
+  --ink:        #2e2a26;  /* headings, emphasis */
+  --body:       #7d7469;  /* running text */
+  --muted:      #867c6f;  /* labels, metadata */
+  --rule:       #e0d9cf;  /* hairlines, quiet borders */
+  --maple-ink:  #463323;  /* text on the maple banner */
+
+  /* Accents */
+  --coral:      #c25539;  /* solid actions */
+  --coral-lite: #d4674c;  /* inline links, eyebrows */
+  --amber:      #c98a3c;  /* the lamp */
+  --sage:       #8a9478;  /* brew icons */
+
+  /* Type */
+  --font:   'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --script: 'Sacramento', 'Snell Roundhand', cursive;
+
+  /* Measure */
+  --page: 1200px;
+  --gutter: 48px;
+
+  /* Torn edges — 44×14 saw paths, repeated along the sheet edge */
+  --torn-top: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2744%27%20height%3D%2714%27%3E%3Cpath%20d%3D%27M0%2014%20H44%20V7%20L40%202%20L36%209%20L32%203%20L28%2010%20L24%204%20L20%2011%20L16%203%20L12%208%20L8%202%20L4%209%20L0%204%20Z%27%20fill%3D%27black%27%2F%3E%3C%2Fsvg%3E");
+  --torn-bottom: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2744%27%20height%3D%2714%27%3E%3Cpath%20d%3D%27M0%200%20H44%20V7%20L40%2012%20L36%205%20L32%2011%20L28%204%20L24%2010%20L20%203%20L16%2011%20L12%206%20L8%2012%20L4%205%20L0%2010%20Z%27%20fill%3D%27black%27%2F%3E%3C%2Fsvg%3E");
+}
+
+/* --------------------------------------------------------------- reset -- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Components below set their own display, which would otherwise win over the
+   user-agent rule for [hidden]. */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--body);
+  font-family: var(--font);
+  font-weight: 400;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; }
+
+a { color: inherit; text-decoration: none; }
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------- page -- */
+
+.page {
+  max-width: var(--page);
+  margin-inline: auto;
+}
+
+/* ------------------------------------------------------- torn sheets --- */
+/* Each band is a wrapper (carries the drop-shadow and the stacking order)
+   around a body (carries the torn mask). Sheets are stacked with a
+   descending --z so every sheet casts its shadow onto the one below. */
+
+.sheet {
+  position: relative;
+  z-index: var(--z, 1);
+  filter: drop-shadow(0 4px 6px rgba(122, 104, 86, .18));
+}
+
+.sheet__body {
+  -webkit-mask-image: var(--torn-bottom), linear-gradient(#000, #000);
+          mask-image: var(--torn-bottom), linear-gradient(#000, #000);
+  -webkit-mask-size: 44px 14px, 100% calc(100% - 14px);
+          mask-size: 44px 14px, 100% calc(100% - 14px);
+  -webkit-mask-position: bottom left, top left;
+          mask-position: bottom left, top left;
+  -webkit-mask-repeat: repeat-x, no-repeat;
+          mask-repeat: repeat-x, no-repeat;
+}
+
+.sheet--paper .sheet__body { background: var(--paper); }
+.sheet--white .sheet__body { background: var(--sheet); }
+
+/* Sheets that sit flush above the footer keep a little skirt so the torn
+   edge is not clipped by their last row of content. */
+.sheet--skirt .sheet__body { padding-bottom: 22px; }
+
+.band { padding: 56px var(--gutter) 72px; }
+
+/* ------------------------------------------------------------ announce -- */
+
+.announce {
+  position: relative;
+  z-index: 3;
+  background-image: url(../uploads/American-Hard-Maple.webp);
+  background-size: cover;
+  background-position: center;
+  color: var(--maple-ink);
+  font-size: 12.5px;
+  letter-spacing: .08em;
+  text-align: center;
+  padding: 13px 16px;
+}
+
+/* ------------------------------------------------------------ masthead -- */
+
+.masthead {
+  filter:
+    drop-shadow(0 5px 7px rgba(122, 104, 86, .28))
+    drop-shadow(0 -4px 6px rgba(122, 104, 86, .22));
+}
+
+.masthead .sheet__body {
+  background: var(--sheet);
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding: 34px var(--gutter);
+  -webkit-mask-image: var(--torn-top), var(--torn-bottom), linear-gradient(#000, #000);
+          mask-image: var(--torn-top), var(--torn-bottom), linear-gradient(#000, #000);
+  -webkit-mask-size: 44px 14px, 44px 14px, 100% calc(100% - 28px);
+          mask-size: 44px 14px, 44px 14px, 100% calc(100% - 28px);
+  -webkit-mask-position: top left, bottom left, 0 14px;
+          mask-position: top left, bottom left, 0 14px;
+  -webkit-mask-repeat: repeat-x, repeat-x, no-repeat;
+          mask-repeat: repeat-x, repeat-x, no-repeat;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 12px;
+}
+
+.brand__dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 9px 2px rgba(201, 138, 60, .3);
+}
+
+.brand__word {
+  font-family: var(--script);
+  font-size: 38px;
+  font-weight: 400;
+  line-height: .9;
+  letter-spacing: .01em;
+  color: var(--ink);
+}
+
+.nav {
+  display: flex;
+  gap: 30px;
+  font-size: 14px;
+  color: var(--body);
+}
+
+.nav a:hover,
+.nav a.is-current { color: var(--ink); }
+
+.masthead__end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-size: 13.5px;
+  color: var(--body);
+}
+
+.cart {
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  padding: 6px 14px;
+  white-space: nowrap;
+}
+
+.cart:hover { border-color: var(--ink); }
+
+/* -------------------------------------------------------------- footer -- */
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 32px;
+  padding: 30px var(--gutter);
+  position: relative;
+  z-index: 1;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.footer a:hover { color: var(--ink); }
+.footer__brand { color: var(--body); }
+.footer__copy { margin-left: auto; }
+
+/* ---------------------------------------------------------- typography -- */
+
+.eyebrow {
+  font-size: 11.5px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--coral-lite);
+  margin-bottom: 14px;
+}
+
+.label {
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.label--rule {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.h-display,
+.h-page,
+.h-section {
+  font-family: var(--font);
+  color: var(--ink);
+  margin: 0;
+  letter-spacing: -.01em;
+}
+
+.h-display {           /* homepage hero */
+  font-size: clamp(34px, 4.6vw, 54px);
+  line-height: 1.14;
+  font-weight: 200;
+}
+
+.h-page {              /* page titles */
+  font-size: clamp(30px, 3.8vw, 44px);
+  font-weight: 200;
+  line-height: 1.1;
+}
+
+.h-section {
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 300;
+  letter-spacing: .01em;
+}
+
+.lede {
+  margin: 0;
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--body);
+  max-width: 46ch;
+}
+
+.prose {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--body);
+  max-width: 52ch;
+}
+
+.prose p { margin: 0 0 16px; }
+.prose p:last-child { margin-bottom: 0; }
+
+.meta {
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: .1em;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.arrow-link {
+  font-size: 14px;
+  color: var(--coral-lite);
+  display: inline-block;
+}
+
+.arrow-link:hover { color: var(--coral); }
+.section-head .arrow-link { margin-left: auto; }
+
+/* ------------------------------------------------------------ controls -- */
+
+.btn {
+  display: inline-block;
+  font-size: 15px;
+  padding: 14px 28px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.btn--primary {
+  background: var(--coral);
+  color: var(--sheet);
+}
+
+.btn--primary:hover { background: #a8452c; }
+
+.btn--ghost {
+  border-color: var(--rule);
+  color: var(--ink);
+  padding: 13px 26px;
+}
+
+.btn--ghost:hover { border-color: var(--ink); }
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Swatch-style choices: size, grind, filters */
+.choice {
+  border: 1px solid var(--rule);
+  color: var(--body);
+  padding: 9px 20px;
+  font-size: 14px;
+  transition: border-color .15s ease, color .15s ease;
+}
+
+.choice:hover { border-color: var(--muted); color: var(--ink); }
+
+.choice[aria-pressed="true"],
+.choice.is-selected {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.choice-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.choice-legend {
+  margin: 28px 0 10px;
+}
+
+/* ------------------------------------------------------- product cards -- */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  padding: 26px;
+  transition: border-color .15s ease, transform .15s ease;
+}
+
+.product-card:hover {
+  border-color: var(--muted);
+  transform: translateY(-2px);
+}
+
+.product-card__well {
+  background: var(--tint);
+  margin-bottom: 20px;
+}
+
+.product-card__well--pad { padding: 24px; }
+
+.product-card__well img {
+  display: block;
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
+.product-card__well--pad img { object-fit: contain; }
+
+.product-card__origin {
+  font-size: 11.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.product-card__name {
+  font-size: 19px;
+  color: var(--ink);
+}
+
+.product-card__notes {
+  font-size: 13.5px;
+  color: var(--body);
+}
+
+.product-card__price {
+  font-size: 15px;
+  color: var(--coral-lite);
+  margin-top: 10px;
+}
+
+/* ---------------------------------------------------------- home: hero -- */
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 56px;
+  padding: 76px var(--gutter) 90px;
+}
+
+.hero__eyebrow {
+  font-size: 11.5px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--coral-lite);
+  margin-bottom: 20px;
+}
+
+.hero .h-display { margin-bottom: 22px; }
+.hero .lede { margin-bottom: 34px; }
+
+.hero__image {
+  display: block;
+  width: 100%;
+  height: 430px;
+  object-fit: cover;
+}
+
+/* --------------------------------------------------- home: split band --- */
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.split__left {
+  padding: 56px var(--gutter);
+  border-right: 1px solid var(--rule);
+}
+
+.split__right { display: flex; flex-direction: column; }
+
+.split__right img {
+  display: block;
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+}
+
+.split__right-body { padding: 32px var(--gutter) 44px; }
+
+.method-tiles {
+  display: flex;
+  gap: 14px;
+}
+
+.method-tile {
+  flex: 1;
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--ink);
+  text-align: center;
+  transition: border-color .15s ease;
+}
+
+.method-tile:hover { border-color: var(--ink); }
+.method-tile svg { width: 38px; }
+
+/* ------------------------------------------------------ coffee listing -- */
+
+.listing {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.filters {
+  width: 190px;
+  flex: none;
+  font-size: 13px;
+  color: var(--body);
+}
+
+.filters__group + .filters__group { margin-top: 26px; }
+
+.filters__group .label--rule { margin-bottom: 10px; }
+
+.filter {
+  display: block;
+  width: 100%;
+  line-height: 2.2;
+  color: var(--body);
+  transition: color .15s ease;
+}
+
+.filter:hover { color: var(--ink); }
+.filter[aria-pressed="true"] { color: var(--ink); }
+
+.listing__results { flex: 1; }
+
+.listing__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.listing__grid .product-card { padding: 20px; }
+
+.listing__grid .product-card__well { padding: 0; }
+
+.listing__grid .product-card__well img { height: 200px; }
+
+.listing__empty {
+  padding: 40px 0;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------ product detail -- */
+
+.product {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  padding: 60px var(--gutter) 80px;
+}
+
+.product__well {
+  background: var(--tint);
+  padding: 40px;
+  align-self: start;
+}
+
+.product__well img {
+  display: block;
+  width: 100%;
+  height: 380px;
+  object-fit: contain;
+}
+
+.product__well--photo { padding: 0; }
+.product__well--photo img { object-fit: cover; height: 460px; }
+
+.product .h-page { margin-bottom: 14px; }
+
+.product__blurb {
+  margin: 0 0 26px;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--body);
+  max-width: 44ch;
+}
+
+.spec-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 34px;
+  padding: 22px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  font-size: 13px;
+  color: var(--body);
+}
+
+.spec-row dt {
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+
+.spec-row dd { margin: 0; }
+
+.buy {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 8px;
+}
+
+.buy .btn--primary { padding: 15px 34px; }
+
+.buy__note {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Farm story: text beside a full-bleed photograph */
+.story {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+}
+
+.story__text { padding: 56px var(--gutter) 70px; }
+.story__text .h-section { margin-bottom: 14px; }
+
+.story img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  object-fit: cover;
+}
+
+/* Brew suggestions */
+.brew-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.brew-card {
+  border: 1px solid var(--rule);
+  background: var(--sheet);
+  display: block;
+  transition: border-color .15s ease;
+}
+
+.brew-card:hover { border-color: var(--ink); }
+
+.brew-card img {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.brew-card__body { padding: 18px; }
+.brew-card__title { font-size: 16px; color: var(--ink); }
+.brew-card__meta { font-size: 13px; color: var(--body); margin-top: 4px; }
+
+/* ---------------------------------------------------------- brew guide -- */
+
+.guide-hero__image {
+  display: block;
+  width: 100%;
+  height: 340px;
+  object-fit: cover;
+}
+
+.guide-hero__body { padding: 44px var(--gutter) 70px; }
+.guide-hero__body .h-page { margin-bottom: 16px; }
+
+.guide-hero__body .lede {
+  font-size: 16px;
+  line-height: 1.8;
+  max-width: 56ch;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 30px;
+}
+
+.tab {
+  color: var(--body);
+  padding: 8px 4px;
+  font-size: 14px;
+  border-bottom: 2px solid transparent;
+  transition: color .15s ease, border-color .15s ease;
+}
+
+.tab:hover { color: var(--ink); }
+
+.tab[aria-selected="true"] {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.recipe {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+}
+
+.recipe__glance {
+  padding: 50px 40px 66px;
+  border-right: 1px solid var(--rule);
+  font-size: 13px;
+  color: var(--body);
+  line-height: 2.1;
+}
+
+.recipe__glance dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 6px;
+}
+
+.recipe__glance dt { color: var(--muted); }
+.recipe__glance dt::after { content: " ·"; }
+.recipe__glance dd { margin: 0; }
+
+.recipe__note {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.recipe__steps { padding: 50px var(--gutter) 66px; }
+
+.step {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.step__n {
+  width: 34px;
+  flex: none;
+  font-size: 13px;
+  color: var(--coral-lite);
+  letter-spacing: .1em;
+}
+
+.step__title { font-size: 16px; color: var(--ink); }
+
+.step__text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--body);
+  margin-top: 4px;
+  max-width: 60ch;
+}
+
+.aside {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.aside__text { padding: 50px var(--gutter) 60px; }
+.aside__text .h-section { margin-bottom: 12px; }
+
+.aside img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  object-fit: cover;
+}
+
+/* ---------------------------------------------------------------- café -- */
+
+.cafe-hero__image {
+  display: block;
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+}
+
+.cafe-hero__body {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 48px;
+  padding: 48px var(--gutter) 74px;
+}
+
+.cafe-hero__body .h-page { margin-bottom: 18px; }
+
+.cafe-hero__body .lede {
+  font-size: 16px;
+  line-height: 1.8;
+  max-width: 50ch;
+}
+
+.hours {
+  font-size: 14.5px;
+  line-height: 2.1;
+  color: var(--body);
+  border-left: 1px solid var(--rule);
+  padding-left: 36px;
+}
+
+.hours .label { display: block; margin-bottom: 10px; }
+.hours__closed { margin-top: 20px; color: var(--muted); }
+
+.menu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+}
+
+.menu__col { font-size: 15px; color: var(--body); }
+
+.menu__col .label--rule { padding-bottom: 9px; margin-bottom: 6px; }
+
+.menu__row {
+  display: flex;
+  padding: 9px 0;
+}
+
+.menu__row span:first-child { color: var(--ink); }
+.menu__row span:last-child { margin-left: auto; }
+
+.gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.gallery img {
+  display: block;
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.gallery__note { padding: 40px 44px; }
+.gallery__note .h-section { margin-bottom: 12px; }
+
+.gallery__note p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: var(--body);
+}
+
+/* ================================================================ media == */
+
+@media (max-width: 1040px) {
+  :root { --gutter: 34px; }
+
+  .hero { gap: 36px; padding: 56px var(--gutter) 70px; }
+  .hero__image { height: 340px; }
+  .card-grid,
+  .listing__grid,
+  .brew-cards { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .product { gap: 34px; }
+  .recipe { grid-template-columns: 200px 1fr; }
+  .recipe__glance { padding: 40px 26px 50px; }
+}
+
+@media (max-width: 860px) {
+  .masthead .sheet__body {
+    flex-wrap: wrap;
+    gap: 18px 28px;
+    padding: 26px var(--gutter) 30px;
+  }
+
+  .masthead__end { width: 100%; margin-left: 0; }
+  .cart { margin-left: auto; }
+
+  .hero,
+  .product,
+  .story,
+  .aside,
+  .split,
+  .cafe-hero__body,
+  .menu { grid-template-columns: 1fr; }
+
+  .split__left { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .story__text,
+  .aside__text { padding-bottom: 44px; }
+  .story img,
+  .aside img { min-height: 260px; max-height: 320px; }
+
+  .hours { border-left: 0; padding-left: 0; }
+  .menu { gap: 30px; }
+
+  /* Filters become compact chip rows so the shelf itself stays above the
+     fold rather than a full screen of facets. */
+  .listing { flex-direction: column; }
+
+  .filters {
+    width: 100%;
+    margin-bottom: 28px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .filters__group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+  }
+
+  .filters__group + .filters__group { margin-top: 14px; }
+
+  .filters__group .label--rule {
+    width: 72px;
+    flex: none;
+    border-bottom: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  .filter {
+    display: inline-block;
+    width: auto;
+    line-height: 1.2;
+    padding: 7px 13px;
+    border: 1px solid var(--rule);
+  }
+
+  .filter[aria-pressed="true"] { border-color: var(--ink); }
+
+  .recipe { grid-template-columns: 1fr; }
+  .recipe__glance {
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 40px;
+  }
+  .recipe__steps { padding-top: 34px; }
+
+  .gallery { grid-template-columns: 1fr 1fr; }
+  .gallery__note { grid-column: 1 / -1; }
+
+  .product__well img { height: 300px; }
+  .product__well--photo img { height: 320px; }
+}
+
+@media (max-width: 620px) {
+  :root { --gutter: 22px; }
+
+  .band { padding: 40px var(--gutter) 54px; }
+  .brand__word { font-size: 32px; }
+  .nav { gap: 20px; }
+  .masthead__end { gap: 16px; font-size: 13px; }
+
+  .card-grid,
+  .listing__grid,
+  .brew-cards,
+  .method-tiles { grid-template-columns: 1fr; display: grid; }
+
+  .gallery { grid-template-columns: 1fr; }
+  .footer { gap: 18px; }
+  .footer__copy { margin-left: 0; width: 100%; }
+  .spec-row { gap: 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+  .product-card:hover { transform: none; }
+}
