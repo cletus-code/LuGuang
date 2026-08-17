@@ -31,9 +31,13 @@
   --page: 1200px;
   --gutter: 48px;
 
-  /* Torn edges — 44×14 saw paths, repeated along the sheet edge */
-  --torn-top: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2744%27%20height%3D%2714%27%3E%3Cpath%20d%3D%27M0%2014%20H44%20V7%20L40%202%20L36%209%20L32%203%20L28%2010%20L24%204%20L20%2011%20L16%203%20L12%208%20L8%202%20L4%209%20L0%204%20Z%27%20fill%3D%27black%27%2F%3E%3C%2Fsvg%3E");
-  --torn-bottom: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2744%27%20height%3D%2714%27%3E%3Cpath%20d%3D%27M0%200%20H44%20V7%20L40%2012%20L36%205%20L32%2011%20L28%204%20L24%2010%20L20%203%20L16%2011%20L12%206%20L8%2012%20L4%205%20L0%2010%20Z%27%20fill%3D%27black%27%2F%3E%3C%2Fsvg%3E");
+  /* Torn edges. A black slab whose edge is pushed around by fractal noise
+     (feTurbulence + feDisplacementMap), so the tear has fibres and varying
+     depth instead of a repeating sawtooth. Drawn once across the full width
+     rather than tiled — a tiled turbulence would seam at every repeat. */
+  --torn-height: 22px;
+  --torn-top: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201200%2022'%20preserveAspectRatio='none'%20width='1200'%20height='22'%3E%3Cfilter%20id='b'%20x='-5%25'%20y='-120%25'%20width='110%25'%20height='340%25'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.021%201.5'%20numOctaves='4'%20seed='41'%20result='n'/%3E%3CfeDisplacementMap%20in='SourceGraphic'%20in2='n'%20scale='21'%20xChannelSelector='R'%20yChannelSelector='G'/%3E%3C/filter%3E%3Cfilter%20id='a'%20x='-5%25'%20y='-120%25'%20width='110%25'%20height='340%25'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.011%200.75'%20numOctaves='5'%20seed='11'%20result='n'/%3E%3CfeDisplacementMap%20in='SourceGraphic'%20in2='n'%20scale='15'%20xChannelSelector='R'%20yChannelSelector='G'/%3E%3C/filter%3E%3Crect%20x='-20'%20y='8'%20width='1240'%20height='44'%20fill='%23000'%20opacity='.5'%20filter='url%28%23b%29'/%3E%3Crect%20x='-20'%20y='13'%20width='1240'%20height='44'%20fill='%23000'%20filter='url%28%23a%29'/%3E%3C/svg%3E");
+  --torn-bottom: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201200%2022'%20preserveAspectRatio='none'%20width='1200'%20height='22'%3E%3Cfilter%20id='b'%20x='-5%25'%20y='-120%25'%20width='110%25'%20height='340%25'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.021%201.5'%20numOctaves='4'%20seed='67'%20result='n'/%3E%3CfeDisplacementMap%20in='SourceGraphic'%20in2='n'%20scale='21'%20xChannelSelector='R'%20yChannelSelector='G'/%3E%3C/filter%3E%3Cfilter%20id='a'%20x='-5%25'%20y='-120%25'%20width='110%25'%20height='340%25'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.011%200.75'%20numOctaves='5'%20seed='29'%20result='n'/%3E%3CfeDisplacementMap%20in='SourceGraphic'%20in2='n'%20scale='15'%20xChannelSelector='R'%20yChannelSelector='G'/%3E%3C/filter%3E%3Crect%20x='-20'%20y='-30'%20width='1240'%20height='44'%20fill='%23000'%20opacity='.5'%20filter='url%28%23b%29'/%3E%3Crect%20x='-20'%20y='-35'%20width='1240'%20height='44'%20fill='%23000'%20filter='url%28%23a%29'/%3E%3C/svg%3E");
 }
 
 /* --------------------------------------------------------------- reset -- */
@@ -103,12 +107,12 @@ button {
 .sheet__body {
   -webkit-mask-image: var(--torn-bottom), linear-gradient(#000, #000);
           mask-image: var(--torn-bottom), linear-gradient(#000, #000);
-  -webkit-mask-size: 44px 14px, 100% calc(100% - 14px);
-          mask-size: 44px 14px, 100% calc(100% - 14px);
+  -webkit-mask-size: 100% var(--torn-height), 100% calc(100% - var(--torn-height));
+          mask-size: 100% var(--torn-height), 100% calc(100% - var(--torn-height));
   -webkit-mask-position: bottom left, top left;
           mask-position: bottom left, top left;
-  -webkit-mask-repeat: repeat-x, no-repeat;
-          mask-repeat: repeat-x, no-repeat;
+  -webkit-mask-repeat: no-repeat, no-repeat;
+          mask-repeat: no-repeat, no-repeat;
 }
 
 .sheet--paper .sheet__body { background: var(--paper); }
@@ -132,15 +136,20 @@ button {
   font-size: 12.5px;
   letter-spacing: .08em;
   text-align: center;
-  padding: 13px 16px;
+  /* Extra bottom padding equal to the overlap, so the masthead's torn edge
+     rides over wood rather than over this text. */
+  padding: 13px 16px calc(13px + var(--torn-height));
 }
 
 /* ------------------------------------------------------------ masthead -- */
 
 .masthead {
+  /* Ride up over the announce bar by exactly the depth of the tear, so the
+     notches show wood rather than a strip of page behind them. */
+  margin-top: calc(var(--torn-height) * -1);
   filter:
     drop-shadow(0 5px 7px rgba(122, 104, 86, .28))
-    drop-shadow(0 -4px 6px rgba(122, 104, 86, .22));
+    drop-shadow(0 -3px 5px rgba(122, 104, 86, .3));
 }
 
 .masthead .sheet__body {
@@ -148,15 +157,15 @@ button {
   display: flex;
   align-items: center;
   gap: 40px;
-  padding: 34px var(--gutter);
+  padding: calc(34px + var(--torn-height)) var(--gutter) 34px;
   -webkit-mask-image: var(--torn-top), var(--torn-bottom), linear-gradient(#000, #000);
           mask-image: var(--torn-top), var(--torn-bottom), linear-gradient(#000, #000);
-  -webkit-mask-size: 44px 14px, 44px 14px, 100% calc(100% - 28px);
-          mask-size: 44px 14px, 44px 14px, 100% calc(100% - 28px);
-  -webkit-mask-position: top left, bottom left, 0 14px;
-          mask-position: top left, bottom left, 0 14px;
-  -webkit-mask-repeat: repeat-x, repeat-x, no-repeat;
-          mask-repeat: repeat-x, repeat-x, no-repeat;
+  -webkit-mask-size: 100% var(--torn-height), 100% var(--torn-height), 100% calc(100% - var(--torn-height) * 2);
+          mask-size: 100% var(--torn-height), 100% var(--torn-height), 100% calc(100% - var(--torn-height) * 2);
+  -webkit-mask-position: top left, bottom left, 0 var(--torn-height);
+          mask-position: top left, bottom left, 0 var(--torn-height);
+  -webkit-mask-repeat: no-repeat, no-repeat, no-repeat;
+          mask-repeat: no-repeat, no-repeat, no-repeat;
 }
 
 .brand {
