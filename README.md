@@ -34,10 +34,22 @@ Accents `#c25539` actions · `#d4674c` links · `#c98a3c` lamp · `#8a9478` brew
 Type Helvetica Neue at weights 200–400, Sacramento for the wordmark.
 
 The signature is the **torn paper sheet**: `.sheet` carries the drop-shadow and
-a `--z` stacking order, `.sheet__body` carries an SVG mask that chews the
-bottom edge (the masthead is chewed top and bottom). Sheets are stacked with a
-descending `--z` so each one casts its shadow onto the one below, exactly as in
-the mockup.
+a `--z` stacking order, `.sheet__body` carries a mask that chews the bottom
+edge (the masthead is chewed top and bottom, and rides up over the announce
+bar by `--torn-height` so its notches show wood rather than page). Sheets are
+stacked with a descending `--z` so each one casts its shadow onto the one
+below, exactly as in the mockup.
+
+The mask is the alpha channel of `uploads/torn-top.png` and
+`uploads/torn-bottom.png` — the two lips of a photographed torn strip. Using
+the alpha directly preserves the fibres and their partial transparency. Each
+mask is drawn once across the sheet rather than tiled, so there is no repeat.
+
+> **Licence check needed.** Those two PNGs are derived from a Pngtree asset
+> (`pngtree-white-torn-paper-strips-with-cutout-edges`, image 16485356).
+> Pngtree's free tier requires attribution and restricts commercial use, and
+> this repo is public. Confirm the licence, add attribution, or swap the
+> source image before trading on this site.
 
 ## Behaviour
 
