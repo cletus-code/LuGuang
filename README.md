@@ -40,10 +40,15 @@ bar by `--torn-height` so its notches show wood rather than page). Sheets are
 stacked with a descending `--z` so each one casts its shadow onto the one
 below, exactly as in the mockup.
 
-The mask is the alpha channel of `uploads/torn-top.png` and
-`uploads/torn-bottom.png` — the two lips of a photographed torn strip. Using
-the alpha directly preserves the fibres and their partial transparency. Each
-mask is drawn once across the sheet rather than tiled, so there is no repeat.
+The tear is two layers, from the same photographed strip. The **mask** is the
+alpha of `uploads/torn-top.png` / `torn-bottom.png`, which cuts the sheet's
+silhouette and keeps the fibres' partial transparency. A mask carries no
+colour, so the **texture** comes from `torn-top-tex.png` / `torn-bottom-tex.png`
+— the same strips in greyscale, normalised so flat paper reads as white and
+ramped to nothing at the inner edge, multiplied over the sheet colour. That
+restores the grain and the soft shadow just inside the tear without tinting
+the sheet. Both layers are drawn once across the sheet, never tiled, so there
+is no repeat.
 
 > **Licence check needed.** Those two PNGs are derived from a Pngtree asset
 > (`pngtree-white-torn-paper-strips-with-cutout-edges`, image 16485356).

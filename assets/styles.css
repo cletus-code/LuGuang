@@ -38,6 +38,11 @@
   --torn-height: 26px;
   --torn-top: url(../uploads/torn-top.png);
   --torn-bottom: url(../uploads/torn-bottom.png);
+  /* The same strips in greyscale, normalised so flat paper reads as white.
+     Multiplied over the sheet colour they restore the grain and the soft
+     shadow just inside the tear -- a mask alone carries shape, not colour. */
+  --torn-top-tex: url(../uploads/torn-top-tex.png);
+  --torn-bottom-tex: url(../uploads/torn-bottom-tex.png);
 }
 
 /* --------------------------------------------------------------- reset -- */
@@ -105,6 +110,11 @@ button {
 }
 
 .sheet__body {
+  background-image: var(--torn-bottom-tex);
+  background-size: 100% var(--torn-height);
+  background-position: bottom left;
+  background-repeat: no-repeat;
+  background-blend-mode: multiply;
   -webkit-mask-image: var(--torn-bottom), linear-gradient(#000, #000);
           mask-image: var(--torn-bottom), linear-gradient(#000, #000);
   -webkit-mask-size: 100% var(--torn-height), 100% calc(100% - var(--torn-height));
@@ -115,8 +125,8 @@ button {
           mask-repeat: no-repeat, no-repeat;
 }
 
-.sheet--paper .sheet__body { background: var(--paper); }
-.sheet--white .sheet__body { background: var(--sheet); }
+.sheet--paper .sheet__body { background-color: var(--paper); }
+.sheet--white .sheet__body { background-color: var(--sheet); }
 
 /* Sheets that sit flush above the footer keep a little skirt so the torn
    edge is not clipped by their last row of content. */
@@ -153,7 +163,12 @@ button {
 }
 
 .masthead .sheet__body {
-  background: var(--sheet);
+  background-color: var(--sheet);
+  background-image: var(--torn-top-tex), var(--torn-bottom-tex);
+  background-size: 100% var(--torn-height), 100% var(--torn-height);
+  background-position: top left, bottom left;
+  background-repeat: no-repeat, no-repeat;
+  background-blend-mode: multiply, multiply;
   display: flex;
   align-items: center;
   gap: 40px;
