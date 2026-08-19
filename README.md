@@ -31,7 +31,13 @@ Everything in the mockup's inline styles is now a token or a class in
 Ground `#f8f5ef` paper · `#fffdf9` sheet · `#f2efe8` image well.
 Ink `#2e2a26` headings · `#7d7469` body · `#867c6f` labels · `#e0d9cf` rules.
 Accents `#c25539` actions · `#d4674c` links · `#c98a3c` lamp · `#8a9478` brew icons.
-Type Helvetica Neue at weights 200–400, Sacramento for the wordmark.
+Type Helvetica Neue at weights 200–400.
+
+The masthead carries the Lu Guang logomark, `uploads/logo.svg` — the paths
+lifted straight out of `陆光咖啡logo_.pdf`, so it stays vector at 2.4 KB. It is
+painted as a CSS mask rather than an `<img>` so it takes the brand ink and
+can shift to coral on hover. The Sacramento wordmark and the amber dot it sat
+beside are gone; the footer still uses the word "Lights" as plain text.
 
 The signature is the **torn paper sheet**: `.sheet` carries the drop-shadow and
 a `--z` stacking order, `.sheet__body` carries a mask that chews the bottom
