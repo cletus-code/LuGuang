@@ -163,25 +163,18 @@ button {
 }
 
 .masthead .sheet__body {
-  background-color: var(--sheet);
-  background-image: var(--torn-top-tex), var(--torn-bottom-tex);
-  background-size: 100% var(--torn-height), 100% var(--torn-height);
-  background-position: top left, bottom left;
-  background-repeat: no-repeat, no-repeat;
-  background-blend-mode: multiply, multiply;
+  /* No fill of its own. The bar IS the photographed paper strip: the PNG's
+     own alpha supplies both torn edges, so there is no mask and no sheet
+     colour underneath. */
+  background: url(../uploads/torn-band.png) 0 0 / 100% 100% no-repeat;
+  -webkit-mask-image: none;
+          mask-image: none;
   display: flex;
   align-items: center;
   gap: 40px;
-  padding: calc(34px + var(--torn-height)) var(--gutter) 34px;
-  -webkit-mask-image: var(--torn-top), var(--torn-bottom), linear-gradient(#000, #000);
-          mask-image: var(--torn-top), var(--torn-bottom), linear-gradient(#000, #000);
-  -webkit-mask-size: 100% var(--torn-height), 100% var(--torn-height), 100% calc(100% - var(--torn-height) * 2);
-          mask-size: 100% var(--torn-height), 100% var(--torn-height), 100% calc(100% - var(--torn-height) * 2);
-  -webkit-mask-position: top left, bottom left, 0 var(--torn-height);
-          mask-position: top left, bottom left, 0 var(--torn-height);
-  -webkit-mask-repeat: no-repeat, no-repeat, no-repeat;
-          mask-repeat: no-repeat, no-repeat, no-repeat;
+  padding: 42px var(--gutter) 40px;
 }
+
 
 .brand {
   display: flex;

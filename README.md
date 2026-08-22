@@ -56,6 +56,16 @@ restores the grain and the soft shadow just inside the tear without tinting
 the sheet. Both layers are drawn once across the sheet, never tiled, so there
 is no repeat.
 
+The **masthead is different**: it has no fill and no mask at all. It simply
+paints `uploads/torn-band.png` — the whole photographed strip, both torn lips
+included — stretched to the bar. The bar is the photograph rather than a
+coloured card wearing torn edges.
+
+> **Contrast.** The strip's paper is neutral grey (218), so nav links in
+> `--body` measure 3.27:1 against it, under the 4.5:1 AA floor. `--ink`
+> measures 10.14:1 and `#5a5249` measures 5.46:1. Darken the masthead's link
+> colour or lighten the strip before this ships.
+
 > **Licence check needed.** Those two PNGs are derived from a Pngtree asset
 > (`pngtree-white-torn-paper-strips-with-cutout-edges`, image 16485356).
 > Pngtree's free tier requires attribution and restricts commercial use, and
