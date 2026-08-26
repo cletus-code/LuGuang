@@ -1,4 +1,4 @@
-/* Catalogue and brew guides for Lights Coffee.
+/* Catalogue and brew guides for Lights Landing Coffee.
    Names, origins, processes, tasting notes, prices and pack shots come
    straight from the roadmap (options 2a / 3a / 3b / 3c). Per-lot specs and
    farm notes are written here to fill the 3b template — only Sidama Dusk's

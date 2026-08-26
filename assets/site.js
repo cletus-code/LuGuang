@@ -1,4 +1,4 @@
-/* Behaviour for Lights Coffee.
+/* Behaviour for Lights Landing Coffee.
    Every page renders in full from its own HTML; this file only enhances —
    the cart tally, the listing filters, the per-lot product page, and the
    brew-method tabs. */
@@ -136,7 +136,7 @@
     var coffee = findCoffee(param('id'));
     if (!coffee) { return; }   /* keep the page's own default lot */
 
-    document.title = coffee.name + ' — Lights Coffee';
+    document.title = coffee.name + ' — Lights Landing Coffee';
 
     var well = $('[data-product-well]', root);
     var img  = $('[data-product-image]', root);
@@ -176,7 +176,7 @@
   }
 
   function paintGuide(guide) {
-    document.title = guide.title + ' — Lights Coffee';
+    document.title = guide.title + ' — Lights Landing Coffee';
 
     var image = $('[data-guide-image]');
     image.src = guide.image;

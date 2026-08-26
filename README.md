@@ -1,4 +1,4 @@
-# Lights Coffee — 陆光咖啡
+# Lights Landing Coffee — 陆光咖啡
 
 A static implementation of the light theme from **`Lights Coffee Roadmap.dc.html`**
 (Claude Design project `2c8b7a5f`), option **2a** and its page set **3a–3d**.
@@ -37,7 +37,7 @@ The masthead carries the Lu Guang logomark, `uploads/logo.svg` — the paths
 lifted straight out of `陆光咖啡logo_.pdf`, so it stays vector at 2.4 KB. It is
 painted as a CSS mask rather than an `<img>` so it takes the brand ink and
 can shift to coral on hover. The Sacramento wordmark and the amber dot it sat
-beside are gone; the footer still uses the word "Lights" as plain text.
+beside are gone; the footer still uses the word "Lights Landing" as plain text.
 
 The signature is the **torn paper sheet**: `.sheet` carries the drop-shadow and
 a `--z` stacking order, `.sheet__body` carries a mask that chews the bottom
