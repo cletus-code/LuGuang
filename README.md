@@ -66,6 +66,18 @@ coloured card wearing torn edges.
 > measures 10.14:1 and `#5a5249` measures 5.46:1. Darken the masthead's link
 > colour or lighten the strip before this ships.
 
+## Photography
+
+Every editorial photo and pack shot in `uploads/` is a real photograph of the
+shop, from `~/Downloads/Luguang photos`. They were resized to fit their slot
+(700px for cards, 900–1600px for heroes), saved as progressive JPEG at q80,
+and **stripped of EXIF** — the originals carried camera and location metadata
+that has no business on a public site. Roughly 1.4 MB for 22 images.
+
+The one asset that is still stock is `American-Hard-Maple.webp`, the wood
+texture behind the announce bar. It is a texture rather than a photo of the
+shop, so nothing in the folder replaced it.
+
 > **Licence check needed.** Those two PNGs are derived from a Pngtree asset
 > (`pngtree-white-torn-paper-strips-with-cutout-edges`, image 16485356).
 > Pngtree's free tier requires attribution and restricts commercial use, and

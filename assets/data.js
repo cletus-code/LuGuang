@@ -5,7 +5,6 @@
    copy is from the design itself. See README.md. */
 
 window.LIGHTS = (function () {
-  var PACK = 'uploads/Juice-Box_Transparant-Thumb_min4000_xlcfyw.webp';
 
   var coffees = [
     {
@@ -17,8 +16,8 @@ window.LIGHTS = (function () {
       roast: 'Filter',
       notes: 'Bergamot, apricot, honey',
       price: 21,
-      image: PACK,
-      fit: 'contain',
+      image: 'uploads/pack-sidama.jpg',
+      fit: 'cover',
       blurb: 'Bergamot, apricot and honey, with a long clean finish. Grown at 2,050 m and dried on raised beds.',
       specs: { Altitude: '2,050 m', Varietal: 'Heirloom', Harvest: 'Nov 2025' },
       story: [
@@ -35,7 +34,7 @@ window.LIGHTS = (function () {
       roast: 'Espresso',
       notes: 'Red plum, panela, cacao',
       price: 19,
-      image: 'uploads/IMG_8872.jpg',
+      image: 'uploads/pack-narino.jpg',
       fit: 'cover',
       blurb: 'Red plum and panela over a cacao base. Dense and sweet — the one we pull as espresso on the bar.',
       specs: { Altitude: '1,850 m', Varietal: 'Caturra', Harvest: 'Oct 2025' },
@@ -53,8 +52,8 @@ window.LIGHTS = (function () {
       roast: 'Filter',
       notes: 'Blackcurrant, grapefruit, cane',
       price: 23,
-      image: PACK,
-      fit: 'contain',
+      image: 'uploads/pack-nyeri.jpg',
+      fit: 'cover',
       blurb: 'Blackcurrant and grapefruit with cane sugar underneath. Bright, structured, and unmistakably Kenyan.',
       specs: { Altitude: '1,750 m', Varietal: 'SL28, SL34', Harvest: 'Dec 2025' },
       story: [
@@ -71,7 +70,7 @@ window.LIGHTS = (function () {
       roast: 'Filter',
       notes: 'Violet, candied orange, lemon',
       price: 24,
-      image: 'uploads/IMG_8878.jpg',
+      image: 'uploads/pack-llaqta.jpg',
       fit: 'cover',
       blurb: 'Violet and candied orange with a lemon lift. Roasted a touch longer for cold brew, and just as good hot.',
       specs: { Altitude: '1,900 m', Varietal: 'Bourbon', Harvest: 'Sep 2025' },
@@ -89,8 +88,8 @@ window.LIGHTS = (function () {
       roast: 'Filter',
       notes: 'Dried apricot, honey, white flowers',
       price: 21,
-      image: PACK,
-      fit: 'contain',
+      image: 'uploads/pack-nemba.jpg',
+      fit: 'cover',
       blurb: 'Dried apricot and honey with white flowers on the finish. A natural that stays clean rather than boozy.',
       specs: { Altitude: '1,800 m', Varietal: 'Red Bourbon', Harvest: 'Jul 2025' },
       story: [
@@ -107,7 +106,7 @@ window.LIGHTS = (function () {
       roast: 'Filter',
       notes: 'Cane sugar, almond, orange',
       price: 17,
-      image: 'uploads/IMG_8876.jpg',
+      image: 'uploads/pack-house.jpg',
       fit: 'cover',
       blurb: 'Cane sugar and almond with an orange edge. Our everyday blend — forgiving on the brewer, sweet in milk.',
       specs: { Altitude: '1,100–1,700 m', Varietal: 'Mixed', Harvest: 'Rolling' },
@@ -126,8 +125,8 @@ window.LIGHTS = (function () {
       id: 'v60',
       name: 'V60',
       title: 'Pour-over, V60',
-      image: 'uploads/IMG_8874.jpg',
-      alt: 'Pour-over brewer on a scale',
+      image: 'uploads/pourover-hero.jpg',
+      alt: 'Pouring water over a V60 on the brew bar',
       intro: 'A clean, repeatable recipe for a single cup. Anything in a cone works — the ratio matters more than the brewer.',
       glance: [
         ['Ratio', '1:16'],
@@ -149,8 +148,8 @@ window.LIGHTS = (function () {
       id: 'french-press',
       name: 'French press',
       title: 'French press',
-      image: 'uploads/IMG_8873.jpg',
-      alt: 'Warm afternoon light on a kitchen counter',
+      image: 'uploads/guide-french-press.jpg',
+      alt: 'Decanting brewed coffee into a cup',
       intro: 'The least fussy way to brew well. Full immersion, no pouring technique to get wrong — just weight, time, and a careful decant.',
       glance: [
         ['Ratio', '1:15'],
@@ -172,8 +171,8 @@ window.LIGHTS = (function () {
       id: 'espresso',
       name: 'Espresso',
       title: 'Espresso',
-      image: 'uploads/IMG_8877.jpg',
-      alt: 'Latte in warm afternoon light',
+      image: 'uploads/guide-espresso.jpg',
+      alt: 'Espresso running from the portafilter',
       intro: 'A starting point, not a rule. Dial the grind until the shot lands in the window, then taste and move one variable at a time.',
       glance: [
         ['Ratio', '1:2.2'],
@@ -195,8 +194,8 @@ window.LIGHTS = (function () {
       id: 'iced',
       name: 'Iced',
       title: 'Iced filter',
-      image: 'uploads/IMG_8878.jpg',
-      alt: 'Coffee poured over a large ice cube',
+      image: 'uploads/guide-iced.jpg',
+      alt: 'Iced coffee poured over ice in a tall glass',
       intro: 'Brewed hot straight onto ice. The aromatics get trapped as it chills, so it lands sweeter and more fragrant than cold brew.',
       glance: [
         ['Ratio', '1:12'],
