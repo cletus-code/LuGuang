@@ -16,6 +16,26 @@
     return new URLSearchParams(window.location.search).get(name);
   }
 
+  /* Lots and guides share one HTML file each, so the page's canonical URL,
+     description and share-card tags are rewritten to match what is shown. */
+  var SITE = 'https://lightslanding.shop/';
+
+  function setMeta(title, description, path, image) {
+    var pairs = [
+      ['link[rel="canonical"]', 'href', SITE + path],
+      ['meta[name="description"]', 'content', description],
+      ['meta[property="og:title"]', 'content', title],
+      ['meta[property="og:description"]', 'content', description],
+      ['meta[property="og:url"]', 'content', SITE + path],
+      ['meta[property="og:image"]', 'content', SITE + image]
+    ];
+    document.title = title;
+    pairs.forEach(function (p) {
+      var node = $(p[0]);
+      if (node) { node.setAttribute(p[1], p[2]); }
+    });
+  }
+
   function el(tag, className, text) {
     var node = document.createElement(tag);
     if (className) { node.className = className; }
@@ -136,7 +156,8 @@
     var coffee = findCoffee(param('id'));
     if (!coffee) { return; }   /* keep the page's own default lot */
 
-    document.title = coffee.name + ' — Lights Landing Coffee';
+    setMeta(coffee.name + ' — Lights Landing Coffee', coffee.blurb,
+            'product.html?id=' + coffee.id, coffee.image);
 
     var well = $('[data-product-well]', root);
     var img  = $('[data-product-image]', root);
@@ -176,7 +197,9 @@
   }
 
   function paintGuide(guide) {
-    document.title = guide.title + ' — Lights Landing Coffee';
+    setMeta(guide.title + ' — Lights Landing Coffee', guide.intro,
+            guide === DATA.guides[0] ? 'brew.html' : 'brew.html?m=' + guide.id,
+            guide.image);
 
     var image = $('[data-guide-image]');
     image.src = guide.image;

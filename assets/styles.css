@@ -12,20 +12,24 @@
 
   /* Ink */
   --ink:        #2e2a26;  /* headings, emphasis */
-  --body:       #7d7469;  /* running text */
-  --muted:      #867c6f;  /* labels, metadata */
+  --body:       #6f675c;  /* running text */
+  --muted:      #776e63;  /* labels, metadata */
+  --strip-ink:  #5a5249;  /* nav on the grey masthead strip */
   --rule:       #e0d9cf;  /* hairlines, quiet borders */
   --maple-ink:  #463323;  /* text on the maple banner */
 
   /* Accents */
-  --coral:      #c25539;  /* solid actions */
-  --coral-lite: #d4674c;  /* inline links, eyebrows */
+  /* Body, muted and both corals were darkened from the mockup's values
+     (#7d7469, #867c6f, #c25539, #d4674c) so every text pair clears WCAG AA
+     4.5:1 on paper and sheet. */
+  --coral:      #a94a31;  /* solid actions */
+  --coral-dark: #8f3d28;  /* hover on solid actions */
+  --coral-lite: #b0533c;  /* inline links, eyebrows */
   --amber:      #c98a3c;  /* the lamp */
   --sage:       #8a9478;  /* brew icons */
 
   /* Type */
   --font:   'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --script: 'Sacramento', 'Snell Roundhand', cursive;
 
   /* Measure */
   --page: 1200px;
@@ -200,7 +204,7 @@ button {
   display: flex;
   gap: 30px;
   font-size: 14px;
-  color: var(--body);
+  color: var(--strip-ink);
 }
 
 .nav a:hover,
@@ -212,7 +216,7 @@ button {
   align-items: center;
   gap: 22px;
   font-size: 13.5px;
-  color: var(--body);
+  color: var(--strip-ink);
 }
 
 .cart {
@@ -330,7 +334,7 @@ button {
   display: inline-block;
 }
 
-.arrow-link:hover { color: var(--coral); }
+.arrow-link:hover { color: var(--coral-dark); }
 .section-head .arrow-link { margin-left: auto; }
 
 /* ------------------------------------------------------------ controls -- */
@@ -349,7 +353,7 @@ button {
   color: var(--sheet);
 }
 
-.btn--primary:hover { background: #a8452c; }
+.btn--primary:hover { background: var(--coral-dark); }
 
 .btn--ghost {
   border-color: var(--rule);

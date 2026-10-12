@@ -3,11 +3,31 @@
 A static implementation of the light theme from **`Lights Coffee Roadmap.dc.html`**
 (Claude Design project `2c8b7a5f`), option **2a** and its page set **3a–3d**.
 
-No build step, no dependencies. Open `index.html`, or serve the folder:
+No build step, no dependencies, and no third-party requests (the Google Fonts
+link went with the Sacramento wordmark — it is blocked in mainland China and
+was holding up first paint). Open `index.html`, or serve the folder:
 
 ```bash
 python3 -m http.server 8000
 ```
+
+## Deploying to lightslanding.shop
+
+The repo is ready for GitHub Pages as it stands: `CNAME` names the domain,
+`.nojekyll` serves the folder as-is, and `404.html` uses root-relative paths so
+it renders at any depth.
+
+1. **GitHub** → repo *Settings → Pages* → *Deploy from a branch*, `main`, `/ (root)`.
+2. **DNS** at the registrar for `lightslanding.shop`:
+   - `A` records on the apex `@` → `185.199.108.153`, `185.199.109.153`,
+     `185.199.110.153`, `185.199.111.153`
+   - `CNAME` on `www` → `cletus-code.github.io`
+3. Back in *Settings → Pages*, wait for the DNS check, then tick
+   **Enforce HTTPS**.
+
+Any static host works the same way (Netlify, Cloudflare Pages, Vercel): point
+it at the repo root with no build command. Canonical URLs, Open Graph tags,
+`sitemap.xml` and `robots.txt` all assume `https://lightslanding.shop/`.
 
 ## Pages
 
@@ -61,10 +81,11 @@ paints `uploads/torn-band.png` — the whole photographed strip, both torn lips
 included — stretched to the bar. The bar is the photograph rather than a
 coloured card wearing torn edges.
 
-> **Contrast.** The strip's paper is neutral grey (218), so nav links in
-> `--body` measure 3.27:1 against it, under the 4.5:1 AA floor. `--ink`
-> measures 10.14:1 and `#5a5249` measures 5.46:1. Darken the masthead's link
-> colour or lighten the strip before this ships.
+> **Contrast.** The strip's paper is neutral grey (218), so the masthead's
+> links use `--strip-ink` `#5a5249` (5.49:1) rather than `--body`. Body text,
+> labels and both corals were also darkened a step from the mockup's values so
+> every text pair on paper and sheet clears WCAG AA 4.5:1 — see the comment on
+> the tokens in `assets/styles.css`.
 
 ## Photography
 
