@@ -37,7 +37,10 @@ it at the repo root with no build command. Canonical URLs, Open Graph tags,
 | `coffee.html` | 3a | Shelf listing with origin / process / roast filters |
 | `product.html` | 3b | Lot detail, `?id=<slug>` selects the lot |
 | `brew.html` | 3c | Brew guide, `?m=<method>` selects the method |
-| `cafe.html` | 3d | Address, hours, bar menu, cupping |
+| `cafe.html` | 3d | Address, hours, bar menu |
+| `about.html` | — | About the roaster |
+| `shipping.html`, `privacy.html` | — | Policies Stripe asks a shop to publish |
+| `404.html` | — | Not-found page, root-relative so it works at any depth |
 
 `assets/styles.css` holds the whole design system, `assets/data.js` the
 catalogue and recipes, `assets/site.js` the behaviour. `uploads/` are the
@@ -116,8 +119,12 @@ page renders in full from its own HTML — the script only enhances.
 - **Brew tabs** swap the recipe in place and push a `?m=` URL, so guides are
   linkable and the back button works.
 - **Size / grind** swatches are real single-select rows.
-- **Cart** is a counter in `localStorage` — enough to make "Add to cart" and the
-  masthead tally honest. There is no cart page; the roadmap doesn't design one.
+- **Buying** goes through Stripe Payment Links, one per lot and size, set in
+  `assets/data.js`. The Buy button opens the link for the chosen size with
+  `client_reference_id=<lot>_<size>_<grind>` appended, so the grind shows on
+  the payment in the Stripe dashboard. A size with no `price` isn't offered;
+  one with a price but no `link` shows a greyed "Coming soon". There is no
+  cart: each checkout is one lot.
 
 Responsive down to 320px: grids drop to two columns at 1040 and one at 620, the
 listing's filter sidebar becomes chip rows at 860, and every two-column band
@@ -141,12 +148,26 @@ this goes anywhere real:
   roast is stated in the design ("Blend · Filter"); Nariño Night is marked
   espresso, the rest filter.
 
+## Setting up Stripe
+
+For each lot, in the Stripe dashboard → *Payment Links* → *New*:
+
+1. Add the product at the site's price (e.g. *Sidama Dusk 250g*, $21).
+2. Turn on **Collect customers' addresses → Shipping** and choose the
+   countries you ship to; add your shipping rate(s).
+3. Under *After payment*, optionally redirect to `https://lightslanding.shop/`.
+4. Copy the `https://buy.stripe.com/...` URL into that size's `link` in
+   `assets/data.js`.
+
+For 1kg bags, set `price` as well as `link`. Fill in the account's *Public
+details* (support email, statement descriptor), since the Shipping and Privacy
+pages tell customers to reply to their Stripe receipt.
+
 ## Not built
 
-The roadmap doesn't design an About page, search, accounts, checkout, a
-sourcing page, or a brew-guide index. Those words appear in the masthead and
-footer as plain text rather than links, so nothing in the navigation is a dead
-end. Cart, search and account are likewise unlinked.
+Search, accounts, a cart, a sourcing page and a brew-guide index. The
+masthead's Search / Account / Cart placeholders were removed before launch
+rather than left as text that looks clickable.
 
 `uploads/coffee-berries-1296x728-header.avif` ships with the assets but belongs
 to the roadmap's dark exploration (turn 1) and is unused here.

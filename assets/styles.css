@@ -210,24 +210,6 @@ button {
 .nav a:hover,
 .nav a.is-current { color: var(--ink); }
 
-.masthead__end {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 22px;
-  font-size: 13.5px;
-  color: var(--strip-ink);
-}
-
-.cart {
-  border: 1px solid var(--rule);
-  color: var(--ink);
-  padding: 6px 14px;
-  white-space: nowrap;
-}
-
-.cart:hover { border-color: var(--ink); }
-
 /* -------------------------------------------------------------- footer -- */
 
 .footer {
@@ -354,6 +336,14 @@ button {
 }
 
 .btn--primary:hover { background: var(--coral-dark); }
+
+/* A lot with no Stripe link yet: visibly inert rather than a dead button. */
+.btn[aria-disabled="true"],
+.btn[aria-disabled="true"]:hover {
+  background: var(--rule);
+  color: var(--ink);
+  cursor: default;
+}
 
 .btn--ghost {
   border-color: var(--rule);
@@ -910,8 +900,6 @@ button {
     padding: 26px var(--gutter) 30px;
   }
 
-  .masthead__end { width: 100%; margin-left: 0; }
-  .cart { margin-left: auto; }
 
   .hero,
   .product,
@@ -989,7 +977,6 @@ button {
   .band { padding: 40px var(--gutter) 54px; }
   .brand__mark { width: 40px; height: 40px; }
   .nav { gap: 20px; }
-  .masthead__end { gap: 16px; font-size: 13px; }
 
   .card-grid,
   .listing__grid,
