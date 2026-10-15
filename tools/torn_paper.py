@@ -13,10 +13,10 @@ Requires only numpy and Pillow:
 Outputs, each as .webp (what the site loads) and .png (lossless master, for
 design tools and site builders). 2400 px wide: the 1200 px page at 2x.
 
-  torn-bottom      2400x52   sheet edge, paper above, tear at the bottom
-  torn-top         2400x52   the same, paper below, tear at the top
-  torn-bottom-tex  2400x52   greyscale relief for torn-bottom, to multiply
-  torn-top-tex     2400x52   greyscale relief for torn-top, to multiply
+  torn-bottom      2400x64   sheet edge, paper above, tear at the bottom
+  torn-top         2400x64   the same, paper below, tear at the top
+  torn-bottom-tex  2400x64   greyscale relief for torn-bottom, to multiply
+  torn-top-tex     2400x64   greyscale relief for torn-top, to multiply
   torn-band        2400x260  a whole grey paper strip, both edges torn
 
 All are straight alpha on a transparent background. Every pixel -- fully
@@ -90,15 +90,41 @@ def downsample(a, f=SS):
     return a[:h * f, :w * f].reshape(h, f, w, f).mean(axis=(1, 3))
 
 
-def paper_grain(rng, w, h):
-    """Paper 'formation': fine speckle, the cloudy flocs of pulp, broad
-    mottling and a hint of short fibres -- combined to roughly unit std."""
+def paper_grain(rng, w, h, ribs=True):
+    """Paper texture, roughly unit std: the ribbing of laid paper (fine
+    vertical lines that come and go), a network of short fibres, the cloudy
+    flocs of pulp, fine speckle and broad mottling."""
+    out = np.zeros((h, w))
+    if ribs:
+        x = np.arange(w)[None, :]
+        y = np.arange(h)[:, None]
+        wobble = 1.6 * noise2d(rng, w, h, 400, 60)        # lines aren't ruled
+        phase = 2 * np.pi * (x + wobble) / 6.5
+        rib = np.sign(np.sin(phase)) * np.abs(np.sin(phase)) ** 0.6
+        rib *= np.clip(0.55 + 0.45 * noise2d(rng, w, h, 300, 400), 0, 1)
+        rib *= 0.85 + 0.15 * noise1d(rng, h, 12)[:, None] * np.ones((1, w))
+        out += 0.9 * blur(rib, 0.6, 0)
+    fib = Image.new('L', (w, h), 128)
+    draw = ImageDraw.Draw(fib)
+    for _ in range(int(w * h / 45)):
+        x0, y0 = rng.uniform(0, w), rng.uniform(0, h)
+        ang = rng.uniform(0, np.pi)
+        length = rng.uniform(4, 16)
+        bend = rng.normal(0, 0.3)
+        pts = [(x0, y0)]
+        for _seg in range(3):
+            ang += bend
+            pts.append((pts[-1][0] + np.cos(ang) * length / 3,
+                        pts[-1][1] + np.sin(ang) * length / 3))
+        draw.line(pts, fill=int(128 + rng.choice([-1, 1]) * rng.uniform(10, 40)))
+    fibres = blur(np.asarray(fib, dtype=np.float64) - 128, 0.45)
+    fibres /= fibres.std() + 1e-6
     fine = blur(rng.standard_normal((h, w)), 0.5)
     fine /= fine.std()
-    flocs = noise2d(rng, w, h, 7, 7)
-    mottle = noise2d(rng, w, h, 160, 110)
-    fibres = noise2d(rng, w, h, 3.5, 1.4)
-    return 0.55 * fine + 0.45 * flocs + 0.25 * mottle + 0.2 * fibres
+    out += (0.45 * fibres + 0.35 * fine
+            + 0.35 * noise2d(rng, w, h, 7, 7)               # flocs
+            + 0.3 * noise2d(rng, w, h, 160, 110))           # mottling
+    return out
 
 
 # ------------------------------------------------------------- the edge --
@@ -107,100 +133,118 @@ def torn_edge(rng, w, h, flipped=False):
     """One torn edge, paper above and the tear near the bottom. Returns
     final-resolution float maps:
       alpha  coverage, 1 = paper
-      shade  multiplicative relief (1 = flat paper); may exceed 1 where lit
-      lip    0..1, where the white fibrous core is exposed
+      shade  relief lighting, 1 = flat paper; above 1 where lit
+      lip    0..1, where the white torn core is exposed
       inner  0..1 envelope, 0 on the paper's inner (top) row, 1 near the tear
     flipped=True lights it from below, for an edge that will be turned over
     to become a top edge -- after the flip the light comes from above again.
+
+    The lip is modelled as a height field: the surface layer lifts a little
+    where it tore, drops onto the exposed core, and the core rolls up into
+    two or three soft ridges before falling away to a fibrous fringe.
     """
     W, H = w * SS, h * SS
+    n = W
 
     # Tear line: long wander, then progressively sharper, angular jags.
-    n = W
-    outer = (h * 0.55
-             + 13.0 * noise1d(rng, n, 400 * SS)
-             + 5.0 * noise1d(rng, n, 110 * SS)
-             + 2.4 * noise1d(rng, n, 22 * SS, smooth=False)
-             + 0.9 * noise1d(rng, n, 5 * SS, smooth=False))
-    # Soft limits, so a deep wander rounds off instead of running flat.
-    lo, hi = 10, h - 6
-    c, r = (lo + hi) / 2, (hi - lo) / 2
-    outer = c + r * np.tanh((outer - c) / r)
-
-    # Lip width: where the surface layer tore back further than the core.
-    # Its inner line is jagged in its own right, wide in places and zero
-    # where the tear was clean.
-    lip_w = (5.5 + 6.5 * noise1d(rng, n, 120 * SS)
-             + 2.5 * noise1d(rng, n, 18 * SS, smooth=False)
+    outer = (h * 0.62
+             + 12.0 * noise1d(rng, n, 380 * SS)
+             + 6.0 * noise1d(rng, n, 100 * SS)
+             + 2.5 * noise1d(rng, n, 20 * SS, smooth=False)
              + 1.0 * noise1d(rng, n, 5 * SS, smooth=False))
-    lip_w = np.clip(lip_w, 0, np.minimum(16, outer - 7))
+    lo, hi = h * 0.38, h - 6
+    c, r = (lo + hi) / 2, (hi - lo) / 2
+    outer = c + r * np.tanh((outer - c) / r)   # soft limits, no flat runs
+
+    # Lip width: the surface layer tore back further than the core. Wide and
+    # rolling in places, a narrow clean tear in others.
+    lip_w = (15.0 + 10.0 * noise1d(rng, n, 160 * SS)
+             + 4.0 * noise1d(rng, n, 34 * SS)
+             + 1.5 * noise1d(rng, n, 6 * SS, smooth=False))
+    lip_w = np.clip(lip_w, 3.0, np.minimum(34, outer - 6))
 
     y = (np.arange(H)[:, None] + 0.5) / SS     # final-pixel units
     d = outer[None, :] - y                     # depth into the paper
     ds = d - lip_w[None, :]                    # depth into the surface layer
+    t = np.clip(-ds / lip_w[None, :], 0, 1)    # 0 at surface tear .. 1 outer
+    in_lip = (ds <= 0) & (d > 0)
 
-    # ---- coverage: paper body, a fine fuzz of fibres just past the edge,
-    # and a few loose strands.
+    # ---- coverage: paper, a fuzz of fibres past the edge, loose strands.
     body = (d > 0).astype(np.float32)
-
-    fuzz_w = np.clip(1.3 + 1.1 * noise1d(rng, n, 40 * SS), 0.4, None)
+    fuzz_w = np.clip(1.4 + 1.2 * noise1d(rng, n, 40 * SS), 0.4, None)
     strands = noise2d(rng, W, H, 0.45 * SS, 2.2 * SS)   # run outward
     fall = np.clip(1 + d / fuzz_w[None, :], 0, 1) ** 1.6
     fuzz = fall * np.clip(0.35 + 0.45 * strands, 0, 1) * (d <= 0)
 
     fib = Image.new('L', (W, H), 0)
     draw = ImageDraw.Draw(fib)
-    slope = np.gradient(outer)                 # per supersampled px
+    slope = np.gradient(outer)
     for _ in range(int(w * 1.4)):
         x0 = rng.uniform(0, W - 1)
         xi = int(x0)
-        if rng.uniform() > 0.35 + lip_w[xi] / 12:  # fluffier where lip is wide
+        if rng.uniform() > 0.3 + lip_w[xi] / 30:
             continue
         y0 = (outer[xi] - rng.uniform(0, 1.5)) * SS
         ang = np.pi / 2 + np.arctan(slope[xi]) + rng.normal(0, 0.6)
-        long_one = rng.uniform() < 0.03
+        long_one = rng.uniform() < 0.04
         length = min(0.5 + rng.exponential(3.5 if long_one else 1.3),
                      9 if long_one else 5) * SS
         pts = [(x0, y0)]
         for _seg in range(3):
             ang += rng.normal(0, 0.3)
-            px, py = pts[-1]
-            pts.append((px + np.cos(ang) * length / 3,
-                        py + np.sin(ang) * length / 3))
+            pts.append((pts[-1][0] + np.cos(ang) * length / 3,
+                        pts[-1][1] + np.sin(ang) * length / 3))
         draw.line(pts, fill=int(rng.uniform(50, 170)), width=1)
     fib = np.asarray(fib, dtype=np.float32) / 255
 
     alpha = np.maximum(np.maximum(body, fuzz), fib)
-    # The outermost pixel of paper is thin, translucent fibre, not a cut.
-    rim = np.clip(d / 1.2, 0, 1)
+    rim = np.clip(d / 1.2, 0, 1)               # last pixel is thin fibre
     alpha = np.where(d > 0, np.minimum(alpha, 0.55 + 0.45 * rim
                                        + 0.15 * strands * (1 - rim)), alpha)
     alpha = np.clip(alpha, 0, 1)
 
-    # ---- relief: surface sits above the exposed core, core is fibrous.
-    lip = np.clip((-ds + 0.4) / 0.8, 0, 1) * (d > -0.5)
-    streaks = noise2d(rng, W, H, 1.2 * SS, 5 * SS)    # fibres run outward
-    clouds = noise2d(rng, W, H, 3 * SS, 3 * SS)       # fluffed-up core
-    z = (1.0 - 0.45 * lip                              # step down onto core
-         + 0.10 * lip * streaks + 0.12 * lip * clouds
-         - 0.35 * np.clip((0.9 - d) / 0.9, 0, 1) * lip  # thin rim falls away
-         + 0.03 * blur(rng.standard_normal((H, W)), 0.7 * SS))
-    z = blur(z, 0.7 * SS)
-    gy, gx = np.gradient(z)
-    gy, gx = gy * SS, gx * SS                  # per final pixel
-    # Light from the upper left: slopes that rise toward it are lit.
-    light = 1 + (-0.45 if flipped else 0.45) * gy + 0.2 * gx
-    # A soft contact shadow just under the step, and lip slightly greyer
-    # where it is thin and translucent.
-    contact = 0.07 * np.exp(-((ds + 1.2) / 1.3) ** 2) * (d > 0)
-    # The surface just inside the tear lifts and curls a little, so it sits
-    # slightly in shade -- which is what makes the core beside it read white
-    # even under a multiply that can only darken.
-    curl = 0.07 * np.exp(-np.clip(ds, 0, None) / 7) * (ds > 0)
-    curl *= 0.6 + 0.4 * noise1d(rng, n, 60 * SS)[None, :]
-    shade = light - contact - curl
+    # ---- relief, in pixels of height.
+    def along(wl, amp=1.0, base=0.0):
+        return (base + amp * noise1d(rng, n, wl * SS))[None, :]
 
-    inner = np.clip(y / (np.minimum(outer - lip_w, h) * 0.85)[None, :], 0, 1)
+    lift = along(70, 0.5, 1.0) * np.exp(-np.clip(ds, 0, None) / 4) * (ds > 0)
+    ridges = np.zeros((H, W))
+    for centre, width in ((0.22, 0.16), (0.55, 0.2), (0.82, 0.12)):
+        # Each crease wanders across the lip and fades in and out, so they
+        # never run as parallel ribbons.
+        c_k = centre + along(55, 0.16) + along(14, 0.05)
+        a_k = 0.16 * lip_w[None, :] * np.clip(along(45, 0.8, 0.55), 0, None)
+        w_k = width * along(70, 0.35, 1.0)
+        ridges += a_k * np.exp(-((t - c_k) / w_k) ** 2)
+    streaks = noise2d(rng, W, H, 1.2 * SS, 6 * SS)     # fibres run outward
+    clouds = noise2d(rng, W, H, 4 * SS, 4 * SS)
+    core = (-0.9 + ridges + 0.08 * streaks + 0.15 * clouds
+            - 1.5 * np.clip((t - 0.85) / 0.15, 0, 1) ** 2)
+    z = np.where(in_lip, core, 0.0) + 1.2 * lift
+    z = np.where(d <= 0, -2.0, z)
+    z += 0.12 * blur(rng.standard_normal((H, W)), 0.6 * SS)
+    z = blur(z, 1.6 * SS)
+
+    gy, gx = np.gradient(z)
+    gy, gx = gy * SS, gx * SS                  # height per final pixel
+    ly = -0.32 if flipped else 0.32            # light from above-left
+    light = 1 + ly * gy + 0.1 * gx
+    # Ambient occlusion: creases between ridges, and the step under the
+    # torn surface, sit in soft shade.
+    ao = 0.07 * np.exp(-((ds + 0.8) / 1.6) ** 2) * (d > 0)
+    ao += 0.05 * np.clip(-blur(z, 2.5 * SS) + z, None, 0) * -1 * in_lip
+    # The surface just inside the tear sits a touch in shade, which is what
+    # makes the core read white even under a multiply that can only darken.
+    curl = 0.07 * np.exp(-np.clip(ds, 0, None) / 10) * (ds > 0)
+    # Soft paper, not foil: the roll's shadows stay grey.
+    shade = np.clip(light - ao - curl, 0.84, 1.12)
+
+    lip = in_lip.astype(np.float64)
+    lip = blur(lip, 0.4 * SS)
+
+    # Exactly flat for the first 2px, so the strip meets the sheet with no line.
+    reach = np.maximum(np.minimum(outer - lip_w, h) * 0.8 - 2, 1)
+    inner = np.clip((y - 2) / reach[None, :], 0, 1)
     inner = inner * inner * (3 - 2 * inner)    # smoothstep
 
     return (downsample(alpha), downsample(shade),
@@ -228,12 +272,12 @@ def save_rgba(stem, grey, alpha, lossless=False):
 def edge_assets(rng, w, h, out, name):
     for flip, side in ((False, 'bottom'), (True, 'top')):
         alpha, shade, lip, inner = torn_edge(rng, w, h, flipped=flip)
-        grain = paper_grain(rng, w, h)
+        grain = paper_grain(rng, w, h, ribs=False)
 
         # Texture for sheets: multiply-only (a multiply can darken, not
         # lighten), pure white on the inner row so it meets the flat sheet
         # invisibly.
-        tex = np.minimum(shade, 1) * (1 - 0.035 * grain * (1 - lip))
+        tex = np.minimum(shade, 1) * (1 - 0.03 * grain * (1 - lip))
         tex = 1 - (1 - tex) * inner
 
         f = (lambda a: a[::-1]) if flip else (lambda a: a)
@@ -253,11 +297,12 @@ def band_asset(rng, w, h, edge_h, out, name):
     alpha[-edge_h:], shade[-edge_h:], lip[-edge_h:] = a_b, s_b, l_b
 
     grain = paper_grain(rng, w, h)
+    light = 1 + 0.025 * noise2d(rng, w, h, 700, 500)   # uneven lighting
     base = 218 / 255                           # neutral grey paper
-    core = 247 / 255                           # exposed core is whiter
-    colour = base * (1 + 0.016 * grain)
-    colour = colour * (1 - lip) + core * (1 + 0.012 * grain) * lip
-    colour = colour * shade
+    core = 246 / 255                           # exposed core is whiter
+    colour = base * (1 + 0.022 * grain)
+    colour = colour * (1 - lip) + core * (1 + 0.01 * grain) * lip
+    colour = colour * shade * light
     save_rgba(os.path.join(out, f'{name}-band'), colour, alpha)
 
 
@@ -265,7 +310,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n\n')[0])
     ap.add_argument('--seed', type=int, default=2026)
     ap.add_argument('--width', type=int, default=2400)
-    ap.add_argument('--edge-height', type=int, default=52)
+    ap.add_argument('--edge-height', type=int, default=64)
     ap.add_argument('--band-height', type=int, default=260)
     ap.add_argument('--name', default='torn')
     ap.add_argument('--out', default=os.path.join(

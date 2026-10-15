@@ -87,9 +87,10 @@ coloured card wearing torn edges.
 ### Regenerating the torn paper
 
 Every torn-paper asset is generated from scratch by `tools/torn_paper.py`
-(numpy and Pillow, nothing else): a fractal tear line, a whiter fibrous lip
-where the paper's core is exposed, a fine fuzz of fibres past the edge, paper
-grain, and relief lighting from the upper left. Being procedural, the files
+(numpy and Pillow, nothing else): a fractal tear line; a wide white lip where
+the torn core rolls up, modelled as a height field with creases that wander
+and fade; a fine fuzz of fibres past the edge; laid-paper ribbing, a fibre
+network and mottling; and relief lighting from above. Being procedural, the files
 are original work with no stock licence attached.
 
 ```bash
@@ -101,7 +102,8 @@ python3 tools/torn_paper.py --width 3600 --edge-height 78 --band-height 390
 
 Each asset is written twice: `.webp` is what the site loads (about 115 KB for
 the three it uses), `.png` is the lossless greyscale master for design tools and site
-builders. All are 2400px wide (the 1200px page at 2x) on a **transparent
+builders. All are 2400px wide (the 1200px page at 2x; edges are 64px tall,
+matching `--torn-height: 32px`) on a **transparent
 background**, and every pixel under the alpha — transparent and
 half-transparent fibres included — is paper colour, never black, so they
 don't pick up a dark fringe when scaled, masked or dropped onto another

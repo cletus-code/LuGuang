@@ -39,7 +39,7 @@
      The mask is the alpha of torn-top / torn-bottom, which keeps the fibres
      and their partial transparency; tracing it to a path would flatten both.
      Drawn once across the sheet rather than tiled, so there is no repeat. */
-  --torn-height: 26px;
+  --torn-height: 32px;
   --torn-top: url(../uploads/torn-top.webp);
   --torn-bottom: url(../uploads/torn-bottom.webp);
   /* Matching greyscale relief, normalised so flat paper reads as white.
