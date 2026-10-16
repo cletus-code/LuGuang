@@ -78,7 +78,9 @@ Adjacent sheets overlap by the shared torn-edge height, so transparent notches
 show the next section's photograph instead of a blank strip of page background.
 Home and product photo columns start flush beneath the torn header; their text
 keeps its own padding. On narrow screens Home leads with its photograph before
-the introduction, keeping the same torn-paper-over-photo effect.
+the introduction, keeping the same torn-paper-over-photo effect. Final sections reserve the
+32px tear plus 48px of clear space beneath the last content (80px total),
+on desktop and mobile.
 
 ## Animated masthead logo
 

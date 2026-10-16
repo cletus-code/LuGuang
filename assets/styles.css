@@ -133,9 +133,8 @@ button {
 .sheet--paper .sheet__body { background-color: var(--paper); }
 .sheet--white .sheet__body { background-color: var(--sheet); }
 
-/* Sheets that sit flush above the footer keep a little skirt so the torn
-   edge is not clipped by their last row of content. */
-.sheet--skirt .sheet__body { padding-bottom: 22px; }
+/* Keep the final content 48px above the torn region, including on phones. */
+.sheet--skirt .sheet__body { padding-bottom: calc(var(--torn-height) + 48px); }
 
 .band { padding: 56px var(--gutter) 72px; }
 
