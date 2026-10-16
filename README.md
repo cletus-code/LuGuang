@@ -86,34 +86,41 @@ coloured card wearing torn edges.
 
 ### Regenerating the torn paper
 
-Every torn-paper asset is generated from scratch by `tools/torn_paper.py`
-(numpy and Pillow, nothing else): a fractal tear line; a wide white lip where
-the torn core rolls up, modelled as a height field with creases that wander
-and fade; a fine fuzz of fibres past the edge; laid-paper ribbing, a fibre
-network and mottling; and relief lighting from above. Being procedural, the files
-are original work with no stock licence attached.
+The current artwork uses **warm eggshell / light yellow** paper, as requested by
+Cleo on 2026-10-15, replacing the brief's neutral grey. Its original master was
+generated from scratch with OpenAI's built-in image generation tool, without
+stock images, tracing or sampling the historical reference. The source is
+`tools/torn-paper-source.png`; the full prompt and provenance are in
+`tools/torn-paper-generation.json`.
+
+Under the [OpenAI Terms of Use](https://openai.com/policies/terms-of-use/)
+(effective January 1, 2026), as between the user and OpenAI and to the extent
+permitted by applicable law, the user owns the output. Output may not be unique;
+use remains subject to applicable terms and third-party rights. These assets
+are AI-generated, not photographs or hand-made artwork.
+
+Rebuild the ten site-ready files deterministically from the saved master:
 
 ```bash
 pip install numpy pillow
-python3 tools/torn_paper.py               # rewrite uploads/torn-*
-python3 tools/torn_paper.py --seed 7      # a different tear
-python3 tools/torn_paper.py --width 3600 --edge-height 78 --band-height 390
+python3 tools/prepare_torn_paper.py
+python3 tools/check_torn_paper.py
 ```
 
-Each asset is written twice: `.webp` is what the site loads (about 115 KB for
-the three it uses), `.png` is the lossless greyscale master for design tools and site
-builders. All are 2400px wide (the 1200px page at 2x; edges are 64px tall,
-matching `--torn-height: 32px`) on a **transparent
-background**, and every pixel under the alpha — transparent and
-half-transparent fibres included — is paper colour, never black, so they
-don't pick up a dark fringe when scaled, masked or dropped onto another
-background.
+The existing `tools/torn_paper.py` remains available as the older procedural
+alternative; running it overwrites the eggshell set with its grey version.
 
-> **Contrast.** The strip's paper is neutral grey (218), so the masthead's
-> links use `--strip-ink` `#5a5249` (5.49:1) rather than `--body`. Body text,
-> labels and both corals were also darkened a step from the mockup's values so
-> every text pair on paper and sheet clears WCAG AA 4.5:1 — see the comment on
-> the tokens in `assets/styles.css`.
+Each asset ships as a lossless PNG master and a WebP for the site. The header is
+2400×260; the four edge assets are 2400×64, matching the unchanged
+`--torn-height: 32px`. White mask files retain the paper silhouette; matching
+greyscale relief files have identical alpha and fade to opaque pure white on
+the two inner rows, so they join the section without a seam. The full-colour
+header carries a warm eggshell body and creamy exposed fibres.
+
+All files use straight alpha with paper-coloured RGB even in transparent pixels;
+WebP is saved with `exact=True`. There is no baked outer shadow or repeated
+tile. The checker verifies dimensions, readable navigation contrast and the
+150 KB combined budget for the three loaded WebP files.
 
 ## Photography
 
