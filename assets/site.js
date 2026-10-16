@@ -43,6 +43,120 @@
     return node;
   }
 
+  /* ------------------------------------------------------- fan logo -- */
+
+  function initFanLogo() {
+    var brand = $('.brand');
+    var mark = $('.brand__mark', brand);
+    if (!brand || !mark || !window.requestAnimationFrame) { return; }
+
+    var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var canvas = el('span', 'brand__fan');
+    canvas.appendChild(el('span', 'brand__slice brand__slice--base'));
+    var panels = [1, 2, 3, 4].map(function (number) {
+      var panel = el('span', 'brand__slice brand__slice--' + number);
+      canvas.appendChild(panel);
+      return panel;
+    });
+    mark.appendChild(canvas);
+    mark.classList.add('brand__mark--fan');
+    var frame = null;
+    var running = false;
+    // Exact intersections of the artwork's adjacent black/white edges.
+    // Each triangle is [hinge, leading outer corner, trailing outer corner].
+    var triangles = [
+      [[138.19, 461.315615], [138.19, 40.8], [301.83, 11.97]],
+      [[171.288651, 370.428706], [301.83, 11.97], [424.6, 68.24]],
+      [[270.678178, 251.861605], [424.6, 68.24], [479.13, 131.98]],
+      [[360.323338, 200.306260], [479.13, 131.98], [507.05, 174.06]]
+    ];
+
+    function restore() {
+      if (frame !== null) { window.cancelAnimationFrame(frame); }
+      frame = null;
+      running = false;
+      panels.forEach(function (panel) {
+        panel.style.transform = '';
+        panel.style.visibility = '';
+      });
+    }
+
+    function draw(elapsed) {
+      var corner = triangles[0][1].slice();
+      var angle = -Math.PI / 2;
+      triangles.forEach(function (triangle, index) {
+        var t = Math.max(0, Math.min(1, (elapsed - (3 - index) * 600) / 500));
+        var opening = 1 - Math.pow(1 - t, 3);
+        var panel = panels[index];
+        panel.style.visibility = opening === 0 ? 'hidden' : '';
+        if (opening === 0) { return; }
+
+        var hinge = triangle[0], leading = triangle[1], trailing = triangle[2];
+        var ux = leading[0] - hinge[0], uy = leading[1] - hinge[1];
+        var vx = trailing[0] - hinge[0], vy = trailing[1] - hinge[1];
+        var leftLength = Math.hypot(ux, uy), rightLength = Math.hypot(vx, vy);
+        var width = Math.atan2(vy, vx) - Math.atan2(uy, ux);
+        var px = corner[0] - Math.cos(angle) * leftLength;
+        var py = corner[1] - Math.sin(angle) * leftLength;
+        var outgoing = angle + width * opening;
+        var length = leftLength + (rightLength - leftLength) * opening;
+        var next = [px + Math.cos(outgoing) * length, py + Math.sin(outgoing) * length];
+        // Map this panel onto its open triangle. The next panel inherits this
+        // trailing edge, so earlier panels move outward as a new one opens.
+        var ax = corner[0] - px, ay = corner[1] - py;
+        var bx = next[0] - px, by = next[1] - py;
+        var determinant = ux * vy - uy * vx;
+        var a = (ax * vy - bx * uy) / determinant;
+        var b = (ay * vy - by * uy) / determinant;
+        var c = (bx * ux - ax * vx) / determinant;
+        var d = (by * ux - ay * vx) / determinant;
+        var x = px + .93 - a * (hinge[0] + .93) - c * (hinge[1] + .16);
+        var y = py + .16 - b * (hinge[0] + .93) - d * (hinge[1] + .16);
+        panel.style.transform = 'translate(' + (x / 508.99 * 100) + '%,' +
+          (y / 491.25 * 100) + '%) matrix(' + [a, b, c, d, 0, 0].join(',') + ')';
+        corner = next;
+        angle = outgoing;
+      });
+    }
+
+    function play() {
+      if (motion.matches || running) { return; }
+      running = true;
+      var start = window.performance.now();
+      draw(0);
+      function step(now) {
+        if (now - start >= 2300) { restore(); return; }
+        draw(now - start);
+        frame = window.requestAnimationFrame(step);
+      }
+      frame = window.requestAnimationFrame(step);
+    }
+
+    brand.addEventListener('pointerenter', function (event) {
+      if (event.pointerType !== 'touch') { play(); }
+    });
+    brand.addEventListener('focus', play);
+    brand.addEventListener('click', function (event) {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) { return; }
+      var home = new URL(brand.href);
+      var current = new URL(window.location.href);
+      if (current.pathname.replace(/index\.html$/, '') === home.pathname.replace(/index\.html$/, '')) {
+        event.preventDefault();
+        play();
+      } else if (!motion.matches) {
+        // Keep the home link working; the tap's animation plays after arrival.
+        try { sessionStorage.setItem('lights-fan-on-arrival', '1'); } catch (error) {}
+      }
+    });
+    motion.addEventListener('change', function () { if (motion.matches) { restore(); } });
+    try {
+      if (sessionStorage.getItem('lights-fan-on-arrival')) {
+        sessionStorage.removeItem('lights-fan-on-arrival');
+        play();
+      }
+    } catch (error) {}
+  }
+
   /* -------------------------------------------------- option swatches -- */
   /* Size and grind on the product page: one selection per row. */
 
@@ -267,6 +381,7 @@
 
   /* ------------------------------------------------------------- boot -- */
 
+  initFanLogo();
   initChoiceGroups();
   initFilters();
   renderProduct();

@@ -200,6 +200,40 @@ button {
 
 .brand:hover .brand__mark { background-color: var(--coral); }
 
+/* Divisions follow the SVG's black/white edges, with the thin inner spine
+   assigned to the preceding panel. Each slice keeps the original outer arc. The
+   inner canvas follows the SVG's aspect ratio inside the unchanged 48px box. */
+.brand__mark--fan {
+  position: relative;
+  background: none !important;
+  -webkit-mask: none;
+          mask: none;
+  color: var(--ink);
+  transition: color .15s ease;
+}
+.brand:hover .brand__mark--fan { color: var(--coral); }
+.brand__fan {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 508.99 / 491.25;
+  transform: translateY(-50%);
+}
+.brand__slice {
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  -webkit-mask: url(../uploads/logo.svg) center / contain no-repeat;
+          mask: url(../uploads/logo.svg) center / contain no-repeat;
+  transform-origin: 0 0;
+}
+.brand__slice--base { clip-path: inset(0 72.66742% 0 0); }
+.brand__slice--1 { clip-path: polygon(27.332561% -20.323664%, 67.493775% -20.323664%, 33.835370% 75.437904%, 393.117743% 75.437904%, 393.117743% 122.169975%, 27.332561% 122.169975%); }
+.brand__slice--2 { clip-path: polygon(67.493775% -20.323664%, 111.310263% -20.323664%, 53.362183% 51.302108%, 393.117743% 51.302108%, 393.117743% 75.437904%, 33.835370% 75.437904%); }
+.brand__slice--3 { clip-path: polygon(111.310263% -20.323664%, 173.565314% -20.323664%, 70.974545% 40.807381%, 393.117743% 40.807381%, 393.117743% 51.302108%, 53.362183% 51.302108%); }
+.brand__slice--4 { clip-path: polygon(173.565314% -20.323664%, 393.117743% -20.323664%, 393.117743% 40.807381%, 70.974545% 40.807381%); }
+
 .nav {
   display: flex;
   gap: 30px;

@@ -59,8 +59,22 @@ Type Helvetica Neue at weights 200–400.
 The masthead carries the Lu Guang logomark, `uploads/logo.svg` — the paths
 lifted straight out of `陆光咖啡logo_.pdf`, so it stays vector at 2.4 KB. It is
 painted as a CSS mask rather than an `<img>` so it takes the brand ink and
-can shift to coral on hover. The Sacramento wordmark and the amber dot it sat
-beside are gone; the footer still uses the word "Lights Landing" as plain text.
+can shift to coral on hover. A small enhancement in `site.js` divides the same
+mask along the actual black/white boundaries into a fixed left section and
+four hinged panels. Hover, keyboard focus,
+or a tap on the homepage replays the fan: rightmost panel first, then each panel
+to its left at 0.6-second intervals. Each new panel emerges beside the fixed
+section and pushes the already-open panels outward; their adjoining edges
+stay attached. A tap from another page still takes you home
+and plays the fan on arrival. Repeated triggers during a run do not restart it.
+Reduced Motion keeps the full logo still; without JavaScript the original
+static logo and home link remain available.
+
+A magnified replay is at `tools/fan-logo-preview.html` when serving the folder.
+Run `node tools/check_fan_logo.js` to check ordering, timing, replay, home
+navigation, reduced motion and the static fallback.
+
+The Sacramento wordmark and the amber dot it sat beside are gone; the footer still uses the word "Lights Landing" as plain text.
 
 The signature is the **torn paper sheet**: `.sheet` carries the drop-shadow and
 a `--z` stacking order, `.sheet__body` carries a mask that chews the bottom
