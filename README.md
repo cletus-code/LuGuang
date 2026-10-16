@@ -46,25 +46,31 @@ bar by `--torn-height` so its notches show wood rather than page). Sheets are
 stacked with a descending `--z` so each one casts its shadow onto the one
 below, exactly as in the mockup.
 
-The tear is two layers, from the same photographed strip. The **mask** is the
-alpha of `uploads/torn-top.png` / `torn-bottom.png`, which cuts the sheet's
+The tear is two layers, from the approved generated eggshell paper master. The **mask** is the
+alpha of `uploads/torn-top.webp` / `torn-bottom.webp`, which cuts the sheet's
 silhouette and keeps the fibres' partial transparency. A mask carries no
-colour, so the **texture** comes from `torn-top-tex.png` / `torn-bottom-tex.png`
+colour, so the **texture** comes from `torn-top-tex.webp` / `torn-bottom-tex.webp`
 — the same strips in greyscale, normalised so flat paper reads as white and
 ramped to nothing at the inner edge, multiplied over the sheet colour. That
 restores the grain and the soft shadow just inside the tear without tinting
 the sheet. Both layers are drawn once across the sheet, never tiled, so there
 is no repeat.
 
-The **masthead is different**: it has no fill and no mask at all. It simply
-paints `uploads/torn-band.png` — the whole photographed strip, both torn lips
-included — stretched to the bar. The bar is the photograph rather than a
-coloured card wearing torn edges.
+The **masthead is different**: it has no fill or mask underneath. It paints the
+approved warm eggshell `uploads/torn-band.webp`, including both transparent torn
+lips, at 2400×260 pixels. This replaces the original 720×193 photographed PNG.
+The page is at most 1200px wide, so the new artwork supplies 2× source resolution.
+Navigation uses `--strip-ink` for readable contrast on the textured paper.
 
-> **Contrast.** The strip's paper is neutral grey (218), so nav links in
-> `--body` measure 3.27:1 against it, under the 4.5:1 AA floor. `--ink`
-> measures 10.14:1 and `#5a5249` measures 5.46:1. Darken the masthead's link
-> colour or lighten the strip before this ships.
+### Rebuilding the generated paper
+
+The original generated master and prompt are saved in `tools/torn-paper-source.png`
+and `tools/torn-paper-generation.json`. Rebuild with
+`python3 tools/prepare_torn_paper.py`; validate with `python3 tools/check_torn_paper.py`
+(Pillow and NumPy). All five PNG masters and matching WebP assets come from that
+same master. Section edges are 2400×64 and use `--torn-height: 32px`; the shared
+photo overlap follows that value automatically. The public site loads the WebP
+set. Versioned asset references prevent a cached original from hiding this update.
 
 ### Photos beneath torn edges
 

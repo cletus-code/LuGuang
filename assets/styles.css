@@ -14,6 +14,7 @@
   --ink:        #2e2a26;  /* headings, emphasis */
   --body:       #7d7469;  /* running text */
   --muted:      #867c6f;  /* labels, metadata */
+  --strip-ink:  #5a5249;  /* navigation on generated eggshell paper */
   --rule:       #e0d9cf;  /* hairlines, quiet borders */
   --maple-ink:  #463323;  /* text on the maple banner */
 
@@ -31,18 +32,18 @@
   --page: 1200px;
   --gutter: 48px;
 
-  /* Torn edges. The alpha channel of a photographed torn strip, split into
-     its top and bottom lips. Using the alpha directly keeps the fibres and
+  /* Generated eggshell paper, prepared at 2400px from the approved master.
+     The alpha channel is split into top and bottom lips, keeping fibres and
      their partial transparency; tracing it to a path would flatten both.
      Drawn once across the sheet rather than tiled, so there is no repeat. */
-  --torn-height: 26px;
-  --torn-top: url(../uploads/torn-top.png);
-  --torn-bottom: url(../uploads/torn-bottom.png);
+  --torn-height: 32px;
+  --torn-top: url(../uploads/torn-top.webp?v=eggshell-1);
+  --torn-bottom: url(../uploads/torn-bottom.webp?v=eggshell-1);
   /* The same strips in greyscale, normalised so flat paper reads as white.
      Multiplied over the sheet colour they restore the grain and the soft
      shadow just inside the tear -- a mask alone carries shape, not colour. */
-  --torn-top-tex: url(../uploads/torn-top-tex.png);
-  --torn-bottom-tex: url(../uploads/torn-bottom-tex.png);
+  --torn-top-tex: url(../uploads/torn-top-tex.webp?v=eggshell-1);
+  --torn-bottom-tex: url(../uploads/torn-bottom-tex.webp?v=eggshell-1);
 }
 
 /* --------------------------------------------------------------- reset -- */
@@ -167,10 +168,10 @@ button {
 }
 
 .masthead .sheet__body {
-  /* No fill of its own. The bar IS the photographed paper strip: the PNG's
-     own alpha supplies both torn edges, so there is no mask and no sheet
+  /* No fill of its own. Use the generated eggshell strip and its original
+     alpha for both torn edges, so there is no mask and no sheet
      colour underneath. */
-  background: url(../uploads/torn-band.png) 0 0 / 100% 100% no-repeat;
+  background: url(../uploads/torn-band.webp?v=eggshell-1) 0 0 / 100% 100% no-repeat;
   -webkit-mask-image: none;
           mask-image: none;
   display: flex;
@@ -243,7 +244,7 @@ button {
   display: flex;
   gap: 30px;
   font-size: 14px;
-  color: var(--body);
+  color: var(--strip-ink);
 }
 
 .nav a:hover,
@@ -255,7 +256,7 @@ button {
   align-items: center;
   gap: 22px;
   font-size: 13.5px;
-  color: var(--body);
+  color: var(--strip-ink);
 }
 
 .cart {
