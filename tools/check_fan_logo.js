@@ -71,7 +71,7 @@ function near(actual, expected) {
 // This fails for the old affine morph even when the final logo looks correct.
 const rigid = page();
 rigid.brand.listeners.focus();
-for (let time = 5; time < 770; time += 11) {
+for (let time = 5; time < 1000; time += 11) {
   rigid.tick(time);
   rigid.panels.forEach((panel, index) => {
     if (panel.style.visibility === 'hidden') { return; }
@@ -84,6 +84,21 @@ for (let time = 5; time < 770; time += 11) {
   });
 }
 
+// The outer panel must keep moving through every handoff, including the
+// frames immediately before the next panel starts. The old stop/start fails.
+const flow = page();
+flow.brand.listeners.focus();
+for (const boundary of [200, 400, 600, 800]) {
+  flow.tick(boundary - 10);
+  const before = flow.point(3, [507.05, 174.06]);
+  flow.tick(boundary);
+  const during = flow.point(3, [507.05, 174.06]);
+  flow.tick(boundary + 10);
+  const after = flow.point(3, [507.05, 174.06]);
+  assert(Math.hypot(during[0]-before[0], during[1]-before[1]) > .05, 'No pause before a handoff');
+  assert(Math.hypot(after[0]-during[0], after[1]-during[1]) > .05, 'No pause after a handoff');
+}
+
 const home = page();
 assert.equal(home.panels.length, 4, 'Four panels revealed beside the fixed base');
 assert.equal(home.callbacks.size, 0, 'No autoplay');
@@ -91,27 +106,24 @@ home.brand.listeners.pointerenter({ pointerType: 'touch' });
 assert.equal(home.callbacks.size, 0, 'Touch waits for activation');
 home.brand.listeners.pointerenter({ pointerType: 'mouse' });
 assert.equal(home.callbacks.size, 1);
-home.tick(170);
+home.tick(199);
 assert.deepEqual(home.visible(), [false, false, false, true]);
-near(home.point(3, [479.13, 131.98]), [138.19, 40.8]);
 const firstPosition = home.point(3, [507.05, 174.06]);
 home.brand.listeners.focus();
 assert.equal(home.callbacks.size, 1, 'Focus during hover does not restart');
-home.tick(370);
+home.tick(400);
 assert.deepEqual(home.visible(), [false, false, true, true]);
-near(home.point(2, [424.6, 68.24]), [138.19, 40.8]);
 near(home.point(3, [479.13, 131.98]), home.point(2, [479.13, 131.98]));
 assert(Math.hypot(...home.point(3, [507.05, 174.06]).map((n,i) => n-firstPosition[i])) > 10,
   'The first panel moves outward when the next one opens');
-home.tick(570);
+home.tick(600);
 assert.deepEqual(home.visible(), [false, true, true, true]);
-near(home.point(1, [301.83, 11.97]), [138.19, 40.8]);
 near(home.point(2, [424.6, 68.24]), home.point(1, [424.6, 68.24]));
 near(home.point(3, [479.13, 131.98]), home.point(2, [479.13, 131.98]));
-home.tick(769);
+home.tick(999.9);
 assert.deepEqual(home.visible(), [true, true, true, true]);
 near(home.point(3, [507.05, 174.06]), [507.05, 174.06]);
-home.tick(770);
+home.tick(1000);
 assert(home.panels.every(panel => panel.style.transform === '' && panel.style.visibility === ''),
   'Finishes as the untouched original logo');
 assert.equal(home.callbacks.size, 0);
@@ -136,4 +148,4 @@ still.click();
 assert.equal(still.callbacks.size, 0);
 const fallback = page({ supported: false });
 assert.equal(fallback.mark.children.length, 0, 'Unsupported browsers keep the original static mask');
-console.log('Fan logo checks passed: rigid shapes at every frame, clipped reveal, attached edges, 0.2s cascade, final artwork, replay, navigation and reduced motion.');
+console.log('Fan logo checks passed: rigid shapes at every frame, clipped reveal, attached edges, overlapping 0.2s stagger without pauses, final artwork, replay, navigation and reduced motion.');

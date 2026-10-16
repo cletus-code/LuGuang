@@ -92,8 +92,9 @@
       var corner = triangles[0][1].slice();
       var angle = -Math.PI / 2;
       triangles.forEach(function (triangle, index) {
-        var t = Math.max(0, Math.min(1, (elapsed - (3 - index) * 200) / 170));
-        var opening = 1 - Math.pow(1 - t, 3);
+        var t = Math.max(0, Math.min(1, (elapsed - (3 - index) * 200) / 400));
+        // Overlapping smooth starts/finishes keep the fan moving between panels.
+        var opening = t * t * (3 - 2 * t);
         var panel = panels[index];
         panel.style.visibility = opening === 0 ? 'hidden' : '';
         if (opening === 0) { return; }
@@ -138,7 +139,7 @@
       var start = window.performance.now();
       draw(0);
       function step(now) {
-        if (now - start >= 770) { restore(); return; }
+        if (now - start >= 1000) { restore(); return; }
         draw(now - start);
         frame = window.requestAnimationFrame(step);
       }
