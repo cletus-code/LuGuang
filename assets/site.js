@@ -1,6 +1,6 @@
 /* Behaviour for Lights Landing Coffee.
    Every page renders in full from its own HTML; this file only enhances —
-   the cart tally, the listing filters, the per-lot product page, and the
+   the listing filters, the per-lot product page and its Buy button, and the
    brew-method tabs. */
 
 (function () {
@@ -16,48 +16,31 @@
     return new URLSearchParams(window.location.search).get(name);
   }
 
+  /* Lots and guides share one HTML file each, so the page's canonical URL,
+     description and share-card tags are rewritten to match what is shown. */
+  var SITE = 'https://lightslanding.shop/';
+
+  function setMeta(title, description, path, image) {
+    var pairs = [
+      ['link[rel="canonical"]', 'href', SITE + path],
+      ['meta[name="description"]', 'content', description],
+      ['meta[property="og:title"]', 'content', title],
+      ['meta[property="og:description"]', 'content', description],
+      ['meta[property="og:url"]', 'content', SITE + path],
+      ['meta[property="og:image"]', 'content', SITE + image]
+    ];
+    document.title = title;
+    pairs.forEach(function (p) {
+      var node = $(p[0]);
+      if (node) { node.setAttribute(p[1], p[2]); }
+    });
+  }
+
   function el(tag, className, text) {
     var node = document.createElement(tag);
     if (className) { node.className = className; }
     if (text != null) { node.textContent = text; }
     return node;
-  }
-
-  /* ------------------------------------------------------------- cart -- */
-
-  var CART_KEY = 'lights.cart';
-
-  function cartCount() {
-    try { return parseInt(localStorage.getItem(CART_KEY), 10) || 0; }
-    catch (e) { return 0; }
-  }
-
-  function setCartCount(n) {
-    try { localStorage.setItem(CART_KEY, String(n)); } catch (e) { /* private mode */ }
-    $$('[data-cart-count]').forEach(function (node) { node.textContent = n; });
-  }
-
-  function initCart() {
-    setCartCount(cartCount());
-
-    $$('[data-add-to-cart]').forEach(function (button) {
-      var timer = null;
-
-      button.addEventListener('click', function () {
-        setCartCount(cartCount() + 1);
-
-        /* The label is re-read each time rather than cached at load, because
-           renderProduct() rewrites it with the lot's price. */
-        if (timer === null) { button.dataset.label = button.textContent; }
-        else { clearTimeout(timer); }
-
-        button.textContent = 'Added';
-        timer = setTimeout(function () {
-          button.textContent = button.dataset.label;
-          timer = null;
-        }, 1200);
-      });
-    });
   }
 
   /* -------------------------------------------------- option swatches -- */
@@ -72,6 +55,7 @@
         $$('.choice', group).forEach(function (other) {
           other.setAttribute('aria-pressed', String(other === button));
         });
+        group.dispatchEvent(new CustomEvent('choice', { bubbles: true }));
       });
     });
   }
@@ -129,14 +113,45 @@
     return null;
   }
 
+  /* -------------------------------------------------------------- buy -- */
+  /* Each size sells through its own Stripe Payment Link. The chosen lot,
+     size and grind ride along as client_reference_id, which Stripe shows on
+     the payment in the dashboard, so the order says what to grind. */
+
+  function selected(group, attr) {
+    var on = $('[aria-pressed="true"]', group);
+    return on ? on.getAttribute(attr) : null;
+  }
+
+  function updateBuy(root, coffee) {
+    var buy   = $('[data-buy]', root);
+    var size  = selected($('[data-size-group]', root), 'data-size');
+    var grind = selected($('[data-grind-group]', root), 'data-grind');
+    var offer = coffee.sizes.filter(function (s) { return s.size === size; })[0];
+
+    if (offer && offer.link) {
+      var ref = [coffee.id, offer.size, grind].join('_');
+      buy.href = offer.link + (offer.link.indexOf('?') < 0 ? '?' : '&') +
+                 'client_reference_id=' + encodeURIComponent(ref);
+      buy.removeAttribute('aria-disabled');
+      buy.textContent = 'Buy — $' + offer.price;
+    } else {
+      buy.removeAttribute('href');
+      buy.setAttribute('aria-disabled', 'true');
+      buy.textContent = 'Coming soon';
+    }
+  }
+
   function renderProduct() {
     var root = $('[data-product]');
     if (!root) { return; }
 
-    var coffee = findCoffee(param('id'));
-    if (!coffee) { return; }   /* keep the page's own default lot */
+    /* Without an ?id= the page keeps its own default lot, Sidama Dusk. */
+    var coffee = findCoffee(param('id')) || DATA.coffees[0];
+    if (!coffee) { return; }
 
-    document.title = coffee.name + ' — Lights Landing Coffee';
+    setMeta(coffee.name + ' — Lights Landing Coffee', coffee.blurb,
+            'product.html?id=' + coffee.id, coffee.image);
 
     var well = $('[data-product-well]', root);
     var img  = $('[data-product-image]', root);
@@ -148,7 +163,20 @@
       [coffee.origin, coffee.region, coffee.process].filter(Boolean).join(' · ');
     $('[data-product-name]', root).textContent  = coffee.name;
     $('[data-product-blurb]', root).textContent = coffee.blurb;
-    $('[data-product-price]', root).textContent = 'Add to cart — $' + coffee.price;
+
+    var sizes = $('[data-size-group]', root);
+    sizes.innerHTML = '';
+    coffee.sizes.filter(function (s) { return s.price != null; })
+      .forEach(function (s, i) {
+        var b = el('button', 'choice', s.size);
+        b.type = 'button';
+        b.setAttribute('data-size', s.size);
+        b.setAttribute('aria-pressed', String(i === 0));
+        sizes.appendChild(b);
+      });
+
+    root.addEventListener('choice', function () { updateBuy(root, coffee); });
+    updateBuy(root, coffee);
 
     var specs = $('[data-product-specs]', root);
     specs.innerHTML = '';
@@ -176,7 +204,9 @@
   }
 
   function paintGuide(guide) {
-    document.title = guide.title + ' — Lights Landing Coffee';
+    setMeta(guide.title + ' — Lights Landing Coffee', guide.intro,
+            guide === DATA.guides[0] ? 'brew.html' : 'brew.html?m=' + guide.id,
+            guide.image);
 
     var image = $('[data-guide-image]');
     image.src = guide.image;
@@ -237,7 +267,6 @@
 
   /* ------------------------------------------------------------- boot -- */
 
-  initCart();
   initChoiceGroups();
   initFilters();
   renderProduct();

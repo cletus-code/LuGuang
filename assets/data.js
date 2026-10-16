@@ -2,7 +2,12 @@
    Names, origins, processes, tasting notes, prices and pack shots come
    straight from the roadmap (options 2a / 3a / 3b / 3c). Per-lot specs and
    farm notes are written here to fill the 3b template — only Sidama Dusk's
-   copy is from the design itself. See README.md. */
+   copy is from the design itself. See README.md.
+
+   Selling: each size carries the Stripe Payment Link that sells it. Paste the
+   https://buy.stripe.com/... URL into `link`, and give 1kg a `price` before
+   linking it. A size with no price is not offered; a size with a price but no
+   link shows "Coming soon" instead of a Buy button. */
 
 window.LIGHTS = (function () {
 
@@ -15,7 +20,10 @@ window.LIGHTS = (function () {
       process: 'Washed',
       roast: 'Filter',
       notes: 'Bergamot, apricot, honey',
-      price: 21,
+      sizes: [
+        { size: '250g', price: 21, link: '' },
+        { size: '1kg',  price: null, link: '' }
+      ],
       image: 'uploads/pack-sidama.jpg',
       fit: 'cover',
       blurb: 'Bergamot, apricot and honey, with a long clean finish. Grown at 2,050 m and dried on raised beds.',
@@ -33,7 +41,10 @@ window.LIGHTS = (function () {
       process: 'Honey',
       roast: 'Espresso',
       notes: 'Red plum, panela, cacao',
-      price: 19,
+      sizes: [
+        { size: '250g', price: 19, link: '' },
+        { size: '1kg',  price: null, link: '' }
+      ],
       image: 'uploads/pack-narino.jpg',
       fit: 'cover',
       blurb: 'Red plum and panela over a cacao base. Dense and sweet — the one we pull as espresso on the bar.',
@@ -51,7 +62,10 @@ window.LIGHTS = (function () {
       process: 'Washed',
       roast: 'Filter',
       notes: 'Blackcurrant, grapefruit, cane',
-      price: 23,
+      sizes: [
+        { size: '250g', price: 23, link: '' },
+        { size: '1kg',  price: null, link: '' }
+      ],
       image: 'uploads/pack-nyeri.jpg',
       fit: 'cover',
       blurb: 'Blackcurrant and grapefruit with cane sugar underneath. Bright, structured, and unmistakably Kenyan.',
@@ -69,7 +83,10 @@ window.LIGHTS = (function () {
       process: 'Washed',
       roast: 'Filter',
       notes: 'Violet, candied orange, lemon',
-      price: 24,
+      sizes: [
+        { size: '250g', price: 24, link: '' },
+        { size: '1kg',  price: null, link: '' }
+      ],
       image: 'uploads/pack-llaqta.jpg',
       fit: 'cover',
       blurb: 'Violet and candied orange with a lemon lift. Roasted a touch longer for cold brew, and just as good hot.',
@@ -87,7 +104,10 @@ window.LIGHTS = (function () {
       process: 'Natural',
       roast: 'Filter',
       notes: 'Dried apricot, honey, white flowers',
-      price: 21,
+      sizes: [
+        { size: '250g', price: 21, link: '' },
+        { size: '1kg',  price: null, link: '' }
+      ],
       image: 'uploads/pack-nemba.jpg',
       fit: 'cover',
       blurb: 'Dried apricot and honey with white flowers on the finish. A natural that stays clean rather than boozy.',
@@ -105,7 +125,10 @@ window.LIGHTS = (function () {
       process: 'Blend',
       roast: 'Filter',
       notes: 'Cane sugar, almond, orange',
-      price: 17,
+      sizes: [
+        { size: '250g', price: 17, link: '' },
+        { size: '1kg',  price: null, link: '' }
+      ],
       image: 'uploads/pack-house.jpg',
       fit: 'cover',
       blurb: 'Cane sugar and almond with an orange edge. Our everyday blend — forgiving on the brewer, sweet in milk.',

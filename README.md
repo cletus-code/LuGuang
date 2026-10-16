@@ -3,11 +3,31 @@
 A static implementation of the light theme from **`Lights Coffee Roadmap.dc.html`**
 (Claude Design project `2c8b7a5f`), option **2a** and its page set **3a–3d**.
 
-No build step, no dependencies. Open `index.html`, or serve the folder:
+No build step, no dependencies, and no third-party requests (the Google Fonts
+link went with the Sacramento wordmark — it is blocked in mainland China and
+was holding up first paint). Open `index.html`, or serve the folder:
 
 ```bash
 python3 -m http.server 8000
 ```
+
+## Deploying to lightslanding.shop
+
+The repo is ready for GitHub Pages as it stands: `CNAME` names the domain,
+`.nojekyll` serves the folder as-is, and `404.html` uses root-relative paths so
+it renders at any depth.
+
+1. **GitHub** → repo *Settings → Pages* → *Deploy from a branch*, `main`, `/ (root)`.
+2. **DNS** at the registrar for `lightslanding.shop`:
+   - `A` records on the apex `@` → `185.199.108.153`, `185.199.109.153`,
+     `185.199.110.153`, `185.199.111.153`
+   - `CNAME` on `www` → `cletus-code.github.io`
+3. Back in *Settings → Pages*, wait for the DNS check, then tick
+   **Enforce HTTPS**.
+
+Any static host works the same way (Netlify, Cloudflare Pages, Vercel): point
+it at the repo root with no build command. Canonical URLs, Open Graph tags,
+`sitemap.xml` and `robots.txt` all assume `https://lightslanding.shop/`.
 
 ## Pages
 
@@ -17,7 +37,10 @@ python3 -m http.server 8000
 | `coffee.html` | 3a | Shelf listing with origin / process / roast filters |
 | `product.html` | 3b | Lot detail, `?id=<slug>` selects the lot |
 | `brew.html` | 3c | Brew guide, `?m=<method>` selects the method |
-| `cafe.html` | 3d | Address, hours, bar menu, cupping |
+| `cafe.html` | 3d | Address, hours, bar menu |
+| `about.html` | — | About the roaster |
+| `shipping.html`, `privacy.html` | — | Policies Stripe asks a shop to publish |
+| `404.html` | — | Not-found page, root-relative so it works at any depth |
 
 `assets/styles.css` holds the whole design system, `assets/data.js` the
 catalogue and recipes, `assets/site.js` the behaviour. `uploads/` are the
@@ -46,25 +69,51 @@ bar by `--torn-height` so its notches show wood rather than page). Sheets are
 stacked with a descending `--z` so each one casts its shadow onto the one
 below, exactly as in the mockup.
 
-The tear is two layers, from the same photographed strip. The **mask** is the
-alpha of `uploads/torn-top.png` / `torn-bottom.png`, which cuts the sheet's
+The tear is two layers of the same edge. The **mask** is the alpha of
+`uploads/torn-top.webp` / `torn-bottom.webp`, which cuts the sheet's
 silhouette and keeps the fibres' partial transparency. A mask carries no
-colour, so the **texture** comes from `torn-top-tex.png` / `torn-bottom-tex.png`
-— the same strips in greyscale, normalised so flat paper reads as white and
-ramped to nothing at the inner edge, multiplied over the sheet colour. That
+colour, so the **texture** comes from `torn-top-tex.webp` / `torn-bottom-tex.webp`
+— the same edges in greyscale relief, normalised so flat paper reads as white
+and ramped to nothing at the inner edge, multiplied over the sheet colour. That
 restores the grain and the soft shadow just inside the tear without tinting
 the sheet. Both layers are drawn once across the sheet, never tiled, so there
 is no repeat.
 
 The **masthead is different**: it has no fill and no mask at all. It simply
-paints `uploads/torn-band.png` — the whole photographed strip, both torn lips
-included — stretched to the bar. The bar is the photograph rather than a
+paints `uploads/torn-band.webp` — a whole grey paper strip, both torn lips
+included — stretched to the bar. The bar is the paper itself rather than a
 coloured card wearing torn edges.
 
-> **Contrast.** The strip's paper is neutral grey (218), so nav links in
-> `--body` measure 3.27:1 against it, under the 4.5:1 AA floor. `--ink`
-> measures 10.14:1 and `#5a5249` measures 5.46:1. Darken the masthead's link
-> colour or lighten the strip before this ships.
+### Regenerating the torn paper
+
+Every torn-paper asset is generated from scratch by `tools/torn_paper.py`
+(numpy and Pillow, nothing else): a fractal tear line; a wide white lip where
+the torn core rolls up, modelled as a height field with creases that wander
+and fade; a fine fuzz of fibres past the edge; laid-paper ribbing, a fibre
+network and mottling; and relief lighting from above. Being procedural, the files
+are original work with no stock licence attached.
+
+```bash
+pip install numpy pillow
+python3 tools/torn_paper.py               # rewrite uploads/torn-*
+python3 tools/torn_paper.py --seed 7      # a different tear
+python3 tools/torn_paper.py --width 3600 --edge-height 78 --band-height 390
+```
+
+Each asset is written twice: `.webp` is what the site loads (about 115 KB for
+the three it uses), `.png` is the lossless greyscale master for design tools and site
+builders. All are 2400px wide (the 1200px page at 2x; edges are 64px tall,
+matching `--torn-height: 32px`) on a **transparent
+background**, and every pixel under the alpha — transparent and
+half-transparent fibres included — is paper colour, never black, so they
+don't pick up a dark fringe when scaled, masked or dropped onto another
+background.
+
+> **Contrast.** The strip's paper is neutral grey (218), so the masthead's
+> links use `--strip-ink` `#5a5249` (5.49:1) rather than `--body`. Body text,
+> labels and both corals were also darkened a step from the mockup's values so
+> every text pair on paper and sheet clears WCAG AA 4.5:1 — see the comment on
+> the tokens in `assets/styles.css`.
 
 ## Photography
 
@@ -78,12 +127,6 @@ The one asset that is still stock is `American-Hard-Maple.webp`, the wood
 texture behind the announce bar. It is a texture rather than a photo of the
 shop, so nothing in the folder replaced it.
 
-> **Licence check needed.** Those two PNGs are derived from a Pngtree asset
-> (`pngtree-white-torn-paper-strips-with-cutout-edges`, image 16485356).
-> Pngtree's free tier requires attribution and restricts commercial use, and
-> this repo is public. Confirm the licence, add attribution, or swap the
-> source image before trading on this site.
-
 ## Behaviour
 
 The mockup is a picture; these are the parts that had to become real. Every
@@ -95,8 +138,12 @@ page renders in full from its own HTML — the script only enhances.
 - **Brew tabs** swap the recipe in place and push a `?m=` URL, so guides are
   linkable and the back button works.
 - **Size / grind** swatches are real single-select rows.
-- **Cart** is a counter in `localStorage` — enough to make "Add to cart" and the
-  masthead tally honest. There is no cart page; the roadmap doesn't design one.
+- **Buying** goes through Stripe Payment Links, one per lot and size, set in
+  `assets/data.js`. The Buy button opens the link for the chosen size with
+  `client_reference_id=<lot>_<size>_<grind>` appended, so the grind shows on
+  the payment in the Stripe dashboard. A size with no `price` isn't offered;
+  one with a price but no `link` shows a greyed "Coming soon". There is no
+  cart: each checkout is one lot.
 
 Responsive down to 320px: grids drop to two columns at 1040 and one at 620, the
 listing's filter sidebar becomes chip rows at 860, and every two-column band
@@ -120,12 +167,26 @@ this goes anywhere real:
   roast is stated in the design ("Blend · Filter"); Nariño Night is marked
   espresso, the rest filter.
 
+## Setting up Stripe
+
+For each lot, in the Stripe dashboard → *Payment Links* → *New*:
+
+1. Add the product at the site's price (e.g. *Sidama Dusk 250g*, $21).
+2. Turn on **Collect customers' addresses → Shipping** and choose the
+   countries you ship to; add your shipping rate(s).
+3. Under *After payment*, optionally redirect to `https://lightslanding.shop/`.
+4. Copy the `https://buy.stripe.com/...` URL into that size's `link` in
+   `assets/data.js`.
+
+For 1kg bags, set `price` as well as `link`. Fill in the account's *Public
+details* (support email, statement descriptor), since the Shipping and Privacy
+pages tell customers to reply to their Stripe receipt.
+
 ## Not built
 
-The roadmap doesn't design an About page, search, accounts, checkout, a
-sourcing page, or a brew-guide index. Those words appear in the masthead and
-footer as plain text rather than links, so nothing in the navigation is a dead
-end. Cart, search and account are likewise unlinked.
+Search, accounts, a cart, a sourcing page and a brew-guide index. The
+masthead's Search / Account / Cart placeholders were removed before launch
+rather than left as text that looks clickable.
 
 `uploads/coffee-berries-1296x728-header.avif` ships with the assets but belongs
 to the roadmap's dark exploration (turn 1) and is unused here.
