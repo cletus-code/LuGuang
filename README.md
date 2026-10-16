@@ -66,6 +66,14 @@ coloured card wearing torn edges.
 > measures 10.14:1 and `#5a5249` measures 5.46:1. Darken the masthead's link
 > colour or lighten the strip before this ships.
 
+### Photos beneath torn edges
+
+Adjacent sheets overlap by the shared torn-edge height, so transparent notches
+show the next section's photograph instead of a blank strip of page background.
+Home and product photo columns start flush beneath the torn header; their text
+keeps its own padding. On narrow screens Home leads with its photograph before
+the introduction, keeping the same torn-paper-over-photo effect.
+
 ## Animated masthead logo
 
 Hover over or focus the upper-left logo to unfold its fan. Panels begin 0.2

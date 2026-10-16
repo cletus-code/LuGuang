@@ -109,6 +109,10 @@ button {
   filter: drop-shadow(0 4px 6px rgba(122, 104, 86, .18));
 }
 
+/* Tuck the next section behind the transparent torn lip. Without this
+   overlap, the tear exposes page background and leaves a blank strip. */
+.sheet + .sheet { margin-top: calc(var(--torn-height) * -1); }
+
 .sheet__body {
   background-image: var(--torn-bottom-tex);
   background-size: 100% var(--torn-height);
@@ -499,10 +503,10 @@ button {
 .hero {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  align-items: center;
-  gap: 56px;
-  padding: 76px var(--gutter) 90px;
+  align-items: stretch;
 }
+
+.hero > div { padding: 76px var(--gutter) 90px; }
 
 .hero__eyebrow {
   font-size: 11.5px;
@@ -518,7 +522,8 @@ button {
 .hero__image {
   display: block;
   width: 100%;
-  height: 430px;
+  height: 100%;
+  min-height: 430px;
   object-fit: cover;
 }
 
@@ -623,9 +628,9 @@ button {
 .product {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 56px;
-  padding: 60px var(--gutter) 80px;
 }
+
+.product > div:not(.product__well) { padding: 60px var(--gutter) 80px; }
 
 .product__well {
   background: var(--tint);
@@ -640,8 +645,8 @@ button {
   object-fit: contain;
 }
 
-.product__well--photo { padding: 0; }
-.product__well--photo img { object-fit: cover; height: 460px; }
+.product__well--photo { padding: 0; align-self: stretch; }
+.product__well--photo img { object-fit: cover; height: 100%; min-height: 460px; }
 
 .product .h-page { margin-bottom: 14px; }
 
@@ -928,12 +933,11 @@ button {
 @media (max-width: 1040px) {
   :root { --gutter: 34px; }
 
-  .hero { gap: 36px; padding: 56px var(--gutter) 70px; }
-  .hero__image { height: 340px; }
+  .hero > div { padding: 56px var(--gutter) 70px; }
+  .hero__image { min-height: 340px; }
   .card-grid,
   .listing__grid,
   .brew-cards { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-  .product { gap: 34px; }
   .recipe { grid-template-columns: 200px 1fr; }
   .recipe__glance { padding: 40px 26px 50px; }
 }
@@ -955,6 +959,10 @@ button {
   .split,
   .cafe-hero__body,
   .menu { grid-template-columns: 1fr; }
+
+  /* Lead with the Home photograph when columns stack, so the masthead's
+     tear still opens directly onto it rather than a screen of blank paper. */
+  .hero__image { grid-row: 1; height: 340px; }
 
   .split__left { border-right: 0; border-bottom: 1px solid var(--rule); }
   .story__text,
@@ -1015,7 +1023,7 @@ button {
   .gallery__note { grid-column: 1 / -1; }
 
   .product__well img { height: 300px; }
-  .product__well--photo img { height: 320px; }
+  .product__well--photo img { height: 320px; min-height: 0; }
 }
 
 @media (max-width: 620px) {
