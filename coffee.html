@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=torn-photo-1">
+<link rel="stylesheet" href="assets/styles.css?v=search-cart-1">
 </head>
 <body>
 
@@ -29,9 +29,8 @@
         <a href="about.html">About</a>
       </nav>
       <div class="masthead__end">
-        <span>Search</span>
-        <span>Account</span>
-        <span class="cart">Cart · <span data-cart-count>0</span></span>
+        <a href="coffee.html#coffee-search">Search</a>
+        <a class="cart" href="cart.html">Cart · <span data-cart-count>0</span></a>
       </div>
     </div>
   </header>
@@ -41,9 +40,18 @@
 
       <div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:20px;margin-bottom:8px">
         <h1 class="h-page" style="font-size:clamp(30px,3.6vw,40px)">Coffee</h1>
-        <p class="meta" style="margin:0;text-transform:uppercase"><span data-lot-count>6 lots</span> · updated weekly</p>
+        <p class="meta" style="margin:0;text-transform:uppercase"><span role="status" aria-live="polite" data-lot-count>6 lots</span> · updated weekly</p>
       </div>
       <p class="prose" style="margin:0 0 34px">Everything we have on the shelf right now, roasted to order and shipped within the week.</p>
+
+      <form class="coffee-search" action="coffee.html" method="get" role="search" data-search-form>
+        <label for="coffee-search">Search coffee</label>
+        <div class="coffee-search__controls">
+          <input id="coffee-search" name="q" type="search" maxlength="200" placeholder="Name, origin or tasting notes" data-coffee-search>
+          <button class="btn btn--primary" type="submit">Search</button>
+          <button class="text-action" type="button" hidden data-reset-search>Clear search &amp; filters</button>
+        </div>
+      </form>
 
       <div class="listing">
 
@@ -128,7 +136,7 @@
 
           </div>
 
-          <p class="listing__empty" data-listing-empty hidden>Nothing on the shelf matches that combination — try widening one of the filters.</p>
+          <p class="listing__empty" data-listing-empty hidden>No coffees match your search and filters. Try another word, or clear the search and filters.</p>
         </div>
 
       </div>
@@ -149,6 +157,7 @@
 </div>
 
 <script src="assets/data.js"></script>
-<script src="assets/site.js?v=fan-logo-1"></script>
+<script src="assets/shop.js?v=search-cart-1"></script>
+<script src="assets/site.js?v=search-cart-1"></script>
 </body>
 </html>

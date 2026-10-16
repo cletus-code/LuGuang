@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=torn-photo-1">
+<link rel="stylesheet" href="assets/styles.css?v=search-cart-1">
 </head>
 <body>
 
@@ -29,9 +29,8 @@
         <a href="about.html">About</a>
       </nav>
       <div class="masthead__end">
-        <span>Search</span>
-        <span>Account</span>
-        <span class="cart">Cart · <span data-cart-count>0</span></span>
+        <a href="coffee.html#coffee-search">Search</a>
+        <a class="cart" href="cart.html">Cart · <span data-cart-count>0</span></a>
       </div>
     </div>
   </header>
@@ -56,22 +55,24 @@
         </dl>
 
         <h2 class="label choice-legend">Size</h2>
-        <div class="choice-row" data-choice-group>
-          <button class="choice" type="button" aria-pressed="true">250g</button>
-          <button class="choice" type="button" aria-pressed="false">1kg</button>
+        <div class="choice-row" data-choice-group data-size-group>
+          <button class="choice" type="button" aria-pressed="true" data-size="250g">250g</button>
+
         </div>
 
         <h2 class="label" style="margin:0 0 10px">Grind</h2>
-        <div class="choice-row" data-choice-group style="margin-bottom:30px">
-          <button class="choice" type="button" aria-pressed="true">Whole bean</button>
-          <button class="choice" type="button" aria-pressed="false">Filter</button>
-          <button class="choice" type="button" aria-pressed="false">Espresso</button>
+        <div class="choice-row" data-choice-group data-grind-group style="margin-bottom:30px">
+          <button class="choice" type="button" aria-pressed="true" data-grind="Whole bean">Whole bean</button>
+          <button class="choice" type="button" aria-pressed="false" data-grind="Filter">Filter</button>
+          <button class="choice" type="button" aria-pressed="false" data-grind="Espresso">Espresso</button>
         </div>
 
         <div class="buy">
           <button class="btn btn--primary" type="button" data-add-to-cart data-product-price>Add to cart — $21</button>
+          <a class="arrow-link" href="cart.html">View cart →</a>
           <span class="buy__note">Roasts Monday · ships Tuesday</span>
         </div>
+        <p class="cart-status" role="status" aria-live="polite" data-cart-status></p>
       </div>
 
     </div>
@@ -139,6 +140,7 @@
 </div>
 
 <script src="assets/data.js"></script>
-<script src="assets/site.js?v=fan-logo-1"></script>
+<script src="assets/shop.js?v=search-cart-1"></script>
+<script src="assets/site.js?v=search-cart-1"></script>
 </body>
 </html>

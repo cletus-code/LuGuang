@@ -20,7 +20,7 @@ python3 -m http.server 8000
 | `cafe.html` | 3d | Address, hours, bar menu, cupping |
 
 `assets/styles.css` holds the whole design system, `assets/data.js` the
-catalogue and recipes, `assets/site.js` the behaviour. `uploads/` are the
+catalogue and recipes, `assets/site.js` the page behaviour, and `assets/shop.js` the search/cart rules. `uploads/` are the
 design's own images, unchanged.
 
 ## The design system
@@ -109,14 +109,23 @@ shop, so nothing in the folder replaced it.
 The mockup is a picture; these are the parts that had to become real. Every
 page renders in full from its own HTML — the script only enhances.
 
-- **Filters** hide and show cards and update the lot count, with an empty state.
+- **Search** in the header opens the coffee shelf’s labeled search field. Name, origin, region,
+  process, roast, tasting notes and varietal match case/accent-insensitively. Search combines
+  with the existing filters, keeps its query in the URL, and offers a clear action and empty state.
 - **Product page** fills the 3b template from `data.js` for whichever `?id=` is
   requested; without one it stays on Sidama Dusk.
 - **Brew tabs** swap the recipe in place and push a `?m=` URL, so guides are
   linkable and the back button works.
 - **Size / grind** swatches are real single-select rows.
-- **Cart** is a counter in `localStorage` — enough to make "Add to cart" and the
-  masthead tally honest. There is no cart page; the roadmap doesn't design one.
+- **Cart** opens `cart.html`: saved coffee, 250g size, grind, quantities, line totals and subtotal.
+  Matching selections combine; different grinds stay separate. Update quantity or remove a line;
+  changes persist in this browser and sync between tabs. Stored prices are never trusted: totals
+  use the current catalogue. The older count-only `lights.cart` value has no item identities and
+  is left untouched; actual selections use `lights.cart.items`. Storage failures are shown.
+- **Available size:** the catalogue currently prices 250g only; unpriced 1kg is not offered.
+- **Account** was removed from every header. Search and Cart are normal links on every page.
+- **Checks:** `node tools/check_shop.js` verifies search, selections, storage and totals;
+  `node tools/check_fan_logo.js` verifies the unchanged logo behavior.
 
 Responsive down to 320px: grids drop to two columns at 1040 and one at 620, the
 listing's filter sidebar becomes chip rows at 860, and every two-column band
@@ -142,10 +151,9 @@ this goes anywhere real:
 
 ## Not built
 
-The roadmap doesn't design an About page, search, accounts, checkout, a
-sourcing page, or a brew-guide index. Those words appear in the masthead and
-footer as plain text rather than links, so nothing in the navigation is a dead
-end. Cart, search and account are likewise unlinked.
+Checkout/payment collection, accounts, a sourcing page and a brew-guide index remain outside
+this build. The cart explicitly says checkout is not yet available; no order or payment is
+submitted. Connect a payment service before enabling purchase completion.
 
 `uploads/coffee-berries-1296x728-header.avif` ships with the assets but belongs
 to the roadmap's dark exploration (turn 1) and is unused here.

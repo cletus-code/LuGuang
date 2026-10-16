@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your cart — Lights Landing Coffee</title>
+<meta name="description" content="Review your saved coffee selections, quantities and subtotal.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css?v=search-cart-1">
+</head>
+<body>
+
+<div class="page">
+
+  <div class="announce">Freshly roasted every Monday — free shipping over $40</div>
+
+  <header class="sheet masthead" style="--z:6">
+    <div class="sheet__body">
+      <a class="brand" href="index.html">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="visually-hidden">Lights Landing Coffee · 陆光咖啡 — home</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="coffee.html" class="is-current">Coffee</a>
+        <a href="brew.html">Learn</a>
+        <a href="cafe.html">Café</a>
+        <a href="about.html">About</a>
+      </nav>
+      <div class="masthead__end">
+        <a href="coffee.html#coffee-search">Search</a>
+        <a class="cart" href="cart.html">Cart · <span data-cart-count>0</span></a>
+      </div>
+    </div>
+  </header>
+
+  <section class="sheet sheet--paper sheet--skirt" style="--z:4">
+    <div class="sheet__body band cart-page" data-cart-page>
+      <p class="eyebrow">Lights Landing Coffee</p>
+      <h1 class="h-page">Your cart</h1>
+      <p class="cart-status" role="status" aria-live="polite" data-cart-status></p>
+      <div class="cart-empty" data-cart-empty>
+        <p>Your cart is empty. Find your next coffee on the shelf.</p>
+        <a class="btn btn--primary" href="coffee.html">Explore coffee</a>
+      </div>
+      <ul class="cart-items" data-cart-items></ul>
+      <div class="cart-summary" hidden data-cart-summary>
+        <p class="cart-subtotal">Subtotal <strong data-cart-subtotal></strong></p>
+        <p class="prose">Your selections are saved in this browser. Checkout isn’t available yet.</p>
+        <a class="btn" href="coffee.html">Continue shopping</a>
+      </div>
+      <noscript><p>Please enable JavaScript to view and update your saved cart.</p></noscript>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <a class="footer__brand" href="index.html">Lights Landing</a>
+    <a href="coffee.html">Coffee</a>
+    <a href="brew.html">Learn</a>
+    <a href="cafe.html">Café</a>
+    <a href="about.html">About</a>
+    <span>Shipping</span>
+    <span>Privacy</span>
+    <span class="footer__copy">© 2026 Lights Landing Coffee</span>
+  </footer>
+
+</div>
+
+<script src="assets/data.js"></script>
+<script src="assets/shop.js?v=search-cart-1"></script>
+<script src="assets/site.js?v=search-cart-1"></script>
+</body>
+</html>

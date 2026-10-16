@@ -1,6 +1,6 @@
 /* Behaviour for Lights Landing Coffee.
    Every page renders in full from its own HTML; this file only enhances —
-   the cart tally, the listing filters, the per-lot product page, and the
+   the saved cart, coffee search and filters, the per-lot product page, and the
    brew-method tabs. */
 
 (function () {
@@ -153,37 +153,97 @@
 
   /* ------------------------------------------------------------- cart -- */
 
-  var CART_KEY = 'lights.cart';
+  var SHOP = window.LIGHTS_SHOP;
+  var cart = SHOP ? SHOP.readCart() : [];
 
   function cartCount() {
-    try { return parseInt(localStorage.getItem(CART_KEY), 10) || 0; }
-    catch (e) { return 0; }
+    return cart.reduce(function (count, item) { return count + item.quantity; }, 0);
   }
-
-  function setCartCount(n) {
-    try { localStorage.setItem(CART_KEY, String(n)); } catch (e) { /* private mode */ }
-    $$('[data-cart-count]').forEach(function (node) { node.textContent = n; });
+  function updateCartCount() {
+    $$('[data-cart-count]').forEach(function (node) { node.textContent = cartCount(); });
   }
-
+  function saveCart(items, message) {
+    cart = SHOP.normalizeCart(items);
+    var saved = SHOP.writeCart(cart);
+    updateCartCount();
+    var status = $('[data-cart-status]');
+    if (status) { status.textContent = message + (saved ? '' : ' Your browser could not save the cart.'); }
+  }
+  function renderCart(focusId) {
+    var root = $('[data-cart-page]');
+    if (!root || !SHOP) { return; }
+    var list = $('[data-cart-items]', root);
+    list.replaceChildren();
+    $('[data-cart-empty]', root).hidden = cart.length > 0;
+    $('[data-cart-summary]', root).hidden = cart.length === 0;
+    cart.forEach(function (item, index) {
+      var coffee = SHOP.coffee(item.id);
+      var row = el('li', 'cart-item');
+      var photo = el('a', 'cart-item__photo');
+      photo.href = 'product.html?id=' + encodeURIComponent(item.id);
+      photo.setAttribute('aria-label', coffee.name);
+      var image = el('img'); image.src = coffee.image; image.alt = '';
+      photo.appendChild(image);
+      var detail = el('div', 'cart-item__detail');
+      var name = el('a', 'cart-item__name', coffee.name); name.href = photo.href;
+      detail.appendChild(name);
+      detail.appendChild(el('p', 'cart-item__options', item.size + ' · ' + item.grind));
+      detail.appendChild(el('p', 'meta', SHOP.money(SHOP.unitPrice(item)) + ' each'));
+      var controls = el('div', 'cart-item__controls');
+      var label = el('label', 'cart-quantity', 'Quantity');
+      var quantity = el('input'); quantity.id = 'cart-quantity-' + index;
+      quantity.type = 'number'; quantity.min = '1'; quantity.max = '99'; quantity.step = '1';
+      quantity.value = item.quantity;
+      quantity.setAttribute('aria-label', 'Quantity for ' + coffee.name + ', ' + item.grind);
+      quantity.addEventListener('change', function () {
+        var value = Number(quantity.value);
+        if (!quantity.reportValidity() || !Number.isInteger(value)) { quantity.value = cart[index].quantity; return; }
+        var next = cart.map(function (line, i) { return i === index ? Object.assign({}, line, { quantity: value }) : line; });
+        saveCart(next, 'Quantity updated.');
+        // Keep the field in place so changing quantity does not steal Tab focus.
+        $('.cart-item__total', row).textContent = SHOP.money(SHOP.unitPrice(cart[index]) * value);
+        $('[data-cart-subtotal]', root).textContent = SHOP.money(SHOP.subtotal(cart));
+      });
+      label.appendChild(quantity); controls.appendChild(label);
+      var remove = el('button', 'text-action', 'Remove'); remove.type = 'button';
+      remove.id = 'cart-remove-' + index;
+      remove.setAttribute('aria-label', 'Remove ' + coffee.name + ', ' + item.grind);
+      remove.addEventListener('click', function () {
+        var nextFocus = 'cart-remove-' + Math.max(0, Math.min(index, cart.length - 2));
+        saveCart(cart.filter(function (_, i) { return i !== index; }), coffee.name + ' removed.');
+        renderCart(nextFocus);
+      });
+      controls.appendChild(remove); detail.appendChild(controls);
+      row.appendChild(photo); row.appendChild(detail);
+      row.appendChild(el('p', 'cart-item__total', SHOP.money(SHOP.unitPrice(item) * item.quantity)));
+      list.appendChild(row);
+    });
+    $('[data-cart-subtotal]', root).textContent = SHOP.money(SHOP.subtotal(cart));
+    if (focusId) {
+      var target = $('#' + focusId) || $('[data-cart-empty] a', root);
+      if (target) { target.focus(); }
+    }
+  }
   function initCart() {
-    setCartCount(cartCount());
-
+    if (!SHOP) { return; }
+    updateCartCount();
+    renderCart();
+    window.addEventListener('storage', function (event) {
+      if (event.key === SHOP.key || event.key === null) {
+        cart = SHOP.readCart(); updateCartCount(); renderCart();
+      }
+    });
     $$('[data-add-to-cart]').forEach(function (button) {
-      var timer = null;
-
       button.addEventListener('click', function () {
-        setCartCount(cartCount() + 1);
-
-        /* The label is re-read each time rather than cached at load, because
-           renderProduct() rewrites it with the lot's price. */
-        if (timer === null) { button.dataset.label = button.textContent; }
-        else { clearTimeout(timer); }
-
-        button.textContent = 'Added';
-        timer = setTimeout(function () {
-          button.textContent = button.dataset.label;
-          timer = null;
-        }, 1200);
+        var coffee = findCoffee(param('id')) || DATA.coffees[0];
+        var size = $('[data-size-group] [aria-pressed="true"]').dataset.size;
+        var grind = $('[data-grind-group] [aria-pressed="true"]').dataset.grind;
+        var existing = cart.find(function (item) { return item.id === coffee.id && item.size === size && item.grind === grind; });
+        if (existing && existing.quantity >= 99) {
+          $('[data-cart-status]').textContent = 'The maximum quantity for this selection is 99.';
+          return;
+        }
+        saveCart(SHOP.addItem(cart, coffee.id, size, grind), coffee.name + ' added to your cart.');
       });
     });
   }
@@ -195,7 +255,7 @@
     $$('[data-choice-group]').forEach(function (group) {
       group.addEventListener('click', function (event) {
         var button = event.target.closest('.choice');
-        if (!button || !group.contains(button)) { return; }
+        if (!button || button.disabled || !group.contains(button)) { return; }
 
         $$('.choice', group).forEach(function (other) {
           other.setAttribute('aria-pressed', String(other === button));
@@ -208,44 +268,56 @@
 
   function initFilters() {
     var listing = $('[data-listing]');
-    if (!listing) { return; }
-
-    var cards   = $$('[data-coffee]', listing);
-    var tally   = $('[data-lot-count]');
-    var empty   = $('[data-listing-empty]');
-    var chosen  = { origin: 'all', process: 'all', roast: 'all' };
-
-    function apply() {
+    if (!listing || !SHOP) { return; }
+    var cards = $$('[data-coffee]', listing);
+    var tally = $('[data-lot-count]');
+    var empty = $('[data-listing-empty]');
+    var input = $('[data-coffee-search]');
+    var reset = $('[data-reset-search]');
+    var chosen = { origin: 'all', process: 'all', roast: 'all' };
+    input.value = (param('q') || '').slice(0, 200);
+    Object.keys(chosen).forEach(function (facet) {
+      var value = param(facet);
+      if ($$('[data-facet="' + facet + '"]').some(function (button) { return button.dataset.value === value; })) {
+        chosen[facet] = value;
+      }
+    });
+    function apply(updateURL) {
       var shown = 0;
-
       cards.forEach(function (card) {
-        var ok = ['origin', 'process', 'roast'].every(function (facet) {
-          return chosen[facet] === 'all' ||
-                 card.dataset[facet].toLowerCase() === chosen[facet];
+        var id = new URL(card.href).searchParams.get('id');
+        var coffee = SHOP.coffee(id);
+        var ok = coffee && SHOP.matches(coffee, input.value) && Object.keys(chosen).every(function (facet) {
+          return chosen[facet] === 'all' || card.dataset[facet].toLowerCase() === chosen[facet];
         });
-
         card.hidden = !ok;
         if (ok) { shown += 1; }
       });
-
-      if (tally) { tally.textContent = shown + (shown === 1 ? ' lot' : ' lots'); }
-      if (empty) { empty.hidden = shown > 0; }
-    }
-
-    $$('[data-facet]', listing).forEach(function (button) {
-      button.addEventListener('click', function () {
-        var facet = button.dataset.facet;
-        chosen[facet] = button.dataset.value.toLowerCase();
-
-        $$('[data-facet="' + facet + '"]', listing).forEach(function (other) {
-          other.setAttribute('aria-pressed', String(other === button));
-        });
-
-        apply();
+      $$('[data-facet]').forEach(function (button) {
+        button.setAttribute('aria-pressed', String(chosen[button.dataset.facet] === button.dataset.value));
       });
+      tally.textContent = shown + (shown === 1 ? ' lot' : ' lots');
+      empty.hidden = shown > 0;
+      reset.hidden = !input.value && Object.values(chosen).every(function (value) { return value === 'all'; });
+      if (updateURL) {
+        var url = new URL(window.location.href);
+        if (input.value.trim()) { url.searchParams.set('q', input.value.trim()); } else { url.searchParams.delete('q'); }
+        Object.keys(chosen).forEach(function (facet) {
+          if (chosen[facet] === 'all') { url.searchParams.delete(facet); } else { url.searchParams.set(facet, chosen[facet]); }
+        });
+        window.history.replaceState(null, '', url);
+      }
+    }
+    input.addEventListener('input', function () { apply(true); });
+    $('[data-search-form]').addEventListener('submit', function (event) { event.preventDefault(); apply(true); });
+    reset.addEventListener('click', function () {
+      input.value = ''; Object.keys(chosen).forEach(function (facet) { chosen[facet] = 'all'; }); apply(true); input.focus();
     });
-
-    apply();
+    $$('[data-facet]').forEach(function (button) {
+      button.addEventListener('click', function () { chosen[button.dataset.facet] = button.dataset.value; apply(true); });
+    });
+    apply(false);
+    if (window.location.hash === '#coffee-search') { input.focus(); }
   }
 
   /* --------------------------------------------------- product detail -- */
@@ -261,8 +333,8 @@
     var root = $('[data-product]');
     if (!root) { return; }
 
-    var coffee = findCoffee(param('id'));
-    if (!coffee) { return; }   /* keep the page's own default lot */
+    var coffee = findCoffee(param('id')) || DATA.coffees[0];
+    if (!coffee) { return; }
 
     document.title = coffee.name + ' — Lights Landing Coffee';
 
