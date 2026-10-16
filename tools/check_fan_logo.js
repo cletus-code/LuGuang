@@ -43,9 +43,10 @@ function page({ url = 'https://example.com/index.html', reduced = false, storage
     callbacks.clear();
     batch.forEach(callback => callback(time));
   }
-  const panels = mark.children.length ? mark.children[0].children.slice(1) : [];
+  const reveals = mark.children.length ? mark.children[0].children[1].children : [];
+  const panels = reveals.map(reveal => reveal.children[0]);
   function visible() { return panels.map(panel => panel.style.visibility !== 'hidden'); }
-  // Apply the actual CSS affine transform to an SVG coordinate.
+  // Apply the actual CSS rigid transform to an SVG coordinate.
   function point(index, xy) {
     const transform = panels[index].style.transform;
     if (!transform) { return xy; }
@@ -66,8 +67,25 @@ function near(actual, expected) {
   assert(Math.hypot(actual[0]-expected[0], actual[1]-expected[1]) < .001, `${actual} should join ${expected}`);
 }
 
+// A rigid panel must preserve every length and angle throughout the reveal.
+// This fails for the old affine morph even when the final logo looks correct.
+const rigid = page();
+rigid.brand.listeners.focus();
+for (let time = 17; time < 2300; time += 37) {
+  rigid.tick(time);
+  rigid.panels.forEach((panel, index) => {
+    if (panel.style.visibility === 'hidden') { return; }
+    const [tx, ty, a, b, c, d] = panel.style.transform.match(/-?[\d.]+(?:e[+-]?\d+)?/gi).map(Number);
+    assert(Math.abs(a*a+b*b-1) < 1e-10, 'Horizontal length never changes');
+    assert(Math.abs(c*c+d*d-1) < 1e-10, 'Vertical length never changes');
+    assert(Math.abs(a*c+b*d) < 1e-10, 'No shear or angle changes');
+    assert(Math.abs(a*d-b*c-1) < 1e-10, 'No scaling or reflection');
+    assert.equal(panel.style.clipPath, undefined, 'Original panel silhouette stays fixed');
+  });
+}
+
 const home = page();
-assert.equal(home.mark.children[0].children.length, 5, 'One fixed base plus four panels');
+assert.equal(home.panels.length, 4, 'Four panels revealed beside the fixed base');
 assert.equal(home.callbacks.size, 0, 'No autoplay');
 home.brand.listeners.pointerenter({ pointerType: 'touch' });
 assert.equal(home.callbacks.size, 0, 'Touch waits for activation');
@@ -118,4 +136,4 @@ still.click();
 assert.equal(still.callbacks.size, 0);
 const fallback = page({ supported: false });
 assert.equal(fallback.mark.children.length, 0, 'Unsupported browsers keep the original static mask');
-console.log('Fan logo checks passed: attached edges, outward cascade, 0.6s order, original final shape, replay, navigation and reduced motion.');
+console.log('Fan logo checks passed: rigid shapes at every frame, clipped reveal, attached edges, 0.6s cascade, final artwork, replay, navigation and reduced motion.');

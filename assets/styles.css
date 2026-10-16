@@ -220,6 +220,10 @@ button {
   aspect-ratio: 508.99 / 491.25;
   transform: translateY(-50%);
 }
+.brand__moving, .brand__reveal { position: absolute; inset: 0; }
+/* Folded artwork stays behind the fixed half-circle; each inner reveal
+   separately clips it behind the preceding panel. Artwork never stretches. */
+.brand__moving { clip-path: inset(0 0 0 27.332561%); }
 .brand__slice {
   position: absolute;
   inset: 0;

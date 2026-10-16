@@ -53,9 +53,15 @@
     var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     var canvas = el('span', 'brand__fan');
     canvas.appendChild(el('span', 'brand__slice brand__slice--base'));
+    var moving = el('span', 'brand__moving');
+    canvas.appendChild(moving);
+    var reveals = [];
     var panels = [1, 2, 3, 4].map(function (number) {
+      var reveal = el('span', 'brand__reveal');
       var panel = el('span', 'brand__slice brand__slice--' + number);
-      canvas.appendChild(panel);
+      reveal.appendChild(panel);
+      moving.appendChild(reveal);
+      reveals.push(reveal);
       return panel;
     });
     mark.appendChild(canvas);
@@ -75,9 +81,10 @@
       if (frame !== null) { window.cancelAnimationFrame(frame); }
       frame = null;
       running = false;
-      panels.forEach(function (panel) {
+      panels.forEach(function (panel, index) {
         panel.style.transform = '';
         panel.style.visibility = '';
+        reveals[index].style.clipPath = '';
       });
     }
 
@@ -96,24 +103,30 @@
         var vx = trailing[0] - hinge[0], vy = trailing[1] - hinge[1];
         var leftLength = Math.hypot(ux, uy), rightLength = Math.hypot(vx, vy);
         var width = Math.atan2(vy, vx) - Math.atan2(uy, ux);
-        var px = corner[0] - Math.cos(angle) * leftLength;
-        var py = corner[1] - Math.sin(angle) * leftLength;
+        // Slide the rigid panel along the shared edge as it rotates out.
+        // At zero its trailing corner is tucked behind that edge; at one
+        // its leading corner joins it. No scale, shear or path changes.
+        var reach = rightLength + (leftLength - rightLength) * opening;
+        var px = corner[0] - Math.cos(angle) * reach;
+        var py = corner[1] - Math.sin(angle) * reach;
         var outgoing = angle + width * opening;
-        var length = leftLength + (rightLength - leftLength) * opening;
-        var next = [px + Math.cos(outgoing) * length, py + Math.sin(outgoing) * length];
-        // Map this panel onto its open triangle. The next panel inherits this
-        // trailing edge, so earlier panels move outward as a new one opens.
-        var ax = corner[0] - px, ay = corner[1] - py;
-        var bx = next[0] - px, by = next[1] - py;
-        var determinant = ux * vy - uy * vx;
-        var a = (ax * vy - bx * uy) / determinant;
-        var b = (ay * vy - by * uy) / determinant;
-        var c = (bx * ux - ax * vx) / determinant;
-        var d = (by * ux - ay * vx) / determinant;
+        var next = [px + Math.cos(outgoing) * rightLength, py + Math.sin(outgoing) * rightLength];
+        var rotation = outgoing - Math.atan2(vy, vx);
+        var a = Math.cos(rotation), b = Math.sin(rotation), c = -b, d = a;
         var x = px + .93 - a * (hinge[0] + .93) - c * (hinge[1] + .16);
         var y = py + .16 - b * (hinge[0] + .93) - d * (hinge[1] + .16);
         panel.style.transform = 'translate(' + (x / 508.99 * 100) + '%,' +
           (y / 491.25 * 100) + '%) matrix(' + [a, b, c, d, 0, 0].join(',') + ')';
+
+        // Reveal only the part that has crossed the preceding panel's edge.
+        // This mask stays outside the rigid artwork, in the canvas's space.
+        var dx = Math.cos(angle) * 2000, dy = Math.sin(angle) * 2000;
+        var nx = -Math.sin(angle) * 4000, ny = Math.cos(angle) * 4000;
+        var clip = [[corner[0]-dx, corner[1]-dy], [corner[0]+dx, corner[1]+dy],
+          [corner[0]+dx+nx, corner[1]+dy+ny], [corner[0]-dx+nx, corner[1]-dy+ny]];
+        reveals[index].style.clipPath = 'polygon(' + clip.map(function (point) {
+          return ((point[0]+.93)/508.99*100) + '% ' + ((point[1]+.16)/491.25*100) + '%';
+        }).join(',') + ')';
         corner = next;
         angle = outgoing;
       });
