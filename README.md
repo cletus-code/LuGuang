@@ -63,7 +63,7 @@ can shift to coral on hover. A small enhancement in `site.js` divides the same
 mask along the actual black/white boundaries into a fixed left section and
 four hinged panels. Hover, keyboard focus,
 or a tap on the homepage replays the fan: rightmost panel first, then each panel
-to its left at 0.6-second intervals. Each new panel emerges beside the fixed
+to its left at 0.2-second intervals. Each new panel emerges beside the fixed
 section and pushes the already-open panels outward; their adjoining edges
 stay attached. Panels keep their original shapes throughout: rigid rotation
 and sliding reveal them from behind a separate clipping edge, without scaling

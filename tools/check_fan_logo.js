@@ -71,7 +71,7 @@ function near(actual, expected) {
 // This fails for the old affine morph even when the final logo looks correct.
 const rigid = page();
 rigid.brand.listeners.focus();
-for (let time = 17; time < 2300; time += 37) {
+for (let time = 5; time < 770; time += 11) {
   rigid.tick(time);
   rigid.panels.forEach((panel, index) => {
     if (panel.style.visibility === 'hidden') { return; }
@@ -91,27 +91,27 @@ home.brand.listeners.pointerenter({ pointerType: 'touch' });
 assert.equal(home.callbacks.size, 0, 'Touch waits for activation');
 home.brand.listeners.pointerenter({ pointerType: 'mouse' });
 assert.equal(home.callbacks.size, 1);
-home.tick(500);
+home.tick(170);
 assert.deepEqual(home.visible(), [false, false, false, true]);
 near(home.point(3, [479.13, 131.98]), [138.19, 40.8]);
 const firstPosition = home.point(3, [507.05, 174.06]);
 home.brand.listeners.focus();
 assert.equal(home.callbacks.size, 1, 'Focus during hover does not restart');
-home.tick(1100);
+home.tick(370);
 assert.deepEqual(home.visible(), [false, false, true, true]);
 near(home.point(2, [424.6, 68.24]), [138.19, 40.8]);
 near(home.point(3, [479.13, 131.98]), home.point(2, [479.13, 131.98]));
 assert(Math.hypot(...home.point(3, [507.05, 174.06]).map((n,i) => n-firstPosition[i])) > 10,
   'The first panel moves outward when the next one opens');
-home.tick(1700);
+home.tick(570);
 assert.deepEqual(home.visible(), [false, true, true, true]);
 near(home.point(1, [301.83, 11.97]), [138.19, 40.8]);
 near(home.point(2, [424.6, 68.24]), home.point(1, [424.6, 68.24]));
 near(home.point(3, [479.13, 131.98]), home.point(2, [479.13, 131.98]));
-home.tick(2299);
+home.tick(769);
 assert.deepEqual(home.visible(), [true, true, true, true]);
 near(home.point(3, [507.05, 174.06]), [507.05, 174.06]);
-home.tick(2300);
+home.tick(770);
 assert(home.panels.every(panel => panel.style.transform === '' && panel.style.visibility === ''),
   'Finishes as the untouched original logo');
 assert.equal(home.callbacks.size, 0);
@@ -136,4 +136,4 @@ still.click();
 assert.equal(still.callbacks.size, 0);
 const fallback = page({ supported: false });
 assert.equal(fallback.mark.children.length, 0, 'Unsupported browsers keep the original static mask');
-console.log('Fan logo checks passed: rigid shapes at every frame, clipped reveal, attached edges, 0.6s cascade, final artwork, replay, navigation and reduced motion.');
+console.log('Fan logo checks passed: rigid shapes at every frame, clipped reveal, attached edges, 0.2s cascade, final artwork, replay, navigation and reduced motion.');

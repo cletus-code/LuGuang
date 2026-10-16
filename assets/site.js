@@ -92,7 +92,7 @@
       var corner = triangles[0][1].slice();
       var angle = -Math.PI / 2;
       triangles.forEach(function (triangle, index) {
-        var t = Math.max(0, Math.min(1, (elapsed - (3 - index) * 600) / 500));
+        var t = Math.max(0, Math.min(1, (elapsed - (3 - index) * 200) / 170));
         var opening = 1 - Math.pow(1 - t, 3);
         var panel = panels[index];
         panel.style.visibility = opening === 0 ? 'hidden' : '';
@@ -138,7 +138,7 @@
       var start = window.performance.now();
       draw(0);
       function step(now) {
-        if (now - start >= 2300) { restore(); return; }
+        if (now - start >= 770) { restore(); return; }
         draw(now - start);
         frame = window.requestAnimationFrame(step);
       }
