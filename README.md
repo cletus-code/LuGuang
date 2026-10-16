@@ -66,6 +66,18 @@ coloured card wearing torn edges.
 > measures 10.14:1 and `#5a5249` measures 5.46:1. Darken the masthead's link
 > colour or lighten the strip before this ships.
 
+## Animated masthead logo
+
+Hover over or focus the upper-left logo to unfold its fan. Panels begin 0.2
+seconds apart and overlap for a fluid opening lasting one second. Their original
+shapes stay rigid and reveal from behind clipping edges. Tapping on the homepage
+replays it; tapping from another page goes home and plays it on arrival. Repeated
+triggers during an opening do not restart it. Reduced Motion keeps it still;
+without JavaScript the original logo and home link remain available.
+
+Check: `node tools/check_fan_logo.js` covers continuous movement, rigid shapes,
+attached edges, stagger, replay, home navigation and reduced motion.
+
 ## Photography
 
 Every editorial photo and pack shot in `uploads/` is a real photograph of the

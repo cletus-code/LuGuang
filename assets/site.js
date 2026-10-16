@@ -23,6 +23,134 @@
     return node;
   }
 
+  /* ------------------------------------------------------- fan logo -- */
+
+  function initFanLogo() {
+    var brand = $('.brand');
+    var mark = $('.brand__mark', brand);
+    if (!brand || !mark || !window.requestAnimationFrame) { return; }
+
+    var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var canvas = el('span', 'brand__fan');
+    canvas.appendChild(el('span', 'brand__slice brand__slice--base'));
+    var moving = el('span', 'brand__moving');
+    canvas.appendChild(moving);
+    var reveals = [];
+    var panels = [1, 2, 3, 4].map(function (number) {
+      var reveal = el('span', 'brand__reveal');
+      var panel = el('span', 'brand__slice brand__slice--' + number);
+      reveal.appendChild(panel);
+      moving.appendChild(reveal);
+      reveals.push(reveal);
+      return panel;
+    });
+    mark.appendChild(canvas);
+    mark.classList.add('brand__mark--fan');
+    var frame = null;
+    var running = false;
+    // Exact intersections of the artwork's adjacent black/white edges.
+    // Each triangle is [hinge, leading outer corner, trailing outer corner].
+    var triangles = [
+      [[138.19, 461.315615], [138.19, 40.8], [301.83, 11.97]],
+      [[171.288651, 370.428706], [301.83, 11.97], [424.6, 68.24]],
+      [[270.678178, 251.861605], [424.6, 68.24], [479.13, 131.98]],
+      [[360.323338, 200.306260], [479.13, 131.98], [507.05, 174.06]]
+    ];
+
+    function restore() {
+      if (frame !== null) { window.cancelAnimationFrame(frame); }
+      frame = null;
+      running = false;
+      panels.forEach(function (panel, index) {
+        panel.style.transform = '';
+        panel.style.visibility = '';
+        reveals[index].style.clipPath = '';
+      });
+    }
+
+    function draw(elapsed) {
+      var corner = triangles[0][1].slice();
+      var angle = -Math.PI / 2;
+      triangles.forEach(function (triangle, index) {
+        var t = Math.max(0, Math.min(1, (elapsed - (3 - index) * 200) / 400));
+        // Overlapping smooth starts/finishes keep the fan moving between panels.
+        var opening = t * t * (3 - 2 * t);
+        var panel = panels[index];
+        panel.style.visibility = opening === 0 ? 'hidden' : '';
+        if (opening === 0) { return; }
+
+        var hinge = triangle[0], leading = triangle[1], trailing = triangle[2];
+        var ux = leading[0] - hinge[0], uy = leading[1] - hinge[1];
+        var vx = trailing[0] - hinge[0], vy = trailing[1] - hinge[1];
+        var leftLength = Math.hypot(ux, uy), rightLength = Math.hypot(vx, vy);
+        var width = Math.atan2(vy, vx) - Math.atan2(uy, ux);
+        // Slide the rigid panel along the shared edge as it rotates out.
+        // At zero its trailing corner is tucked behind that edge; at one
+        // its leading corner joins it. No scale, shear or path changes.
+        var reach = rightLength + (leftLength - rightLength) * opening;
+        var px = corner[0] - Math.cos(angle) * reach;
+        var py = corner[1] - Math.sin(angle) * reach;
+        var outgoing = angle + width * opening;
+        var next = [px + Math.cos(outgoing) * rightLength, py + Math.sin(outgoing) * rightLength];
+        var rotation = outgoing - Math.atan2(vy, vx);
+        var a = Math.cos(rotation), b = Math.sin(rotation), c = -b, d = a;
+        var x = px + .93 - a * (hinge[0] + .93) - c * (hinge[1] + .16);
+        var y = py + .16 - b * (hinge[0] + .93) - d * (hinge[1] + .16);
+        panel.style.transform = 'translate(' + (x / 508.99 * 100) + '%,' +
+          (y / 491.25 * 100) + '%) matrix(' + [a, b, c, d, 0, 0].join(',') + ')';
+
+        // Reveal only the part that has crossed the preceding panel's edge.
+        // This mask stays outside the rigid artwork, in the canvas's space.
+        var dx = Math.cos(angle) * 2000, dy = Math.sin(angle) * 2000;
+        var nx = -Math.sin(angle) * 4000, ny = Math.cos(angle) * 4000;
+        var clip = [[corner[0]-dx, corner[1]-dy], [corner[0]+dx, corner[1]+dy],
+          [corner[0]+dx+nx, corner[1]+dy+ny], [corner[0]-dx+nx, corner[1]-dy+ny]];
+        reveals[index].style.clipPath = 'polygon(' + clip.map(function (point) {
+          return ((point[0]+.93)/508.99*100) + '% ' + ((point[1]+.16)/491.25*100) + '%';
+        }).join(',') + ')';
+        corner = next;
+        angle = outgoing;
+      });
+    }
+
+    function play() {
+      if (motion.matches || running) { return; }
+      running = true;
+      var start = window.performance.now();
+      draw(0);
+      function step(now) {
+        if (now - start >= 1000) { restore(); return; }
+        draw(now - start);
+        frame = window.requestAnimationFrame(step);
+      }
+      frame = window.requestAnimationFrame(step);
+    }
+
+    brand.addEventListener('pointerenter', function (event) {
+      if (event.pointerType !== 'touch') { play(); }
+    });
+    brand.addEventListener('focus', play);
+    brand.addEventListener('click', function (event) {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) { return; }
+      var home = new URL(brand.href);
+      var current = new URL(window.location.href);
+      if (current.pathname.replace(/index\.html$/, '') === home.pathname.replace(/index\.html$/, '')) {
+        event.preventDefault();
+        play();
+      } else if (!motion.matches) {
+        // Keep the home link working; the tap's animation plays after arrival.
+        try { sessionStorage.setItem('lights-fan-on-arrival', '1'); } catch (error) {}
+      }
+    });
+    motion.addEventListener('change', function () { if (motion.matches) { restore(); } });
+    try {
+      if (sessionStorage.getItem('lights-fan-on-arrival')) {
+        sessionStorage.removeItem('lights-fan-on-arrival');
+        play();
+      }
+    } catch (error) {}
+  }
+
   /* ------------------------------------------------------------- cart -- */
 
   var CART_KEY = 'lights.cart';
@@ -237,6 +365,7 @@
 
   /* ------------------------------------------------------------- boot -- */
 
+  initFanLogo();
   initCart();
   initChoiceGroups();
   initFilters();
