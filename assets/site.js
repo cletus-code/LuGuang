@@ -1,6 +1,6 @@
 /* Behaviour for Lights Landing Coffee.
    Every page renders in full from its own HTML; this file only enhances —
-   the saved cart, coffee search and filters, the per-lot product page, and the
+   the wishlist, coffee search and filters, the per-lot product page, and the
    brew-method tabs. */
 
 (function () {
@@ -151,99 +151,98 @@
     } catch (error) {}
   }
 
-  /* ------------------------------------------------------------- cart -- */
+  /* --------------------------------------------------------- wishlist -- */
+  /* Ordering is closed for now. "Add to cart" saves the coffee to the
+     wishlist and opens cart.html, which says shopping is coming and lists
+     what is saved, with every other coffee ready to add. */
 
   var SHOP = window.LIGHTS_SHOP;
-  var cart = SHOP ? SHOP.readCart() : [];
+  var wishlist = SHOP ? SHOP.readWishlist() : [];
 
-  function cartCount() {
-    return cart.reduce(function (count, item) { return count + item.quantity; }, 0);
+  function updateWishlistCount() {
+    $$('[data-wishlist-count]').forEach(function (node) { node.textContent = wishlist.length; });
   }
-  function updateCartCount() {
-    $$('[data-cart-count]').forEach(function (node) { node.textContent = cartCount(); });
+  function saveWishlist(ids, message) {
+    wishlist = SHOP.normalizeWishlist(ids);
+    var saved = SHOP.writeWishlist(wishlist);
+    updateWishlistCount();
+    var status = $('[data-wishlist-status]');
+    if (status) {
+      status.textContent = saved ? message : 'Your browser could not save your wishlist. Private browsing or blocked site data can prevent it.';
+    }
+    return saved;
   }
-  function saveCart(items, message) {
-    cart = SHOP.normalizeCart(items);
-    var saved = SHOP.writeCart(cart);
-    updateCartCount();
-    var status = $('[data-cart-status]');
-    if (status) { status.textContent = message + (saved ? '' : ' Your browser could not save the cart.'); }
-  }
-  function renderCart(focusId) {
-    var root = $('[data-cart-page]');
-    if (!root || !SHOP) { return; }
-    var list = $('[data-cart-items]', root);
-    list.replaceChildren();
-    $('[data-cart-empty]', root).hidden = cart.length > 0;
-    $('[data-cart-summary]', root).hidden = cart.length === 0;
-    cart.forEach(function (item, index) {
-      var coffee = SHOP.coffee(item.id);
-      var row = el('li', 'cart-item');
-      var photo = el('a', 'cart-item__photo');
-      photo.href = 'product.html?id=' + encodeURIComponent(item.id);
-      photo.setAttribute('aria-label', coffee.name);
-      var image = el('img'); image.src = coffee.image; image.alt = '';
-      photo.appendChild(image);
-      var detail = el('div', 'cart-item__detail');
-      var name = el('a', 'cart-item__name', coffee.name); name.href = photo.href;
-      detail.appendChild(name);
-      detail.appendChild(el('p', 'cart-item__options', item.size + ' · ' + item.grind));
-      detail.appendChild(el('p', 'meta', SHOP.money(SHOP.unitPrice(item)) + ' each'));
-      var controls = el('div', 'cart-item__controls');
-      var label = el('label', 'cart-quantity', 'Quantity');
-      var quantity = el('input'); quantity.id = 'cart-quantity-' + index;
-      quantity.type = 'number'; quantity.min = '1'; quantity.max = '99'; quantity.step = '1';
-      quantity.value = item.quantity;
-      quantity.setAttribute('aria-label', 'Quantity for ' + coffee.name + ', ' + item.grind);
-      quantity.addEventListener('change', function () {
-        var value = Number(quantity.value);
-        if (!quantity.reportValidity() || !Number.isInteger(value)) { quantity.value = cart[index].quantity; return; }
-        var next = cart.map(function (line, i) { return i === index ? Object.assign({}, line, { quantity: value }) : line; });
-        saveCart(next, 'Quantity updated.');
-        // Keep the field in place so changing quantity does not steal Tab focus.
-        $('.cart-item__total', row).textContent = SHOP.money(SHOP.unitPrice(cart[index]) * value);
-        $('[data-cart-subtotal]', root).textContent = SHOP.money(SHOP.subtotal(cart));
-      });
-      label.appendChild(quantity); controls.appendChild(label);
-      var remove = el('button', 'text-action', 'Remove'); remove.type = 'button';
-      remove.id = 'cart-remove-' + index;
-      remove.setAttribute('aria-label', 'Remove ' + coffee.name + ', ' + item.grind);
-      remove.addEventListener('click', function () {
-        var nextFocus = 'cart-remove-' + Math.max(0, Math.min(index, cart.length - 2));
-        saveCart(cart.filter(function (_, i) { return i !== index; }), coffee.name + ' removed.');
-        renderCart(nextFocus);
-      });
-      controls.appendChild(remove); detail.appendChild(controls);
-      row.appendChild(photo); row.appendChild(detail);
-      row.appendChild(el('p', 'cart-item__total', SHOP.money(SHOP.unitPrice(item) * item.quantity)));
-      list.appendChild(row);
+  function wishlistRow(coffee, saved) {
+    var row = el('li', 'cart-item');
+    var photo = el('a', 'cart-item__photo');
+    photo.href = 'product.html?id=' + encodeURIComponent(coffee.id);
+    photo.setAttribute('aria-label', coffee.name);
+    var image = el('img'); image.src = coffee.image; image.alt = '';
+    photo.appendChild(image);
+    var detail = el('div', 'cart-item__detail');
+    var name = el('a', 'cart-item__name', coffee.name); name.href = photo.href;
+    detail.appendChild(name);
+    detail.appendChild(el('p', 'cart-item__options', coffee.origin + ' · ' + coffee.process));
+    detail.appendChild(el('p', 'meta', SHOP.priceLabel(coffee)));
+    var toggle = el('button', 'text-action', saved ? 'Remove' : 'Add to wishlist');
+    toggle.type = 'button';
+    toggle.id = 'wishlist-' + coffee.id;
+    toggle.setAttribute('aria-label', (saved ? 'Remove ' : 'Add ') + coffee.name + (saved ? ' from' : ' to') + ' your wishlist');
+    toggle.addEventListener('click', function () {
+      if (saved) { saveWishlist(SHOP.remove(wishlist, coffee.id), coffee.name + ' removed from your wishlist.'); }
+      else { saveWishlist(SHOP.add(wishlist, coffee.id), coffee.name + ' added to your wishlist.'); }
+      renderWishlist(toggle.id);
     });
-    $('[data-cart-subtotal]', root).textContent = SHOP.money(SHOP.subtotal(cart));
+    var controls = el('div', 'cart-item__controls');
+    controls.appendChild(toggle);
+    detail.appendChild(controls);
+    row.appendChild(photo); row.appendChild(detail);
+    return row;
+  }
+  function renderWishlist(focusId) {
+    var root = $('[data-wishlist-page]');
+    if (!root || !SHOP) { return; }
+    var list = $('[data-wishlist-items]', root);
+    var more = $('[data-wishlist-more]', root);
+    list.replaceChildren(); more.replaceChildren();
+    DATA.coffees.forEach(function (coffee) {
+      var saved = wishlist.indexOf(coffee.id) >= 0;
+      (saved ? list : more).appendChild(wishlistRow(coffee, saved));
+    });
+    $('[data-wishlist-empty]', root).hidden = wishlist.length > 0;
+    $('[data-wishlist-more-section]', root).hidden = wishlist.length === DATA.coffees.length;
     if (focusId) {
-      var target = $('#' + focusId) || $('[data-cart-empty] a', root);
+      var target = $('#' + focusId);
       if (target) { target.focus(); }
     }
   }
-  function initCart() {
+  function initWishlist() {
     if (!SHOP) { return; }
-    updateCartCount();
-    renderCart();
+    updateWishlistCount();
+
+    var root = $('[data-wishlist-page]');
+    if (root) {
+      var added = SHOP.coffee(param('added'));
+      var status = $('[data-wishlist-status]', root);
+      if (added && wishlist.indexOf(added.id) >= 0) {
+        status.textContent = added.name + ' is on your wishlist.';
+      } else if (added) {
+        status.textContent = 'Your browser could not save ' + added.name + ' to your wishlist. Private browsing or blocked site data can prevent it.';
+      }
+      // Say it once: a reload after removing the coffee should not repeat it.
+      if (param('added') !== null) { window.history.replaceState(null, '', 'cart.html'); }
+      renderWishlist();
+    }
     window.addEventListener('storage', function (event) {
       if (event.key === SHOP.key || event.key === null) {
-        cart = SHOP.readCart(); updateCartCount(); renderCart();
+        wishlist = SHOP.readWishlist(); updateWishlistCount(); renderWishlist();
       }
     });
     $$('[data-add-to-cart]').forEach(function (button) {
       button.addEventListener('click', function () {
         var coffee = findCoffee(param('id')) || DATA.coffees[0];
-        var size = $('[data-size-group] [aria-pressed="true"]').dataset.size;
-        var grind = $('[data-grind-group] [aria-pressed="true"]').dataset.grind;
-        var existing = cart.find(function (item) { return item.id === coffee.id && item.size === size && item.grind === grind; });
-        if (existing && existing.quantity >= 99) {
-          $('[data-cart-status]').textContent = 'The maximum quantity for this selection is 99.';
-          return;
-        }
-        saveCart(SHOP.addItem(cart, coffee.id, size, grind), coffee.name + ' added to your cart.');
+        saveWishlist(SHOP.add(wishlist, coffee.id), coffee.name + ' added to your wishlist.');
+        window.location.href = 'cart.html?added=' + encodeURIComponent(coffee.id);
       });
     });
   }
@@ -274,7 +273,7 @@
     var empty = $('[data-listing-empty]');
     var input = $('[data-coffee-search]');
     var reset = $('[data-reset-search]');
-    var chosen = { origin: 'all', process: 'all', roast: 'all' };
+    var chosen = { origin: 'all', process: 'all' };
     input.value = (param('q') || '').slice(0, 200);
     Object.keys(chosen).forEach(function (facet) {
       var value = param(facet);
@@ -288,7 +287,8 @@
         var id = new URL(card.href).searchParams.get('id');
         var coffee = SHOP.coffee(id);
         var ok = coffee && SHOP.matches(coffee, input.value) && Object.keys(chosen).every(function (facet) {
-          return chosen[facet] === 'all' || card.dataset[facet].toLowerCase() === chosen[facet];
+          // A coffee sold as more than one process lists each, space-separated.
+          return chosen[facet] === 'all' || card.dataset[facet].toLowerCase().split(/\s+/).indexOf(chosen[facet]) >= 0;
         });
         card.hidden = !ok;
         if (ok) { shown += 1; }
@@ -341,14 +341,15 @@
     var well = $('[data-product-well]', root);
     var img  = $('[data-product-image]', root);
     img.src = coffee.image;
-    img.alt = coffee.name + ' — pack shot';
+    img.alt = coffee.name + ' — label artwork';
     well.classList.toggle('product__well--photo', coffee.fit === 'cover');
 
     $('[data-product-eyebrow]', root).textContent =
       [coffee.origin, coffee.region, coffee.process].filter(Boolean).join(' · ');
     $('[data-product-name]', root).textContent  = coffee.name;
     $('[data-product-blurb]', root).textContent = coffee.blurb;
-    $('[data-product-price]', root).textContent = 'Add to cart — $' + coffee.price;
+    $('[data-product-size]', root).textContent = coffee.size;
+    $('[data-product-price]', root).textContent = 'Add to cart — ' + SHOP.money(coffee.price);
 
     var specs = $('[data-product-specs]', root);
     specs.innerHTML = '';
@@ -438,7 +439,7 @@
   /* ------------------------------------------------------------- boot -- */
 
   initFanLogo();
-  initCart();
+  initWishlist();
   initChoiceGroups();
   initFilters();
   renderProduct();

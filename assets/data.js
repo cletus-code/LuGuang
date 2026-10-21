@@ -1,118 +1,113 @@
 /* Catalogue and brew guides for Lights Landing Coffee.
-   Names, origins, processes, tasting notes, prices and pack shots come
-   straight from the roadmap (options 2a / 3a / 3b / 3c). Per-lot specs and
-   farm notes are written here to fill the 3b template — only Sidama Dusk's
-   copy is from the design itself. See README.md. */
+   The five coffees on sale, cheapest first. Names, origins, varieties,
+   processes and lot numbers are transcribed from each bag's label; prices
+   and sizes are the shop's. No tasting notes are given until they are
+   supplied. Images are the label artwork until bag photos arrive.
+
+   `processes` lists every process a lot is sold as (the shelf's Process
+   filter matches any of them); `process` is how it reads on the page. */
 
 window.LIGHTS = (function () {
 
   var coffees = [
     {
-      id: 'sidama-dusk',
-      name: 'Sidama Dusk',
+      id: 'alo-main-station',
+      name: 'ALO Main Station',
       origin: 'Ethiopia',
-      region: 'Sidama',
+      region: 'Sidamo, Bensa',
       process: 'Washed',
-      roast: 'Filter',
-      notes: 'Bergamot, apricot, honey',
-      price: 21,
-      image: 'uploads/pack-sidama.jpg',
-      fit: 'cover',
-      blurb: 'Bergamot, apricot and honey, with a long clean finish. Grown at 2,050 m and dried on raised beds.',
-      specs: { Altitude: '2,050 m', Varietal: 'Heirloom', Harvest: 'Nov 2025' },
+      processes: ['Washed'],
+      variety: '74158, K72',
+      notes: '74158 · K72 · zero-fermentation washed',
+      price: 16,
+      size: '100g',
+      image: 'uploads/label-alo-main-station.jpg',
+      fit: 'contain',   // label art: show it whole; use 'cover' for bag photos
+      blurb: 'The 2026 lot from ALO’s main station in Bensa, Sidamo: 74158 and K72, washed with zero fermentation.',
+      specs: { Variety: '74158, K72, mixed', Process: 'Zero-fermentation washed', Harvest: '2026' },
       story: [
-        'This lot comes from 40 smallholders around Bokaso, delivered as ripe cherry to the washing station and floated the same afternoon.',
-        'We’ve bought from this station three years running; the 2025 harvest is the cleanest yet.'
+        'ALO Coffee’s main station sits in Bensa, in Ethiopia’s Sidamo region. This lot mixes the 74158 and K72 varieties.',
+        'It is washed with zero fermentation: the cherry is pulped and washed without a fermentation stage.'
       ]
     },
     {
-      id: 'narino-night',
-      name: 'Nariño Night',
-      origin: 'Colombia',
-      region: 'Nariño',
-      process: 'Honey',
-      roast: 'Espresso',
-      notes: 'Red plum, panela, cacao',
-      price: 19,
-      image: 'uploads/pack-narino.jpg',
-      fit: 'cover',
-      blurb: 'Red plum and panela over a cacao base. Dense and sweet — the one we pull as espresso on the bar.',
-      specs: { Altitude: '1,850 m', Varietal: 'Caturra', Harvest: 'Oct 2025' },
+      id: 'bambito-estate',
+      name: 'Bambito Estate',
+      origin: 'Panama',
+      region: 'Volcán, Candela',
+      process: 'Washed / anaerobic natural',
+      processes: ['Washed', 'Natural'],
+      variety: 'Geisha, Yellow Catuai',
+      notes: 'Geisha · Yellow Catuai',
+      price: 18,
+      size: '100g',
+      image: 'uploads/label-bambito-estate.jpg',
+      fit: 'contain',   // label art: show it whole; use 'cover' for bag photos
+      blurb: 'Geisha and Yellow Catuai from Bambito Estate in Volcán, Panama, washed or as an anaerobic natural.',
+      specs: { Variety: 'Geisha, Yellow Catuai', Process: 'Washed / anaerobic natural', Farm: 'Candela' },
       story: [
-        'Grown on steep ground above Buesaco, where the cherry is depulped at the farm and dried with the mucilage left on.',
-        'The honey process is what gives this lot its weight; it holds up to milk without going flat.'
+        'Bambito Estate grows on the slopes of Volcán in western Panama; this coffee comes from its Candela plot.',
+        'It is offered as a washed coffee and as an anaerobic natural, fermented without oxygen and dried in the cherry.'
       ]
     },
     {
-      id: 'nyeri-lamplight',
-      name: 'Nyeri Lamplight',
-      origin: 'Kenya',
-      region: 'Nyeri',
+      id: 'finca-la-fresa',
+      name: 'Finca La Fresa',
+      origin: 'Honduras',
+      region: 'Lempira, San Andrés',
       process: 'Washed',
-      roast: 'Filter',
-      notes: 'Blackcurrant, grapefruit, cane',
-      price: 23,
-      image: 'uploads/pack-nyeri.jpg',
-      fit: 'cover',
-      blurb: 'Blackcurrant and grapefruit with cane sugar underneath. Bright, structured, and unmistakably Kenyan.',
-      specs: { Altitude: '1,750 m', Varietal: 'SL28, SL34', Harvest: 'Dec 2025' },
+      processes: ['Washed'],
+      variety: 'Geisha',
+      notes: 'Geisha · lot #161',
+      price: 26,
+      size: '100g',
+      image: 'uploads/label-finca-la-fresa.jpg',
+      fit: 'contain',   // label art: show it whole; use 'cover' for bag photos
+      blurb: 'Washed Geisha, lot #161, from Finca La Fresa in San Andrés, Lempira, Honduras.',
+      specs: { Variety: 'Geisha', Process: 'Washed', Lot: '#161' },
       story: [
-        'A day lot from a factory serving around 600 members on the slopes below Nyeri town, fermented overnight and washed in cold mountain water.',
-        'We buy one lot a year here and it always sells out before the next harvest lands.'
+        'Finca La Fresa is in San Andrés, in the Lempira department of western Honduras.',
+        'Lot #161 is a washed Geisha.'
       ]
     },
     {
-      id: 'llaqta-cold-brew',
-      name: 'Llaqta Cold Brew',
-      origin: 'Peru',
-      region: 'Cajamarca',
-      process: 'Washed',
-      roast: 'Filter',
-      notes: 'Violet, candied orange, lemon',
-      price: 24,
-      image: 'uploads/pack-llaqta.jpg',
-      fit: 'cover',
-      blurb: 'Violet and candied orange with a lemon lift. Roasted a touch longer for cold brew, and just as good hot.',
-      specs: { Altitude: '1,900 m', Varietal: 'Bourbon', Harvest: 'Sep 2025' },
+      id: 'elida-estate',
+      name: 'Elida Estate',
+      origin: 'Panama',
+      region: 'Boquete, Vuelta',
+      process: 'DRD washed',
+      processes: ['Washed'],
+      variety: 'Geisha',
+      notes: 'Geisha · DRD washed',
+      price: 39,
+      size: '75g',
+      image: 'uploads/label-elida-estate.jpg',
+      fit: 'contain',   // label art: show it whole; use 'cover' for bag photos
+      blurb: 'Geisha from Elida Estate’s Vuelta plot in Boquete, Panama, washed and dried in a dark room (DRD).',
+      specs: { Variety: 'Geisha', Process: 'DRD washed', Lot: '#0902-250226' },
       story: [
-        'Bought through a producer group in Jaén that mills and dries collectively, which is the only reason a lot this small gets separated at all.',
-        'It was the standout on the cupping table this season — floral without being thin.'
+        'Elida Estate farms the high slopes of Boquete in Panama; this lot comes from its Vuelta plot.',
+        'It is washed, then dried slowly in a dark room — the DRD on the label.'
       ]
     },
     {
-      id: 'nemba-morning',
-      name: 'Nemba Morning',
-      origin: 'Burundi',
-      region: 'Kayanza',
-      process: 'Natural',
-      roast: 'Filter',
-      notes: 'Dried apricot, honey, white flowers',
-      price: 21,
-      image: 'uploads/pack-nemba.jpg',
-      fit: 'cover',
-      blurb: 'Dried apricot and honey with white flowers on the finish. A natural that stays clean rather than boozy.',
-      specs: { Altitude: '1,800 m', Varietal: 'Red Bourbon', Harvest: 'Jul 2025' },
+      id: 'gato-grande',
+      name: 'Gato Grande',
+      origin: 'Panama',
+      region: 'Tierras Altas, Los Pozos',
+      process: 'CFY natural',
+      processes: ['Natural'],
+      variety: 'Geisha',
+      notes: 'Geisha · lot K4 · CFY natural',
+      price: 49,
+      size: '75g',
+      image: 'uploads/label-gato-grande.jpg',
+      fit: 'contain',   // label art: show it whole; use 'cover' for bag photos
+      blurb: 'Geisha lot K4 from the Gato Grande coffee forest in Los Pozos, Tierras Altas, Panama: a natural fermented cold with yeast (CFY).',
+      specs: { Variety: 'Geisha', Process: 'CFY natural', Lot: 'K4' },
       story: [
-        'Dried whole on raised beds for 21 days and turned by hand through the hottest part of the afternoon.',
-        'Naturals from this hill can get heavy; this one was pulled off the beds early and it shows.'
-      ]
-    },
-    {
-      id: 'house-daylight',
-      name: 'House Daylight',
-      origin: 'Blend',
-      region: 'Brazil, Colombia',
-      process: 'Blend',
-      roast: 'Filter',
-      notes: 'Cane sugar, almond, orange',
-      price: 17,
-      image: 'uploads/pack-house.jpg',
-      fit: 'cover',
-      blurb: 'Cane sugar and almond with an orange edge. Our everyday blend — forgiving on the brewer, sweet in milk.',
-      specs: { Altitude: '1,100–1,700 m', Varietal: 'Mixed', Harvest: 'Rolling' },
-      story: [
-        'Two components: a pulped natural from Minas Gerais for body, and a washed Colombian for the citrus on top.',
-        'We re-cup and re-balance it every few weeks so the cup stays the same as the harvests move.'
+        'Gato Grande is a coffee forest in Los Pozos, in Panama’s Tierras Altas.',
+        'Lot K4 is a natural: the cherry is fermented cold with yeast, then dried whole — CFY on the label.'
       ]
     }
   ];
@@ -187,7 +182,7 @@ window.LIGHTS = (function () {
         ['Distribute and tamp', 'Level the bed, then tamp flat and firm. Uneven beds channel and the shot comes out thin.'],
         ['Pull to 40 g', 'First drops by 8–12 seconds, 40 g in the cup around 28 seconds.'],
         ['Taste and adjust', 'Sour and fast means grind finer. Bitter and slow means coarser. Change one thing at a time.'],
-        ['For milk', 'Nariño Night and House Daylight take milk best — pull them a touch shorter, to 36 g.']
+        ['For milk', 'Pull a touch shorter, to 36 g, so the shot holds its own against the milk.']
       ]
     },
     {

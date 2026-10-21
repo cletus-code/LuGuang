@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Coffee — Lights Landing Coffee</title>
-<meta name="description" content="Everything we have on the shelf right now, roasted to order and shipped within the week.">
+<meta name="description" content="Everything on the shelf right now: single-lot coffees from Ethiopia, Honduras and Panama.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
 
 <div class="page">
 
-  <div class="announce">Freshly roasted every Monday — free shipping over $40</div>
+  <div class="announce">Online shop opening soon — save coffees to your wishlist</div>
 
   <header class="sheet masthead" style="--z:6">
     <div class="sheet__body">
@@ -30,7 +30,7 @@
       </nav>
       <div class="masthead__end">
         <a href="coffee.html#coffee-search">Search</a>
-        <a class="cart" href="cart.html">Cart · <span data-cart-count>0</span></a>
+        <a class="cart" href="cart.html">Wishlist · <span data-wishlist-count>0</span></a>
       </div>
     </div>
   </header>
@@ -40,14 +40,14 @@
 
       <div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:20px;margin-bottom:8px">
         <h1 class="h-page" style="font-size:clamp(30px,3.6vw,40px)">Coffee</h1>
-        <p class="meta" style="margin:0;text-transform:uppercase"><span role="status" aria-live="polite" data-lot-count>6 lots</span> · updated weekly</p>
+        <p class="meta" style="margin:0;text-transform:uppercase"><span role="status" aria-live="polite" data-lot-count>5 lots</span> · updated weekly</p>
       </div>
-      <p class="prose" style="margin:0 0 34px">Everything we have on the shelf right now, roasted to order and shipped within the week.</p>
+      <p class="prose" style="margin:0 0 34px">Everything on the shelf right now. Online ordering opens soon — add coffees to your wishlist in the meantime.</p>
 
       <form class="coffee-search" action="coffee.html" method="get" role="search" data-search-form>
         <label for="coffee-search">Search coffee</label>
         <div class="coffee-search__controls">
-          <input id="coffee-search" name="q" type="search" maxlength="200" placeholder="Name, origin or tasting notes" data-coffee-search>
+          <input id="coffee-search" name="q" type="search" maxlength="200" placeholder="Name, origin, variety or process" data-coffee-search>
           <button class="btn btn--primary" type="submit">Search</button>
           <button class="text-action" type="button" hidden data-reset-search>Clear search &amp; filters</button>
         </div>
@@ -60,78 +60,59 @@
             <h2 class="label label--rule">Origin</h2>
             <button class="filter" type="button" data-facet="origin" data-value="all" aria-pressed="true">All</button>
             <button class="filter" type="button" data-facet="origin" data-value="ethiopia" aria-pressed="false">Ethiopia</button>
-            <button class="filter" type="button" data-facet="origin" data-value="colombia" aria-pressed="false">Colombia</button>
-            <button class="filter" type="button" data-facet="origin" data-value="kenya" aria-pressed="false">Kenya</button>
-            <button class="filter" type="button" data-facet="origin" data-value="peru" aria-pressed="false">Peru</button>
-            <button class="filter" type="button" data-facet="origin" data-value="burundi" aria-pressed="false">Burundi</button>
-            <button class="filter" type="button" data-facet="origin" data-value="blend" aria-pressed="false">Blend</button>
+            <button class="filter" type="button" data-facet="origin" data-value="honduras" aria-pressed="false">Honduras</button>
+            <button class="filter" type="button" data-facet="origin" data-value="panama" aria-pressed="false">Panama</button>
           </div>
 
           <div class="filters__group">
             <h2 class="label label--rule">Process</h2>
             <button class="filter" type="button" data-facet="process" data-value="all" aria-pressed="true">All</button>
             <button class="filter" type="button" data-facet="process" data-value="washed" aria-pressed="false">Washed</button>
-            <button class="filter" type="button" data-facet="process" data-value="honey" aria-pressed="false">Honey</button>
             <button class="filter" type="button" data-facet="process" data-value="natural" aria-pressed="false">Natural</button>
-          </div>
-
-          <div class="filters__group">
-            <h2 class="label label--rule">Roast</h2>
-            <button class="filter" type="button" data-facet="roast" data-value="all" aria-pressed="true">All</button>
-            <button class="filter" type="button" data-facet="roast" data-value="filter" aria-pressed="false">Filter</button>
-            <button class="filter" type="button" data-facet="roast" data-value="espresso" aria-pressed="false">Espresso</button>
           </div>
         </div>
 
         <div class="listing__results">
           <div class="listing__grid">
 
-            <a class="product-card" href="product.html?id=sidama-dusk" data-coffee data-origin="Ethiopia" data-process="Washed" data-roast="Filter">
-              <span class="product-card__well"><img src="uploads/pack-sidama.jpg" alt="Sidama Dusk retail bags with the Lu Guang seal"></span>
+            <a class="product-card" href="product.html?id=alo-main-station" data-coffee data-origin="Ethiopia" data-process="Washed">
+              <span class="product-card__well"><img src="uploads/label-alo-main-station.jpg" alt="ALO Main Station label artwork"></span>
               <span class="product-card__origin">Ethiopia · Washed</span>
-              <span class="product-card__name">Sidama Dusk</span>
-              <span class="product-card__notes">Bergamot, apricot, honey</span>
-              <span class="product-card__price">$21 · 250g</span>
+              <span class="product-card__name">ALO Main Station</span>
+              <span class="product-card__notes">74158 · K72 · zero-fermentation washed</span>
+              <span class="product-card__price">$16 · 100g</span>
             </a>
 
-            <a class="product-card" href="product.html?id=narino-night" data-coffee data-origin="Colombia" data-process="Honey" data-roast="Espresso">
-              <span class="product-card__well"><img src="uploads/pack-narino.jpg" alt="Nariño Night bags on the shop shelf"></span>
-              <span class="product-card__origin">Colombia · Honey</span>
-              <span class="product-card__name">Nariño Night</span>
-              <span class="product-card__notes">Red plum, panela, cacao</span>
-              <span class="product-card__price">$19 · 250g</span>
+            <a class="product-card" href="product.html?id=bambito-estate" data-coffee data-origin="Panama" data-process="Washed Natural">
+              <span class="product-card__well"><img src="uploads/label-bambito-estate.jpg" alt="Bambito Estate label artwork"></span>
+              <span class="product-card__origin">Panama · Washed / anaerobic natural</span>
+              <span class="product-card__name">Bambito Estate</span>
+              <span class="product-card__notes">Geisha · Yellow Catuai</span>
+              <span class="product-card__price">$18 · 100g</span>
             </a>
 
-            <a class="product-card" href="product.html?id=nyeri-lamplight" data-coffee data-origin="Kenya" data-process="Washed" data-roast="Filter">
-              <span class="product-card__well"><img src="uploads/pack-nyeri.jpg" alt="Rows of Nyeri Lamplight bags ready to ship"></span>
-              <span class="product-card__origin">Kenya · Washed</span>
-              <span class="product-card__name">Nyeri Lamplight</span>
-              <span class="product-card__notes">Blackcurrant, grapefruit, cane</span>
-              <span class="product-card__price">$23 · 250g</span>
+            <a class="product-card" href="product.html?id=finca-la-fresa" data-coffee data-origin="Honduras" data-process="Washed">
+              <span class="product-card__well"><img src="uploads/label-finca-la-fresa.jpg" alt="Finca La Fresa label artwork"></span>
+              <span class="product-card__origin">Honduras · Washed</span>
+              <span class="product-card__name">Finca La Fresa</span>
+              <span class="product-card__notes">Geisha · lot #161</span>
+              <span class="product-card__price">$26 · 100g</span>
             </a>
 
-            <a class="product-card" href="product.html?id=llaqta-cold-brew" data-coffee data-origin="Peru" data-process="Washed" data-roast="Filter">
-              <span class="product-card__well"><img src="uploads/pack-llaqta.jpg" alt="Cold brew cans in the café fridge"></span>
-              <span class="product-card__origin">Peru · Washed</span>
-              <span class="product-card__name">Llaqta Cold Brew</span>
-              <span class="product-card__notes">Violet, candied orange, lemon</span>
-              <span class="product-card__price">$24 · 250g</span>
+            <a class="product-card" href="product.html?id=elida-estate" data-coffee data-origin="Panama" data-process="Washed">
+              <span class="product-card__well"><img src="uploads/label-elida-estate.jpg" alt="Elida Estate label artwork"></span>
+              <span class="product-card__origin">Panama · DRD washed</span>
+              <span class="product-card__name">Elida Estate</span>
+              <span class="product-card__notes">Geisha · DRD washed</span>
+              <span class="product-card__price">$39 · 75g</span>
             </a>
 
-            <a class="product-card" href="product.html?id=nemba-morning" data-coffee data-origin="Burundi" data-process="Natural" data-roast="Filter">
-              <span class="product-card__well"><img src="uploads/pack-nemba.jpg" alt="Nemba Morning bags tied and stacked"></span>
-              <span class="product-card__origin">Burundi · Natural</span>
-              <span class="product-card__name">Nemba Morning</span>
-              <span class="product-card__notes">Dried apricot, honey, white flowers</span>
-              <span class="product-card__price">$21 · 250g</span>
-            </a>
-
-            <a class="product-card" href="product.html?id=house-daylight" data-coffee data-origin="Blend" data-process="Blend" data-roast="Filter">
-              <span class="product-card__well"><img src="uploads/pack-house.jpg" alt="House Daylight bags beside cupping bowls"></span>
-              <span class="product-card__origin">Blend · Filter</span>
-              <span class="product-card__name">House Daylight</span>
-              <span class="product-card__notes">Cane sugar, almond, orange</span>
-              <span class="product-card__price">$17 · 250g</span>
+            <a class="product-card" href="product.html?id=gato-grande" data-coffee data-origin="Panama" data-process="Natural">
+              <span class="product-card__well"><img src="uploads/label-gato-grande.jpg" alt="Gato Grande label artwork"></span>
+              <span class="product-card__origin">Panama · CFY natural</span>
+              <span class="product-card__name">Gato Grande</span>
+              <span class="product-card__notes">Geisha · lot K4 · CFY natural</span>
+              <span class="product-card__price">$49 · 75g</span>
             </a>
 
           </div>
@@ -156,8 +137,8 @@
 
 </div>
 
-<script src="assets/data.js"></script>
-<script src="assets/shop.js?v=search-cart-1"></script>
-<script src="assets/site.js?v=search-cart-1"></script>
+<script src="assets/data.js?v=wishlist-2"></script>
+<script src="assets/shop.js?v=wishlist-1"></script>
+<script src="assets/site.js?v=wishlist-2"></script>
 </body>
 </html>

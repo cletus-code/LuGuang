@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Your cart — Lights Landing Coffee</title>
-<meta name="description" content="Review your saved coffee selections, quantities and subtotal.">
+<title>Wishlist — Lights Landing Coffee</title>
+<meta name="description" content="Online shopping is coming soon. Save coffees to your wishlist for when the shop opens.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
 
 <div class="page">
 
-  <div class="announce">Freshly roasted every Monday — free shipping over $40</div>
+  <div class="announce">Online shop opening soon — save coffees to your wishlist</div>
 
   <header class="sheet masthead" style="--z:6">
     <div class="sheet__body">
@@ -30,27 +30,29 @@
       </nav>
       <div class="masthead__end">
         <a href="coffee.html#coffee-search">Search</a>
-        <a class="cart" href="cart.html">Cart · <span data-cart-count>0</span></a>
+        <a class="cart" href="cart.html">Wishlist · <span data-wishlist-count>0</span></a>
       </div>
     </div>
   </header>
 
   <section class="sheet sheet--paper sheet--skirt" style="--z:4">
-    <div class="sheet__body band cart-page" data-cart-page>
-      <p class="eyebrow">Lights Landing Coffee</p>
-      <h1 class="h-page">Your cart</h1>
-      <p class="cart-status" role="status" aria-live="polite" data-cart-status></p>
-      <div class="cart-empty" data-cart-empty>
-        <p>Your cart is empty. Find your next coffee on the shelf.</p>
-        <a class="btn btn--primary" href="coffee.html">Explore coffee</a>
+    <div class="sheet__body band cart-page" data-wishlist-page>
+      <p class="eyebrow">Wishlist</p>
+      <h1 class="h-page">Shopping is coming soon</h1>
+      <p class="lede" style="margin:18px 0 10px">We aren’t taking orders online yet. Add coffees to your wishlist and they’ll be waiting here when the shop opens.</p>
+      <p class="cart-status" role="status" aria-live="polite" data-wishlist-status></p>
+
+      <h2 class="h-section" style="margin-top:36px">Your wishlist</h2>
+      <p class="cart-empty" data-wishlist-empty>Nothing saved yet. Add a coffee below, or browse <a class="arrow-link" href="coffee.html">the shelf →</a></p>
+      <ul class="cart-items" data-wishlist-items></ul>
+
+      <div data-wishlist-more-section>
+        <h2 class="h-section" style="margin-top:52px">Add more coffees</h2>
+        <ul class="cart-items" data-wishlist-more></ul>
       </div>
-      <ul class="cart-items" data-cart-items></ul>
-      <div class="cart-summary" hidden data-cart-summary>
-        <p class="cart-subtotal">Subtotal <strong data-cart-subtotal></strong></p>
-        <p class="prose">Your selections are saved in this browser. Checkout isn’t available yet.</p>
-        <a class="btn" href="coffee.html">Continue shopping</a>
-      </div>
-      <noscript><p>Please enable JavaScript to view and update your saved cart.</p></noscript>
+
+      <p class="meta" style="margin-top:34px;letter-spacing:0">Your wishlist is saved in this browser.</p>
+      <noscript><p>Please enable JavaScript to see and change your wishlist.</p></noscript>
     </div>
   </section>
 
@@ -67,8 +69,8 @@
 
 </div>
 
-<script src="assets/data.js"></script>
-<script src="assets/shop.js?v=search-cart-1"></script>
-<script src="assets/site.js?v=search-cart-1"></script>
+<script src="assets/data.js?v=wishlist-2"></script>
+<script src="assets/shop.js?v=wishlist-1"></script>
+<script src="assets/site.js?v=wishlist-2"></script>
 </body>
 </html>

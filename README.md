@@ -116,21 +116,23 @@ The mockup is a picture; these are the parts that had to become real. Every
 page renders in full from its own HTML — the script only enhances.
 
 - **Search** in the header opens the coffee shelf’s labeled search field. Name, origin, region,
-  process, roast, tasting notes and varietal match case/accent-insensitively. Search combines
+  process, variety and lot match case/accent-insensitively. Search combines
   with the existing filters, keeps its query in the URL, and offers a clear action and empty state.
 - **Product page** fills the 3b template from `data.js` for whichever `?id=` is
-  requested; without one it stays on Sidama Dusk.
+  requested; without one it shows the first coffee, ALO Main Station.
 - **Brew tabs** swap the recipe in place and push a `?m=` URL, so guides are
   linkable and the back button works.
-- **Size / grind** swatches are real single-select rows.
-- **Cart** opens `cart.html`: saved coffee, 250g size, grind, quantities, line totals and subtotal.
-  Matching selections combine; different grinds stay separate. Update quantity or remove a line;
-  changes persist in this browser and sync between tabs. Stored prices are never trusted: totals
-  use the current catalogue. The older count-only `lights.cart` value has no item identities and
-  is left untouched; actual selections use `lights.cart.items`. Storage failures are shown.
-- **Available size:** the catalogue currently prices 250g only; unpriced 1kg is not offered.
-- **Account** was removed from every header. Search and Cart are normal links on every page.
-- **Checks:** `node tools/check_shop.js` verifies search, selections, storage and totals;
+- **Ordering is closed for now.** "Add to cart" on a product page saves that coffee to the
+  **wishlist** and opens `cart.html`, which says shopping is coming soon, lists the wishlist, and
+  offers every other coffee with an "Add to wishlist" button. The header link reads
+  "Wishlist · N". The wishlist is coffee ids only (`lights.wishlist` in this browser's storage),
+  syncs between tabs, and says so when the browser refuses to save it. The old cart's
+  `lights.cart.items` is left untouched. Each coffee comes in one size, shown on its page; the
+  grind choice is gone until ordering opens.
+- **Shelf filters** are Origin and Process. A coffee sold as more than one process (Bambito Estate)
+  lists each in `data-process` and matches either.
+- **Checks:** `node tools/check_shop.js` verifies the catalogue and its cheapest-first order,
+  search, wishlist storage and the links on every page;
   `node tools/check_fan_logo.js` verifies the unchanged logo behavior.
 
 Responsive down to 320px: grids drop to two columns at 1040 and one at 620, the
@@ -139,27 +141,37 @@ stacks.
 
 ## Where the content comes from
 
-Names, origins, processes, tasting notes, prices, the V60 recipe, the café menu
-and all page copy are the design's own.
+**The coffees** (`assets/data.js`) are the five on sale, cheapest first: ALO Main
+Station ($16 · 100g), Bambito Estate ($18 · 100g), Finca La Fresa ($26 · 100g),
+Elida Estate ($39 · 75g) and Gato Grande ($49 · 75g). Prices and sizes are the
+shop's. Names, origins, regions, varieties, processes and lot numbers are
+transcribed from each bag's label. Their images, `uploads/label-*.jpg`, are the
+label artwork cropped from the shop's listings until bag photos replace them;
+to switch to a photo, change `image` and set `fit: 'cover'`.
 
-Written to fill the templates the design provides, and worth a review before
-this goes anywhere real:
+Worth checking against the bags:
 
-- **Per-lot specs and farm notes** for the five lots other than Sidama Dusk
-  (`assets/data.js`) — the 3b template needs them and only Sidama Dusk's were
-  designed.
+- **Blurbs and "From the farm" text** restate the labels in prose, including
+  readings of the process codes: DRD as dried in a dark room, CFY as cold yeast
+  fermentation, zero-fermentation washed as washed with no fermentation stage.
+- **Finca La Fresa's lot** is #161 on the English label and #121 in the Chinese
+  line; the site says #161.
+- **Bambito Estate** is labelled Geisha / Yellow Catuai, washed / anaerobic
+  natural, at one price ($18 · 100g).
+- **No tasting notes** are given for any coffee yet.
+
+The V60 recipe, the café menu and the rest of the page copy are the design's own.
+Written to fill the design's templates, and worth a review:
+
 - **French press recipe** (`assets/data.js`) — the 3c tab row names four
   methods and the design only specifies V60. Espresso and Iced use the numbers
   from 3b's "Brew it this way" cards.
-- **Roast values** used by the listing's roast facet. Only House Daylight's
-  roast is stated in the design ("Blend · Filter"); Nariño Night is marked
-  espresso, the rest filter.
 
 ## Not built
 
 Checkout/payment collection, accounts, a sourcing page and a brew-guide index remain outside
-this build. The cart explicitly says checkout is not yet available; no order or payment is
-submitted. Connect a payment service before enabling purchase completion.
+this build. Ordering is closed: "Add to cart" only saves to the wishlist, and no order or
+payment is submitted. Connect a payment service before enabling purchase completion.
 
 `uploads/coffee-berries-1296x728-header.avif` ships with the assets but belongs
 to the roadmap's dark exploration (turn 1) and is unused here.

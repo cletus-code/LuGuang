@@ -12,57 +12,65 @@ function load(storage = new Map(), blocked = false) {
   } };
   const context = vm.createContext({ window, Intl });
   for (const name of ['data.js', 'shop.js']) vm.runInContext(fs.readFileSync(path.join(root, 'assets', name), 'utf8'), context);
-  return { shop: window.LIGHTS_SHOP, catalog: window.LIGHTS.coffees };
+  return { shop: window.LIGHTS_SHOP, catalog: Array.from(window.LIGHTS.coffees) };
 }
-const storage = new Map([['lights.cart', '7']]);
+// Arrays made inside the vm context have their own prototype; compare copies.
+const plain = value => JSON.parse(JSON.stringify(value));
+
+// The catalogue: the five coffees on sale, cheapest first, each with a size and an image.
+const storage = new Map([['lights.cart.items', '[{"id":"sidama-dusk"}]']]);
 let { shop, catalog } = load(storage);
-const names = query => Array.from(catalog).filter(coffee => shop.matches(coffee, query)).map(coffee => coffee.id);
-assert.deepEqual(names('nARINO'), ['narino-night']);
-assert.deepEqual(names('colombia honey'), ['narino-night']);
-assert.deepEqual(names('grapefruit'), ['nyeri-lamplight']);
-assert.deepEqual(names('caturra'), ['narino-night']);
-assert.deepEqual(names('   '), Array.from(catalog).map(coffee => coffee.id));
+assert.deepEqual(catalog.map(coffee => coffee.id),
+  ['alo-main-station', 'bambito-estate', 'finca-la-fresa', 'elida-estate', 'gato-grande']);
+assert.deepEqual(catalog.map(coffee => shop.priceLabel(coffee)),
+  ['$16 · 100g', '$18 · 100g', '$26 · 100g', '$39 · 75g', '$49 · 75g']);
+for (const coffee of catalog) {
+  assert(fs.existsSync(path.join(root, coffee.image)), coffee.id + ': image exists');
+  assert(coffee.processes.length > 0, coffee.id + ': listed under at least one process');
+}
+
+// Search.
+const names = query => catalog.filter(coffee => shop.matches(coffee, query)).map(coffee => coffee.id);
+assert.deepEqual(names('ethiopia'), ['alo-main-station']);
+assert.deepEqual(names('HONDURAS washed'), ['finca-la-fresa']);
+assert.deepEqual(names('catuai'), ['bambito-estate']);
+assert.deepEqual(names('volcan'), ['bambito-estate'], 'Accents are ignored');
+assert.deepEqual(names('panama geisha'), ['bambito-estate', 'elida-estate', 'gato-grande']);
+assert.deepEqual(names('   '), catalog.map(coffee => coffee.id));
 assert.deepEqual(names('<script>'), []);
-assert.deepEqual(names('coffee-that-does-not-exist'), []);
-assert.equal(shop.readCart().length, 0, 'The old counter never invents product selections');
-let cart = shop.addItem([], 'narino-night', '250g', 'Espresso');
-cart = shop.addItem(cart, 'narino-night', '250g', 'Espresso');
-assert.equal(cart.length, 1);
-assert.equal(cart[0].quantity, 2);
-cart = shop.addItem(cart, 'narino-night', '250g', 'Whole bean');
-cart = shop.addItem(cart, 'sidama-dusk', '250g', 'Filter');
-assert.equal(cart.length, 3, 'Different grinds remain separate');
-assert.equal(shop.subtotal(cart), 7800);
-assert.equal(shop.money(shop.subtotal(cart)), '$78.00');
-assert(shop.writeCart(cart));
-assert.equal(storage.get('lights.cart'), '7', 'Legacy storage remains untouched');
+
+// The wishlist: known coffees, once each, surviving a new page.
+assert.equal(shop.readWishlist().length, 0, 'The old cart never becomes a wishlist');
+let list = shop.add([], 'gato-grande');
+list = shop.add(list, 'gato-grande');
+list = shop.add(list, 'alo-main-station');
+assert.deepEqual(plain(list), ['gato-grande', 'alo-main-station'], 'Each coffee is saved once, in order added');
+assert(shop.writeWishlist(list));
 shop = load(storage).shop;
-assert.equal(shop.readCart().length, 3, 'Selections survive a new page/session');
-assert.equal(shop.subtotal(shop.readCart()), 7800);
-let edited = shop.readCart(); edited[0].quantity = 3;
-assert.equal(shop.subtotal(edited), 9700);
-assert(shop.writeCart(edited.filter(item => item.id !== 'sidama-dusk')));
-assert.equal(shop.subtotal(shop.readCart()), 7600);
-assert(shop.writeCart([]));
-assert.equal(shop.readCart().length, 0);
-const valid = { id: 'sidama-dusk', size: '250g', grind: 'Whole bean', quantity: 2, price: 0.01 };
-const corrupt = [null, false, 3, { ...valid, id: 'not-a-coffee' }, { ...valid, size: '1kg' },
-  { ...valid, grind: 'bad' }, { ...valid, quantity: -1 }, { ...valid, quantity: .5 },
-  { ...valid, quantity: '2' }, { ...valid, quantity: Infinity }];
-assert.equal(shop.normalizeCart(corrupt).length, 0);
-assert.equal(shop.subtotal([valid]), 4200, 'Totals use catalogue prices, never saved prices');
-assert.equal(shop.normalizeCart([{ ...valid, quantity: 200 }, valid])[0].quantity, 99);
+assert.deepEqual(plain(shop.readWishlist()), ['gato-grande', 'alo-main-station']);
+assert.deepEqual(plain(shop.remove(shop.readWishlist(), 'gato-grande')), ['alo-main-station']);
+assert.equal(storage.get('lights.cart.items'), '[{"id":"sidama-dusk"}]', 'Old cart storage is left alone');
+assert.deepEqual(plain(shop.normalizeWishlist([null, 3, {}, 'sidama-dusk', 'not-a-coffee', 'elida-estate'])), ['elida-estate']);
 for (const value of ['not json', '3', '{}', 'null']) {
-  storage.set(shop.key, value); assert.equal(shop.readCart().length, 0);
+  storage.set(shop.key, value); assert.equal(shop.readWishlist().length, 0);
 }
 shop = load(new Map(), true).shop;
-assert.equal(shop.readCart().length, 0);
-assert.equal(shop.writeCart([valid]), false, 'Storage failures reach the UI');
+assert.equal(shop.readWishlist().length, 0);
+assert.equal(shop.writeWishlist(['gato-grande']), false, 'Storage failures reach the UI');
+
+// Pages.
 for (const name of fs.readdirSync(root).filter(name => name.endsWith('.html'))) {
   const html = fs.readFileSync(path.join(root, name), 'utf8');
-  assert(!/<span>Account<\/span>/.test(html), name + ': remove Account');
   assert(html.includes('href="coffee.html#coffee-search"'), name + ': Search is a real link');
-  assert(html.includes('href="cart.html"'), name + ': Cart is a real link');
-  assert(html.indexOf('assets/shop.js') < html.indexOf('assets/site.js'), name + ': load cart rules before the UI');
+  assert(html.includes('<a class="cart" href="cart.html">Wishlist · <span data-wishlist-count>0</span></a>'), name + ': Wishlist link');
+  assert(!/free shipping/i.test(html), name + ': no shipping offers while ordering is closed');
+  assert(html.indexOf('assets/shop.js') < html.indexOf('assets/site.js'), name + ': load shop rules before the UI');
+  for (const [, id] of html.matchAll(/product\.html\?id=([a-z0-9-]+)/g)) {
+    assert(catalog.some(coffee => coffee.id === id), name + ': links to a coffee on sale (' + id + ')');
+  }
 }
-console.log('Shop checks passed: search, saved selections, grind separation, quantities, totals, corrupt storage, unavailable sizes and header links.');
+const shelf = fs.readFileSync(path.join(root, 'coffee.html'), 'utf8');
+assert.deepEqual(Array.from(shelf.matchAll(/data-coffee data-origin/g)).length, catalog.length, 'Every coffee is on the shelf');
+assert.deepEqual(Array.from(shelf.matchAll(/product\.html\?id=([a-z0-9-]+)/g), match => match[1]),
+  catalog.map(coffee => coffee.id), 'The shelf lists the cheapest first');
+console.log('Shop checks passed: catalogue and order, search, wishlist storage, corrupt or blocked storage and page links.');
