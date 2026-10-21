@@ -129,6 +129,20 @@ page renders in full from its own HTML — the script only enhances.
   syncs between tabs, and says so when the browser refuses to save it. The old cart's
   `lights.cart.items` is left untouched. Each coffee comes in one size, shown on its page; the
   grind choice is gone until ordering opens.
+- **Reserve by email.** The wishlist page has a form: an email address, plus the coffees on the
+  wishlist, sent as one JSON POST (`email`, `coffees`, `coffee_ids`, `_subject`, and a `_gotcha`
+  spam trap) to `reserve.endpoint` in `assets/data.js`. The visitor is told whether it went
+  through. **The form stays hidden until that endpoint is set**, so nobody can submit into
+  nothing. To switch it on with Formspree, which emails you each reservation and keeps a list
+  you can export:
+  1. Sign up at formspree.io and create a form. It gives an endpoint like
+     `https://formspree.io/f/abcdwxyz`.
+  2. Paste it into `assets/data.js`: `var reserve = { endpoint: 'https://formspree.io/f/abcdwxyz' };`
+  3. Submit one reservation from the live site and confirm it in Formspree's dashboard and inbox.
+     Check the plan's monthly submission limit.
+
+  Any service that accepts a JSON POST and returns a 2xx status works the same way, as will the
+  site's own `/api/reserve` once it runs on Cloudflare.
 - **Shelf filters** are Origin and Process. A coffee sold as more than one process (Bambito Estate)
   lists each in `data-process` and matches either.
 - **Checks:** `node tools/check_shop.js` verifies the catalogue and its cheapest-first order,

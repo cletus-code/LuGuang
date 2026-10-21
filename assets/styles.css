@@ -1075,6 +1075,17 @@ button {
 .cart-subtotal { display: flex; justify-content: space-between; font-size: 21px; color: var(--ink); }
 .cart-subtotal strong { font-weight: 400; }
 .cart-empty { padding: 20px 0 40px; line-height: 1.8; }
+
+/* Email reservations on the wishlist page, in the shelf search's style. */
+.reserve { position: relative; max-width: 640px; margin: 44px 0 0; }
+.reserve > label { display: block; color: var(--ink); margin: 20px 0 10px; font-size: 15px; }
+.reserve__controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.reserve__controls input { flex: 1 1 260px; min-width: 0; padding: 13px 16px; border: 1px solid var(--rule); background: var(--sheet); color: var(--ink); font: inherit; }
+.reserve__controls .btn:disabled { opacity: .55; cursor: default; }
+.reserve__coffees { margin: 16px 0 0; color: var(--ink); font-size: 15px; line-height: 1.7; }
+.reserve__note { margin: 14px 0 6px; letter-spacing: 0; }
+/* A field only bots fill in; the form service drops those submissions. */
+.reserve__trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 @media (max-width: 620px) {
   .cart-item { grid-template-columns: 76px minmax(0, 1fr); gap: 16px; }
   .cart-item__photo img { width: 76px; height: 100px; }

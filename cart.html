@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=eggshell-shop-1">
+<link rel="stylesheet" href="assets/styles.css?v=reserve-1">
 </head>
 <body>
 
@@ -46,6 +46,22 @@
       <p class="cart-empty" data-wishlist-empty>Nothing saved yet. Add a coffee below, or browse <a class="arrow-link" href="coffee.html">the shelf →</a></p>
       <ul class="cart-items" data-wishlist-items></ul>
 
+      <form class="reserve" hidden data-reserve-form>
+        <h2 class="h-section">Reserve by email</h2>
+        <p class="prose" style="margin:12px 0 0">Leave your email and we’ll set aside the coffees on your wishlist, then write to you when the shop opens.</p>
+        <p class="reserve__coffees" data-reserve-coffees></p>
+        <label for="reserve-email">Email</label>
+        <div class="reserve__controls">
+          <input id="reserve-email" name="email" type="email" required maxlength="254" autocomplete="email" data-reserve-email>
+          <button class="btn btn--primary" type="submit" data-reserve-submit>Reserve these coffees</button>
+        </div>
+        <div class="reserve__trap" aria-hidden="true">
+          <label>Leave this empty <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" data-reserve-trap></label>
+        </div>
+        <p class="meta reserve__note">We’ll use your email only for this reservation and to tell you when the shop opens.</p>
+        <p class="cart-status" role="status" aria-live="polite" data-reserve-status></p>
+      </form>
+
       <div data-wishlist-more-section>
         <h2 class="h-section" style="margin-top:52px">Add more coffees</h2>
         <ul class="cart-items" data-wishlist-more></ul>
@@ -69,8 +85,8 @@
 
 </div>
 
-<script src="assets/data.js?v=wishlist-2"></script>
+<script src="assets/data.js?v=reserve-1"></script>
 <script src="assets/shop.js?v=wishlist-1"></script>
-<script src="assets/site.js?v=wishlist-2"></script>
+<script src="assets/site.js?v=reserve-2"></script>
 </body>
 </html>

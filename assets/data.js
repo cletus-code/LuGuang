@@ -210,5 +210,11 @@ window.LIGHTS = (function () {
     }
   ];
 
-  return { coffees: coffees, guides: guides };
+  /* Email reservations. The wishlist page posts each signup as JSON to this
+     address: a form service's endpoint (e.g. https://formspree.io/f/xxxxxxxx)
+     or, later, the site's own /api/reserve. Empty keeps the form hidden, so
+     nobody can submit into nothing. See README.md. */
+  var reserve = { endpoint: '' };
+
+  return { coffees: coffees, guides: guides, reserve: reserve };
 })();

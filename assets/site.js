@@ -158,6 +158,7 @@
 
   var SHOP = window.LIGHTS_SHOP;
   var wishlist = SHOP ? SHOP.readWishlist() : [];
+  var refreshReserve = null;   /* set by initReserve on the wishlist page */
 
   function updateWishlistCount() {
     $$('[data-wishlist-count]').forEach(function (node) { node.textContent = wishlist.length; });
@@ -211,6 +212,7 @@
     });
     $('[data-wishlist-empty]', root).hidden = wishlist.length > 0;
     $('[data-wishlist-more-section]', root).hidden = wishlist.length === DATA.coffees.length;
+    if (refreshReserve) { refreshReserve(); }
     if (focusId) {
       var target = $('#' + focusId);
       if (target) { target.focus(); }
@@ -245,6 +247,73 @@
         window.location.href = 'cart.html?added=' + encodeURIComponent(coffee.id);
       });
     });
+  }
+
+  /* ---------------------------------------------------- email reserve -- */
+  /* The wishlist page's signup sends the email and the coffees on the
+     wishlist to the endpoint in data.js as JSON. With no endpoint set the
+     form stays hidden. */
+
+  function initReserve() {
+    var form = $('[data-reserve-form]');
+    var endpoint = DATA.reserve && DATA.reserve.endpoint;
+    if (!form || !SHOP || !/^https:\/\//.test(endpoint || '')) { return; }
+
+    var listing = $('[data-reserve-coffees]', form);
+    var submit = $('[data-reserve-submit]', form);
+    var status = $('[data-reserve-status]', form);
+    var email = $('[data-reserve-email]', form);
+    var trap = $('[data-reserve-trap]', form);
+    var sending = false;
+
+    /* Shelf order, the same as the wishlist shown above the form. */
+    function saved() {
+      return DATA.coffees.filter(function (coffee) { return wishlist.indexOf(coffee.id) >= 0; });
+    }
+    function names(coffees) {
+      return coffees.map(function (coffee) { return coffee.name + ' (' + SHOP.priceLabel(coffee) + ')'; }).join(', ');
+    }
+    refreshReserve = function () {
+      var coffees = saved();
+      listing.textContent = coffees.length ? 'Reserving: ' + names(coffees) + '.' : 'Add a coffee to your wishlist to reserve it.';
+      submit.disabled = sending || coffees.length === 0;
+    };
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      var coffees = saved();
+      if (sending || !coffees.length || !form.reportValidity()) { return; }
+      var address = email.value.trim();
+      sending = true;
+      refreshReserve();
+      status.textContent = 'Sending your reservation…';
+      window.fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          email: address,
+          coffees: names(coffees),
+          coffee_ids: coffees.map(function (coffee) { return coffee.id; }).join(','),
+          _subject: 'Coffee reservation: ' + coffees.map(function (coffee) { return coffee.name; }).join(', '),
+          _gotcha: trap.value
+        })
+      }).then(function (response) {
+        if (!response.ok) {
+          status.textContent = 'We couldn’t take that reservation just now. Please try again in a moment.';
+          return;
+        }
+        status.textContent = 'Thank you. Your reservation for ' + names(coffees) + ' is in, and we’ll email ' + address + ' when the shop opens.';
+        email.value = '';
+      }).catch(function () {
+        status.textContent = 'Your reservation didn’t go through. Check your connection and try again.';
+      }).then(function () {
+        sending = false;
+        refreshReserve();
+      });
+    });
+
+    form.hidden = false;
+    refreshReserve();
   }
 
   /* -------------------------------------------------- option swatches -- */
@@ -440,6 +509,7 @@
 
   initFanLogo();
   initWishlist();
+  initReserve();
   initChoiceGroups();
   initFilters();
   renderProduct();

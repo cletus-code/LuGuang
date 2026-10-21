@@ -73,4 +73,16 @@ const shelf = fs.readFileSync(path.join(root, 'coffee.html'), 'utf8');
 assert.deepEqual(Array.from(shelf.matchAll(/data-coffee data-origin/g)).length, catalog.length, 'Every coffee is on the shelf');
 assert.deepEqual(Array.from(shelf.matchAll(/product\.html\?id=([a-z0-9-]+)/g), match => match[1]),
   catalog.map(coffee => coffee.id), 'The shelf lists the cheapest first');
-console.log('Shop checks passed: catalogue and order, search, wishlist storage, corrupt or blocked storage and page links.');
+// Email reservations: hidden until an https endpoint is configured.
+const config = load().shop && vm.runInContext('window.LIGHTS.reserve', (() => {
+  const context = vm.createContext({ window: {} });
+  vm.runInContext(fs.readFileSync(path.join(root, 'assets', 'data.js'), 'utf8'), context);
+  return context;
+})());
+assert.equal(typeof config.endpoint, 'string', 'data.js sets reserve.endpoint');
+assert(config.endpoint === '' || /^https:\/\//.test(config.endpoint), 'reserve.endpoint is empty or https');
+const wishlistPage = fs.readFileSync(path.join(root, 'cart.html'), 'utf8');
+assert(/<form class="reserve" hidden data-reserve-form>/.test(wishlistPage), 'The form starts hidden');
+assert(/type="email" required/.test(wishlistPage), 'Email is required');
+assert(/name="_gotcha" tabindex="-1"/.test(wishlistPage), 'Spam trap is present and out of the tab order');
+console.log('Shop checks passed: catalogue and order, search, wishlist storage, corrupt or blocked storage, page links and the reservation form.');
