@@ -26,7 +26,10 @@ assert.deepEqual(catalog.map(coffee => shop.priceLabel(coffee)),
   ['$16 · 100g', '$18 · 100g', '$26 · 100g', '$39 · 75g', '$49 · 75g']);
 for (const coffee of catalog) {
   assert(fs.existsSync(path.join(root, coffee.image)), coffee.id + ': image exists');
+  assert(fs.existsSync(path.join(root, coffee.bag)), coffee.id + ': bag photo exists');
   assert(coffee.processes.length > 0, coffee.id + ': listed under at least one process');
+  assert(coffee.cup || coffee.tasting, coffee.id + ': has tasting notes');
+  assert(coffee.notes && coffee.label.en && coffee.label.zh && coffee.story.length, coffee.id + ': notes, label and farm story');
 }
 
 // Search.
@@ -35,7 +38,8 @@ assert.deepEqual(names('ethiopia'), ['alo-main-station']);
 assert.deepEqual(names('HONDURAS washed'), ['finca-la-fresa']);
 assert.deepEqual(names('catuai'), ['bambito-estate']);
 assert.deepEqual(names('volcan'), ['bambito-estate'], 'Accents are ignored');
-assert.deepEqual(names('panama geisha'), ['bambito-estate', 'elida-estate', 'gato-grande']);
+assert.deepEqual(names('panama geisha'), ['elida-estate', 'gato-grande'], 'Bambito is sold as Yellow Catuai only');
+assert.deepEqual(names('lychee'), ['finca-la-fresa'], 'Tasting notes are searchable');
 assert.deepEqual(names('   '), catalog.map(coffee => coffee.id));
 assert.deepEqual(names('<script>'), []);
 
@@ -74,6 +78,14 @@ const shelf = fs.readFileSync(path.join(root, 'coffee.html'), 'utf8');
 assert.deepEqual(Array.from(shelf.matchAll(/data-coffee data-origin/g)).length, catalog.length, 'Every coffee is on the shelf');
 assert.deepEqual(Array.from(shelf.matchAll(/product\.html\?id=([a-z0-9-]+)/g), match => match[1]),
   catalog.map(coffee => coffee.id), 'The shelf lists the cheapest first');
+assert.deepEqual(Array.from(shelf.matchAll(/data-process="([^"]+)"/g), match => match[1]),
+  catalog.map(coffee => coffee.processes.join(' ')), 'Shelf process filters match the catalogue');
+for (const name of ['coffee.html', 'index.html']) {
+  const page = fs.readFileSync(path.join(root, name), 'utf8');
+  for (const [, id, notes] of page.matchAll(/product\.html\?id=([a-z0-9-]+)"[\s\S]*?product-card__notes">([^<]+)</g)) {
+    assert.equal(notes, catalog.find(coffee => coffee.id === id).notes, name + ': card notes match the catalogue (' + id + ')');
+  }
+}
 // Email reservations: hidden until an https endpoint is configured.
 const config = load().shop && vm.runInContext('window.LIGHTS.reserve', (() => {
   const context = vm.createContext({ window: {} });
@@ -86,4 +98,4 @@ const wishlistPage = fs.readFileSync(path.join(root, 'cart.html'), 'utf8');
 assert(/<form class="reserve" hidden data-reserve-form>/.test(wishlistPage), 'The form starts hidden');
 assert(/type="email" required/.test(wishlistPage), 'Email is required');
 assert(/name="_gotcha" tabindex="-1"/.test(wishlistPage), 'Spam trap is present and out of the tab order');
-console.log('Shop checks passed: catalogue and order, search, wishlist storage, corrupt or blocked storage, page links and the reservation form.');
+console.log('Shop checks passed: catalogue and order, tasting notes, search, wishlist storage, corrupt or blocked storage, page links and the reservation form.');

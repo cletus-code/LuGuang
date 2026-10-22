@@ -416,6 +416,7 @@
     $('[data-product-eyebrow]', root).textContent =
       [coffee.origin, coffee.region, coffee.process].filter(Boolean).join(' · ');
     $('[data-product-name]', root).textContent  = coffee.name;
+    $('[data-product-notes]', root).textContent = coffee.notes;
     $('[data-product-blurb]', root).textContent = coffee.blurb;
     $('[data-product-size]', root).textContent = coffee.size;
     $('[data-product-price]', root).textContent = 'Add to cart — ' + SHOP.money(coffee.price);
@@ -429,10 +430,35 @@
       specs.appendChild(wrap);
     });
 
+    // In the cup: aroma, palate and finish, or one line when that is all
+    // the roaster gave.
+    var cup = $('[data-product-cup]');
+    if (cup) {
+      cup.innerHTML = '';
+      (coffee.cup || [['Tasting', coffee.tasting]]).forEach(function (pair) {
+        var wrap = el('div');
+        wrap.appendChild(el('dt', null, pair[0]));
+        wrap.appendChild(el('dd', null, pair[1]));
+        cup.appendChild(wrap);
+      });
+      $('[data-product-label-en]').textContent = coffee.label.en;
+      $('[data-product-label-zh]').textContent = coffee.label.zh;
+      var bag = $('[data-product-bag]');
+      bag.src = coffee.bag;
+      bag.alt = 'A bag of ' + coffee.name;
+    }
+
     var story = $('[data-product-story]');
     if (story) {
       story.innerHTML = '';
       coffee.story.forEach(function (para) { story.appendChild(el('p', null, para)); });
+    }
+
+    var awards = $('[data-product-awards]');
+    if (awards) {
+      awards.innerHTML = '';
+      (coffee.awards || []).forEach(function (line) { awards.appendChild(el('li', null, line)); });
+      $('[data-product-awards-block]').hidden = !coffee.awards;
     }
   }
 

@@ -158,27 +158,35 @@ stacks.
 **The coffees** (`assets/data.js`) are the five on sale, cheapest first: ALO Main
 Station ($16 · 100g), Bambito Estate ($18 · 100g), Finca La Fresa ($26 · 100g),
 Elida Estate ($39 · 75g) and Gato Grande ($49 · 75g). Prices and sizes are the
-shop's. Names, origins, regions, varieties, processes and lot numbers are
-transcribed from each bag's label. Their images, `uploads/label-*.jpg`, are the
-label artwork cropped from the shop's listings until bag photos replace them;
-to switch to a photo, change `image` and set `fit: 'cover'`.
+shop's. Full label names (English and Chinese), lots, processes, tasting notes
+(aroma, palate, finish) and the "From the farm" stories are translated from the
+roaster's notes for each coffee. `image` is the label artwork
+(`uploads/label-*.jpg`); `bag` is a photo of the bag (`uploads/bag-*.jpg`), shown
+beside the tasting notes. The roast (Giesen W1A, light, roasted within 7 days of
+shipping, best 13–15 days after roasting) and the roaster's cone and
+flat-bottom recipes are the same for every coffee and are written into
+`product.html`.
 
-Worth checking against the bags:
+Decisions made while transcribing:
 
-- **Blurbs and "From the farm" text** restate the labels in prose, including
-  readings of the process codes: DRD as dried in a dark room, CFY as cold yeast
-  fermentation, zero-fermentation washed as washed with no fermentation stage.
-- **Finca La Fresa's lot** is #161 on the English label and #121 in the Chinese
-  line; the site says #161.
-- **Bambito Estate** is labelled Geisha / Yellow Catuai, washed / anaerobic
-  natural, at one price ($18 · 100g).
-- **No tasting notes** are given for any coffee yet.
+- **ALO Main Station** is the 74158 zero-fermentation washed. The bag tag also
+  mentions K72; the story mentions the K72 and mixed lots only to compare.
+- **Bambito Estate** is sold as the Yellow Catuai anaerobic natural only.
+- **Finca La Fresa** is lot #131 (the label art itself still prints #161 and #121).
+- **Elida Estate** is a dark-room dried (DRD) natural; the label's English
+  line says washed.
+- **Gato Grande**'s CFY is cold-fermentation yeast natural.
+- The roaster's text names Bambito's eldest manager in Chinese only; the site
+  leaves her name out rather than guess the spelling. It calls Honduras the
+  world's second-largest arabica producer; the site says "one of the largest".
+- The recipes use the roaster's water, Nongfu Spring; the site gives its TDS
+  (40–50) so customers outside China can match it.
 
 The V60 recipe, the café menu and the rest of the page copy are the design's own.
 Written to fill the design's templates, and worth a review:
 
 - **Espresso and Iced recipes** (`assets/data.js`) — the design only specifies
-  V60; these two use the numbers from 3b's "Brew it this way" cards. There is
+  V60; these two use the numbers from its first coffee-page brew cards. There is
   no French press guide.
 
 ## Not built

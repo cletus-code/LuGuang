@@ -712,32 +712,128 @@ button {
   object-fit: cover;
 }
 
-/* Brew suggestions */
-.brew-cards {
+/* Tasting: the short line under the name, then aroma, palate and finish */
+.product__notes {
+  margin: -4px 0 18px;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.cup { margin: 6px 0 0; }
+
+.cup > div {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 90px 1fr;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.cup > div:first-child { border-top: 1px solid var(--rule); }
+
+.cup dt {
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 3px;
+}
+
+.cup dd {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+  max-width: 48ch;
+}
+
+.on-label { margin-top: 30px; }
+.on-label .label { display: block; margin-bottom: 8px; color: var(--muted); }
+
+.on-label p {
+  margin: 0 0 4px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--body);
+  max-width: 56ch;
+}
+
+/* Farm story beside the awards and how it is roasted */
+.farm {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 56px;
+  padding: 56px var(--gutter) 70px;
+}
+
+.farm .h-section { margin-bottom: 14px; }
+.farm .prose { max-width: 62ch; }
+.farm__aside { display: flex; flex-direction: column; gap: 34px; padding-top: 6px; }
+
+.farm__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--body);
+}
+
+.farm__list li { padding: 6px 0; border-bottom: 1px solid var(--rule); }
+
+.farm__facts { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--body); }
+.farm__facts > div { display: grid; grid-template-columns: 70px 1fr; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--rule); }
+.farm__facts dt { color: var(--muted); }
+.farm__facts dd { margin: 0; }
+
+/* The roaster's two pour-over recipes */
+.pour-recipes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
 }
 
-.brew-card {
+.pour-recipe {
   border: 1px solid var(--rule);
   background: var(--sheet);
-  display: block;
-  transition: border-color .15s ease;
+  padding: 24px 26px 28px;
 }
 
-.brew-card:hover { border-color: var(--ink); }
+.pour-recipe__name { margin: 0 0 14px; font-size: 18px; font-weight: 400; color: var(--ink); }
 
-.brew-card img {
-  display: block;
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
+.pour-recipe__glance {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 26px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 13.5px;
+  color: var(--ink);
 }
 
-.brew-card__body { padding: 18px; }
-.brew-card__title { font-size: 16px; color: var(--ink); }
-.brew-card__meta { font-size: 13px; color: var(--body); margin-top: 4px; }
+.pour-recipe__glance dt {
+  font-size: 10.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+
+.pour-recipe__glance dd { margin: 0; }
+
+.pour-recipe__steps {
+  margin: 18px 0 0;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--body);
+}
+
+.pour-recipe__steps li + li { margin-top: 6px; }
+
+.pour-note { margin: 22px 0 0; font-size: 14px; color: var(--body); }
+.pour-note .label { color: var(--muted); margin-right: 10px; }
 
 /* ---------------------------------------------------------- brew guide -- */
 
@@ -937,8 +1033,7 @@ button {
   .hero > div { padding: 56px var(--gutter) 70px; }
   .hero__image { min-height: 340px; }
   .card-grid,
-  .listing__grid,
-  .brew-cards { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .listing__grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
   .recipe { grid-template-columns: 200px 1fr; }
   .recipe__glance { padding: 40px 26px 50px; }
 }
@@ -1023,6 +1118,9 @@ button {
   .gallery { grid-template-columns: 1fr 1fr; }
   .gallery__note { grid-column: 1 / -1; }
 
+  .farm { grid-template-columns: 1fr; gap: 40px; padding-bottom: 54px; }
+  .pour-recipes { grid-template-columns: 1fr; }
+
   .product__well img { height: 300px; }
   .product__well--photo img { height: 320px; min-height: 0; }
 }
@@ -1037,13 +1135,14 @@ button {
 
   .card-grid,
   .listing__grid,
-  .brew-cards,
   .method-tiles { grid-template-columns: 1fr; display: grid; }
 
   .gallery { grid-template-columns: 1fr; }
   .footer { gap: 18px; }
   .footer__copy { margin-left: 0; width: 100%; }
   .spec-row { gap: 22px; }
+  .cup > div { grid-template-columns: 1fr; gap: 4px; }
+  .pour-recipe { padding: 20px 18px 24px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
