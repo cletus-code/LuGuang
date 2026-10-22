@@ -2,127 +2,80 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Pour-over, V60 — Lights Landing Coffee</title>
 <meta name="description" content="Step-by-step brew guides for the kitchen counter — ratios, grind, timing.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=notes-1">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css?v=bean-wall-1">
 </head>
 <body>
 
-<div class="page">
+<div class="wrap">
+  <p class="card announce">Online shop opening soon · save coffees to your wishlist</p>
 
-  <div class="announce">Online shop opening soon — save coffees to your wishlist</div>
-
-  <header class="sheet masthead" style="--z:6">
-    <div class="sheet__body">
-      <a class="brand" href="index.html">
-        <span class="brand__mark" aria-hidden="true"></span>
-        <span class="visually-hidden">Lights Landing Coffee · 陆光咖啡 — home</span>
-      </a>
-      <nav class="nav" aria-label="Primary">
-        <a href="coffee.html">Coffee</a>
-        <a href="brew.html" class="is-current">Brew guide</a>
-        <a href="cafe.html">Café</a>
-        <a href="about.html">About</a>
-      </nav>
-      <div class="masthead__end">
-        <a href="coffee.html#coffee-search">Search</a>
-        <a class="cart" href="cart.html">Wishlist · <span data-wishlist-count>0</span></a>
-      </div>
+  <header class="card masthead">
+    <a class="brand" href="index.html">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="visually-hidden">Lights Landing Coffee · 陆光咖啡 — home</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="coffee.html">Coffee</a>
+      <a href="brew.html" aria-current="page">Brew guide</a>
+      <a href="cafe.html">Café</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="masthead__end">
+      <a href="coffee.html#coffee-search">Search</a>
+      <a class="pill cart" href="cart.html">Wishlist · <span data-wishlist-count>0</span></a>
     </div>
   </header>
 
-  <!-- Guide header -->
-  <section class="sheet sheet--paper" style="--z:4">
-    <div class="sheet__body">
-      <img class="guide-hero__image" src="uploads/pourover-hero.jpg" alt="Pouring water over a V60 on the brew bar" data-guide-image>
-      <div class="guide-hero__body">
+  <main class="view">
+    <section class="card guide">
+      <img class="bw" src="uploads/pourover-hero.jpg" alt="Pouring water over a V60 on the brew bar" data-guide-image>
+      <div class="guide__head">
         <p class="eyebrow">Brew guide</p>
         <h1 class="h-page" data-guide-title>Pour-over, V60</h1>
-        <p class="lede" data-guide-intro>A clean, repeatable recipe for a single cup. Anything in a cone works — the ratio matters more than the brewer.</p>
-        <div class="tabs" role="tablist" aria-label="Brew methods">
-          <a class="tab" role="tab" href="brew.html?m=v60" data-guide-tab="v60" aria-selected="true">V60</a>
-          <a class="tab" role="tab" href="brew.html?m=espresso" data-guide-tab="espresso" aria-selected="false">Espresso</a>
-          <a class="tab" role="tab" href="brew.html?m=iced" data-guide-tab="iced" aria-selected="false">Iced</a>
+        <p class="lede" style="max-width:60ch" data-guide-intro>A clean, repeatable recipe for a single cup. Anything in a cone works — the ratio matters more than the brewer.</p>
+        <nav class="tabs" aria-label="Brew method">
+          <a class="chip" href="brew.html?m=v60" data-guide-tab="v60" aria-current="page">V60</a>
+          <a class="chip" href="brew.html?m=espresso" data-guide-tab="espresso">Espresso</a>
+          <a class="chip" href="brew.html?m=iced" data-guide-tab="iced">Iced</a>
+        </nav>
+      </div>
+      <div class="guide__body">
+        <div class="guide__glance">
+          <h2 class="eyebrow">At a glance</h2>
+          <dl class="specs" data-guide-glance>
+            <dt>Ratio</dt><dd>1:16</dd>
+            <dt>Dose</dt><dd>15 g</dd>
+            <dt>Water</dt><dd>240 g at 94 °C</dd>
+            <dt>Grind</dt><dd>medium-fine</dd>
+            <dt>Total time</dt><dd>2:45</dd>
+          </dl>
+          <p class="small" data-guide-note>Filtered water, 60–100 ppm. Rinse the paper before you start.</p>
+        </div>
+        <div class="guide__steps" data-guide-steps>
+          <div class="step"><span class="step__n">01</span><div><h3>Rinse and dose</h3><p>Rinse the filter with hot water, discard it, then add 15 g of coffee and level the bed.</p></div></div>
+          <div class="step"><span class="step__n">02</span><div><h3>Bloom, 45 g</h3><p>Pour 45 g in a slow spiral and wait 40 seconds. The bed should rise and settle.</p></div></div>
+          <div class="step"><span class="step__n">03</span><div><h3>First pour, to 150 g</h3><p>Pour steadily in circles, keeping the bed level. Avoid the paper wall.</p></div></div>
+          <div class="step"><span class="step__n">04</span><div><h3>Final pour, to 240 g</h3><p>Finish by 1:45. Give the brewer one gentle swirl and let it draw down.</p></div></div>
+          <div class="step"><span class="step__n">05</span><div><h3>Draw down and taste</h3><p>Clear by 2:45. Sour means grind finer; bitter and dry means coarser.</p></div></div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Recipe -->
-  <section class="sheet sheet--white" style="--z:3">
-    <div class="sheet__body recipe">
+    <section class="card pad stack">
+      <h2 class="h-section">Brewing one of our coffees?</h2>
+      <p class="prose" style="margin:0">Each coffee’s page has the roaster’s own recipes for a cone and a flat-bottom dripper.</p>
+      <a class="link" href="coffee.html">Pick a coffee</a>
+    </section>
+  </main>
 
-      <div class="recipe__glance">
-        <h2 class="label" style="display:block;margin-bottom:12px">At a glance</h2>
-        <dl data-guide-glance>
-          <dt>Ratio</dt><dd>1:16</dd>
-          <dt>Dose</dt><dd>15 g</dd>
-          <dt>Water</dt><dd>240 g at 94 °C</dd>
-          <dt>Grind</dt><dd>medium-fine</dd>
-          <dt>Total time</dt><dd>2:45</dd>
-        </dl>
-        <p class="recipe__note" data-guide-note>Filtered water, 60–100 ppm. Rinse the paper before you start.</p>
-      </div>
-
-      <div class="recipe__steps" data-guide-steps>
-        <div class="step">
-          <div class="step__n">01</div>
-          <div>
-            <div class="step__title">Rinse and dose</div>
-            <div class="step__text">Rinse the filter with hot water, discard it, then add 15 g of coffee and level the bed.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step__n">02</div>
-          <div>
-            <div class="step__title">Bloom, 45 g</div>
-            <div class="step__text">Pour 45 g in a slow spiral and wait 40 seconds. The bed should rise and settle.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step__n">03</div>
-          <div>
-            <div class="step__title">First pour, to 150 g</div>
-            <div class="step__text">Pour steadily in circles, keeping the bed level. Avoid the paper wall.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step__n">04</div>
-          <div>
-            <div class="step__title">Final pour, to 240 g</div>
-            <div class="step__text">Finish by 1:45. Give the brewer one gentle swirl and let it draw down.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step__n">05</div>
-          <div>
-            <div class="step__title">Draw down and taste</div>
-            <div class="step__text">Clear by 2:45. Sour means grind finer; bitter and dry means coarser.</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Iced aside -->
-  <section class="sheet sheet--paper sheet--skirt" style="--z:2">
-    <div class="sheet__body aside">
-      <div class="aside__text">
-        <h2 class="h-section">Brew it iced</h2>
-        <p class="prose" style="max-width:44ch">Same recipe, 20 g of coffee onto 120 g of ice in the carafe. It lands sweeter and holds its aromatics.</p>
-        <a class="arrow-link" style="margin-top:20px" href="brew.html?m=iced" data-guide-tab="iced">Iced guide →</a>
-      </div>
-      <img src="uploads/iced-coffee.jpg" alt="A glass of iced coffee on a wooden ledge">
-    </div>
-  </section>
-
-  <footer class="footer">
-    <a class="footer__brand" href="index.html">Lights Landing</a>
+  <footer class="card footer">
+    <a href="index.html"><strong>Lights Landing</strong></a>
     <a href="coffee.html">Coffee</a>
     <a href="brew.html">Brew guide</a>
     <a href="cafe.html">Café</a>
@@ -131,11 +84,10 @@
     <span>Privacy</span>
     <span class="footer__copy">© 2026 Lights Landing Coffee</span>
   </footer>
-
 </div>
 
-<script src="assets/data.js?v=notes-1"></script>
-<script src="assets/shop.js?v=wishlist-1"></script>
-<script src="assets/site.js?v=notes-1"></script>
+<script src="assets/data.js?v=bean-wall-1"></script>
+<script src="assets/shop.js?v=bean-wall-1"></script>
+<script src="assets/site.js?v=bean-wall-1"></script>
 </body>
 </html>

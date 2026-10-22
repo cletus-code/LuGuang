@@ -2,77 +2,64 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ALO Main Station — Lights Landing Coffee</title>
 <meta name="description" content="A 74158 from ALO’s main station in Bensa, Sidamo, washed with no fermentation: mandarin and lemongrass, then orange juice and nectarine, and a long jasmine green tea finish.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=notes-1">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css?v=bean-wall-1">
 </head>
 <body>
 
-<div class="page">
+<div class="wrap">
+  <p class="card announce">Online shop opening soon · save coffees to your wishlist</p>
 
-  <div class="announce">Online shop opening soon — save coffees to your wishlist</div>
-
-  <header class="sheet masthead" style="--z:6">
-    <div class="sheet__body">
-      <a class="brand" href="index.html">
-        <span class="brand__mark" aria-hidden="true"></span>
-        <span class="visually-hidden">Lights Landing Coffee · 陆光咖啡 — home</span>
-      </a>
-      <nav class="nav" aria-label="Primary">
-        <a href="coffee.html" class="is-current">Coffee</a>
-        <a href="brew.html">Brew guide</a>
-        <a href="cafe.html">Café</a>
-        <a href="about.html">About</a>
-      </nav>
-      <div class="masthead__end">
-        <a href="coffee.html#coffee-search">Search</a>
-        <a class="cart" href="cart.html">Wishlist · <span data-wishlist-count>0</span></a>
-      </div>
+  <header class="card masthead">
+    <a class="brand" href="index.html">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="visually-hidden">Lights Landing Coffee · 陆光咖啡 — home</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="coffee.html" aria-current="page">Coffee</a>
+      <a href="brew.html">Brew guide</a>
+      <a href="cafe.html">Café</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="masthead__end">
+      <a href="coffee.html#coffee-search">Search</a>
+      <a class="pill cart" href="cart.html">Wishlist · <span data-wishlist-count>0</span></a>
     </div>
   </header>
 
-  <!-- Lot -->
-  <section class="sheet sheet--paper" style="--z:5">
-    <div class="sheet__body product" data-product>
-
-      <div class="product__well" data-product-well>
-        <img src="uploads/label-alo-main-station.jpg" alt="ALO Main Station — label artwork" data-product-image>
+  <main class="view">
+    <section class="card product" data-product>
+      <div class="buy">
+        <p class="eyebrow" data-product-eyebrow>Ethiopia · 「2026」</p>
+        <h1 class="buy__zh" lang="zh-Hans" data-product-zh>埃塞俄比亚 阿洛<br>西达摩 奔莎 主站<br>74158 零发酵 水洗</h1>
+        <p class="buy__en" data-product-en>Ethiopia ALO Sidamo<br>Bensa Main Station<br>74158 Zero Fermentation Washed</p>
+        <p class="buy__price" data-product-price>$16 · 100g</p>
+        <a class="btn" href="cart.html" data-product-wish>Add to wishlist</a>
+        <p class="small">Online shop opening soon. Reserve by email from <a href="cart.html">your wishlist</a>.</p>
+        <p class="status" role="status" aria-live="polite" data-wishlist-status></p>
       </div>
-
-      <div>
-        <p class="eyebrow" data-product-eyebrow>Ethiopia · Sidamo, Bensa · Zero-fermentation washed</p>
-        <h1 class="h-page" data-product-name>ALO Main Station</h1>
-        <p class="product__notes" data-product-notes>Orange juice · Buddha’s hand · nectarine · jasmine green tea</p>
-        <p class="product__blurb" data-product-blurb>A 74158 from ALO’s main station in Bensa, Sidamo, washed with no fermentation: mandarin and lemongrass, then orange juice and nectarine, and a long jasmine green tea finish.</p>
-
-        <dl class="spec-row" data-product-specs>
-          <div><dt>Variety</dt><dd>74158</dd></div>
-          <div><dt>Process</dt><dd>Zero-fermentation washed</dd></div>
-          <div><dt>Harvest</dt><dd>2026</dd></div>
-          <div><dt>Roast</dt><dd>Light</dd></div>
+      <div class="info">
+        <h2 class="eyebrow">Basic info</h2>
+        <dl class="specs" data-product-specs>
+          <dt>Region</dt><dd>Sidamo, Bensa</dd>
+          <dt>Variety</dt><dd>74158</dd>
+          <dt>Process</dt><dd>Zero-fermentation washed</dd>
+          <dt>Harvest</dt><dd>2026</dd>
+          <dt>Roast</dt><dd>Light</dd>
+          <dt>Tasting</dt><dd>Orange juice · Buddha’s hand · nectarine · jasmine green tea</dd>
         </dl>
-
-        <h2 class="label choice-legend">Size</h2>
-        <p class="choice-row" style="margin-bottom:30px"><span class="choice is-selected" data-product-size>100g</span></p>
-
-        <div class="buy">
-          <button class="btn btn--primary" type="button" data-add-to-cart data-product-price>Add to cart — $16</button>
-          <a class="arrow-link" href="cart.html">View wishlist →</a>
-          <span class="buy__note">Online shop opening soon</span>
-        </div>
+        <div class="prose"><p data-product-blurb>A 74158 from ALO’s main station in Bensa, Sidamo, washed with no fermentation: mandarin and lemongrass, then orange juice and nectarine, and a long jasmine green tea finish.</p></div>
       </div>
+      <div class="product__print" data-product-print></div>
+    </section>
 
-    </div>
-  </section>
-
-  <!-- In the cup -->
-  <section class="sheet sheet--white" style="--z:4">
-    <div class="sheet__body story">
-      <div class="story__text">
+    <section class="card split">
+      <div class="split__text">
         <h2 class="h-section">In the cup</h2>
         <dl class="cup" data-product-cup>
           <div><dt>Aroma</dt><dd>Citrus and mandarin orange, with a light lemongrass.</dd></div>
@@ -80,20 +67,17 @@
           <div><dt>Finish</dt><dd>A light jasmine green tea, fine and long.</dd></div>
         </dl>
         <div class="on-label">
-          <h3 class="label">On the label</h3>
+          <h3 class="eyebrow">On the label</h3>
           <p data-product-label-en>Ethiopia ALO Sidamo Bensa Main Station 74158 Zero Fermentation Washed</p>
           <p lang="zh-Hans" data-product-label-zh>埃塞俄比亚 阿洛 西达摩 奔莎 主站 74158 零发酵 水洗</p>
         </div>
       </div>
-      <img src="uploads/bag-alo-main-station.jpg" alt="A bag of ALO Main Station with its blue tag" data-product-bag>
-    </div>
-  </section>
+      <img src="uploads/bag-alo-main-station.jpg" alt="A bag of ALO Main Station with its printed tag" data-product-bag>
+    </section>
 
-  <!-- From the farm -->
-  <section class="sheet sheet--paper" style="--z:3">
-    <div class="sheet__body farm">
-      <div>
-        <h2 class="h-section">From the farm</h2>
+    <section class="card pad farm">
+      <div class="stack" style="gap:16px">
+        <h2 class="h-section">About the estate</h2>
         <div class="prose" data-product-story>
           <p>Every ALO lot we cupped this year was strong. The main station’s mixed washed is the most intense: kumquat wrapped in heavy florals, a complex, shifting juiciness and a long finish. The K72 washed is all rich, smooth yellow fruit. This one, the zero-fermentation washed, is the most delicate: an elegant white-flower aroma, sweetness and acidity like freshly squeezed sweet orange, and the juiciness of white peach.</p>
           <p>ALO Coffee is an Ethiopian green-coffee company founded in 2020. In its second year, founder Tamiru Tadesse Tesema led the team to first place in Ethiopia’s Cup of Excellence.</p>
@@ -102,13 +86,13 @@
         </div>
       </div>
       <aside class="farm__aside">
-        <div data-product-awards-block hidden>
-          <h3 class="label label--rule">Awards</h3>
-          <ul class="farm__list" data-product-awards></ul>
+        <div class="stack" hidden data-product-awards-block>
+          <h3 class="eyebrow">Awards</h3>
+          <ul class="facts" data-product-awards></ul>
         </div>
-        <div>
-          <h3 class="label label--rule">Roast</h3>
-          <dl class="farm__facts">
+        <div class="stack">
+          <h3 class="eyebrow">Roast</h3>
+          <dl class="facts">
             <div><dt>Roaster</dt><dd>Giesen W1A</dd></div>
             <div><dt>Level</dt><dd>Light</dd></div>
             <div><dt>Fresh</dt><dd>Roasted within 7 days before it ships.</dd></div>
@@ -116,56 +100,54 @@
           </dl>
         </div>
       </aside>
-    </div>
-  </section>
+    </section>
 
-  <!-- Brew it this way: the roaster's recipes, the same for every coffee -->
-  <section class="sheet sheet--white sheet--skirt" style="--z:2">
-    <div class="sheet__body band" style="padding-top:50px;padding-bottom:66px">
-      <div class="section-head" style="margin-bottom:24px">
-        <h2 class="h-section">Brew it this way</h2>
-        <a class="arrow-link" href="brew.html">All brew guides →</a>
-      </div>
-      <div class="pour-recipes">
-        <article class="pour-recipe">
-          <h3 class="pour-recipe__name">Cone dripper</h3>
-          <dl class="pour-recipe__glance">
-            <div><dt>Grind</dt><dd>EK43 #9.2 · C40 16 clicks</dd></div>
-            <div><dt>Ratio</dt><dd>1:16</dd></div>
-            <div><dt>Dose</dt><dd>16 g</dd></div>
-            <div><dt>Water</dt><dd>95 °C</dd></div>
-            <div><dt>Time</dt><dd>2:10</dd></div>
-          </dl>
-          <ol class="pour-recipe__steps">
+    <!-- The roaster's recipes: the same for every coffee. -->
+    <section class="card pad stack" style="gap:20px">
+      <h2 class="h-section">Brew this coffee</h2>
+      <div class="recipes">
+        <div class="recipe">
+          <h3>Cone dripper</h3>
+          <p class="small">A V60 or any cone, one cup</p>
+          <dl class="specs"><dt>Grind</dt><dd>EK43 #9.2 · C40 16 clicks</dd><dt>Ratio</dt><dd>1:16</dd><dt>Dose</dt><dd>16 g</dd><dt>Water</dt><dd>256 g at 95 °C</dd><dt>Time</dt><dd>2:10</dd></dl>
+          <ol>
             <li>Pour 30 g and let it bloom for 40 seconds.</li>
             <li>With a thin stream, circle out from the centre to 135 g. Wait 20 seconds.</li>
             <li>With a heavier stream, raise the water level and pour to 256 g.</li>
             <li>Let it drain through, then take the dripper off.</li>
           </ol>
-        </article>
-        <article class="pour-recipe">
-          <h3 class="pour-recipe__name">Flat-bottom dripper</h3>
-          <dl class="pour-recipe__glance">
-            <div><dt>Grind</dt><dd>EK43 #10 · C40 20 clicks</dd></div>
-            <div><dt>Ratio</dt><dd>1:15</dd></div>
-            <div><dt>Dose</dt><dd>16 g</dd></div>
-            <div><dt>Water</dt><dd>94 °C</dd></div>
-            <div><dt>Time</dt><dd>3:00</dd></div>
-          </dl>
-          <ol class="pour-recipe__steps">
+        </div>
+        <div class="recipe">
+          <h3>Flat-bottom dripper</h3>
+          <p class="small">A Kalita Wave or any flat bed, one cup</p>
+          <dl class="specs"><dt>Grind</dt><dd>EK43 #10 · C40 20 clicks</dd><dt>Ratio</dt><dd>1:15</dd><dt>Dose</dt><dd>16 g</dd><dt>Water</dt><dd>240 g at 94 °C</dd><dt>Time</dt><dd>3:00</dd></dl>
+          <ol>
             <li>Pour 45 g and let it bloom for 30 seconds.</li>
             <li>With a thin stream, circle to 115 g. Wait 30 seconds.</li>
             <li>With a thin stream, circle to 180 g. Wait 30 seconds.</li>
             <li>With a thin stream, circle to 240 g. Let it drain through, then take the dripper off.</li>
           </ol>
-        </article>
+        </div>
       </div>
-      <p class="pour-note"><span class="label">Water</span> Soft mineral water, TDS around 40–50. We brew with Nongfu Spring.</p>
-    </div>
-  </section>
+      <p class="small">Water: soft mineral water, TDS around 40–50. We brew with Nongfu Spring. <a href="brew.html">All brew guides</a></p>
+    </section>
 
-  <footer class="footer">
-    <a class="footer__brand" href="index.html">Lights Landing</a>
+    <div class="card head-row">
+      <h2 class="h-section">You may also like</h2>
+      <a class="link" href="coffee.html">All coffee</a>
+    </div>
+    <div class="beans beans--row" data-beans="also">
+      <ul class="card fallback" data-coffee-links>
+        <li><a href="product.html?id=bambito-estate">Bambito Estate</a> — Panama · Anaerobic natural · $18 · 100g</li>
+        <li><a href="product.html?id=finca-la-fresa">Finca La Fresa</a> — Honduras · Washed · $26 · 100g</li>
+        <li><a href="product.html?id=elida-estate">Elida Estate</a> — Panama · DRD natural · $39 · 75g</li>
+        <li><a href="product.html?id=gato-grande">Gato Grande</a> — Panama · Cold-fermented yeast natural · $49 · 75g</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer class="card footer">
+    <a href="index.html"><strong>Lights Landing</strong></a>
     <a href="coffee.html">Coffee</a>
     <a href="brew.html">Brew guide</a>
     <a href="cafe.html">Café</a>
@@ -174,11 +156,10 @@
     <span>Privacy</span>
     <span class="footer__copy">© 2026 Lights Landing Coffee</span>
   </footer>
-
 </div>
 
-<script src="assets/data.js?v=notes-1"></script>
-<script src="assets/shop.js?v=wishlist-1"></script>
-<script src="assets/site.js?v=notes-1"></script>
+<script src="assets/data.js?v=bean-wall-1"></script>
+<script src="assets/shop.js?v=bean-wall-1"></script>
+<script src="assets/site.js?v=bean-wall-1"></script>
 </body>
 </html>

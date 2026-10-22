@@ -25,11 +25,12 @@ assert.deepEqual(catalog.map(coffee => coffee.id),
 assert.deepEqual(catalog.map(coffee => shop.priceLabel(coffee)),
   ['$16 · 100g', '$18 · 100g', '$26 · 100g', '$39 · 75g', '$49 · 75g']);
 for (const coffee of catalog) {
-  assert(fs.existsSync(path.join(root, coffee.image)), coffee.id + ': image exists');
-  assert(fs.existsSync(path.join(root, coffee.bag)), coffee.id + ': bag photo exists');
+  for (const file of [coffee.art, coffee.bag]) assert(fs.existsSync(path.join(root, file)), coffee.id + ': ' + file + ' exists');
   assert(coffee.processes.length > 0, coffee.id + ': listed under at least one process');
   assert(coffee.cup || coffee.tasting, coffee.id + ': has tasting notes');
   assert(coffee.notes && coffee.label.en && coffee.label.zh && coffee.story.length, coffee.id + ': notes, label and farm story');
+  const card = coffee.card;
+  assert(card.tag && card.zh.length === 3 && card.en.length === 3 && card.notes && card.about, coffee.id + ': the printed card has every line');
 }
 
 // Search.
@@ -40,6 +41,7 @@ assert.deepEqual(names('catuai'), ['bambito-estate']);
 assert.deepEqual(names('volcan'), ['bambito-estate'], 'Accents are ignored');
 assert.deepEqual(names('panama geisha'), ['elida-estate', 'gato-grande'], 'Bambito is sold as Yellow Catuai only');
 assert.deepEqual(names('lychee'), ['finca-la-fresa'], 'Tasting notes are searchable');
+assert.deepEqual(names('草莓庄园'), ['finca-la-fresa'], 'Chinese label names are searchable');
 assert.deepEqual(names('   '), catalog.map(coffee => coffee.id));
 assert.deepEqual(names('<script>'), []);
 
@@ -63,29 +65,33 @@ assert.equal(shop.readWishlist().length, 0);
 assert.equal(shop.writeWishlist(['gato-grande']), false, 'Storage failures reach the UI');
 
 // Pages.
+const links = html => Array.from(html.matchAll(/product\.html\?id=([a-z0-9-]+)/g), match => match[1]);
+const read = name => fs.readFileSync(path.join(root, name), 'utf8');
 for (const name of fs.readdirSync(root).filter(name => name.endsWith('.html'))) {
-  const html = fs.readFileSync(path.join(root, name), 'utf8');
+  const html = read(name);
   assert(html.includes('href="coffee.html#coffee-search"'), name + ': Search is a real link');
-  assert(html.includes('<a class="cart" href="cart.html">Wishlist · <span data-wishlist-count>0</span></a>'), name + ': Wishlist link');
+  assert(html.includes('<a class="pill cart" href="cart.html">Wishlist · <span data-wishlist-count>0</span></a>'), name + ': Wishlist link');
   assert(!/free shipping/i.test(html), name + ': no shipping offers while ordering is closed');
   assert(!/cupping on fridays|cupping, fridays|lightscoffee\.example/i.test(html), name + ': no Friday cupping or placeholder email');
-  assert(html.indexOf('assets/shop.js') < html.indexOf('assets/site.js'), name + ': load shop rules before the UI');
-  for (const [, id] of html.matchAll(/product\.html\?id=([a-z0-9-]+)/g)) {
-    assert(catalog.some(coffee => coffee.id === id), name + ': links to a coffee on sale (' + id + ')');
-  }
+  assert(html.indexOf('assets/data.js') < html.indexOf('assets/shop.js') &&
+    html.indexOf('assets/shop.js') < html.indexOf('assets/site.js'), name + ': data, then shop rules, then the UI');
+  for (const id of links(html)) assert(catalog.some(coffee => coffee.id === id), name + ': links to a coffee on sale (' + id + ')');
+  for (const [, file] of html.matchAll(/src="(uploads\/[^"]+)"/g)) assert(fs.existsSync(path.join(root, file)), name + ': ' + file + ' exists');
 }
-const shelf = fs.readFileSync(path.join(root, 'coffee.html'), 'utf8');
-assert.deepEqual(Array.from(shelf.matchAll(/data-coffee data-origin/g)).length, catalog.length, 'Every coffee is on the shelf');
-assert.deepEqual(Array.from(shelf.matchAll(/product\.html\?id=([a-z0-9-]+)/g), match => match[1]),
-  catalog.map(coffee => coffee.id), 'The shelf lists the cheapest first');
-assert.deepEqual(Array.from(shelf.matchAll(/data-process="([^"]+)"/g), match => match[1]),
-  catalog.map(coffee => coffee.processes.join(' ')), 'Shelf process filters match the catalogue');
-for (const name of ['coffee.html', 'index.html']) {
-  const page = fs.readFileSync(path.join(root, name), 'utf8');
-  for (const [, id, notes] of page.matchAll(/product\.html\?id=([a-z0-9-]+)"[\s\S]*?product-card__notes">([^<]+)</g)) {
-    assert.equal(notes, catalog.find(coffee => coffee.id === id).notes, name + ': card notes match the catalogue (' + id + ')');
-  }
-}
+// Without JavaScript each row of cards is a list of links, in shelf order.
+const fallback = (name, row) => links(read(name).split('data-beans="' + row + '"')[1].split('</ul>')[0]);
+const ids = catalog.map(coffee => coffee.id);
+assert.deepEqual(fallback('coffee.html', 'shelf'), ids, 'The shelf lists every coffee, cheapest first');
+assert.deepEqual(fallback('index.html', 'home'), ids.slice(0, 3), 'Home shows the three cheapest');
+assert.deepEqual(fallback('cart.html', 'wish'), ids, 'The wishlist offers every coffee');
+const shelf = read('coffee.html');
+const facets = facet => Array.from(shelf.matchAll(new RegExp('data-facet="' + facet + '" data-value="([^"]+)"', 'g')), match => match[1]).slice(1);
+assert.deepEqual(facets('origin'), Array.from(new Set(catalog.map(coffee => coffee.origin))).sort(), 'An origin filter for each origin');
+assert.deepEqual(Array.from(new Set(catalog.flatMap(coffee => coffee.processes))).filter(process => !facets('process').includes(process)), [],
+  'A process filter for each process');
+const product = read('product.html');
+assert(product.includes('<title>' + catalog[0].name + ' — Lights Landing Coffee</title>') &&
+  product.includes('data-product-price>' + shop.priceLabel(catalog[0]) + '<'), 'The coffee page shows the first coffee before it loads');
 // Email reservations: hidden until an https endpoint is configured.
 const config = load().shop && vm.runInContext('window.LIGHTS.reserve', (() => {
   const context = vm.createContext({ window: {} });
@@ -94,8 +100,8 @@ const config = load().shop && vm.runInContext('window.LIGHTS.reserve', (() => {
 })());
 assert.equal(typeof config.endpoint, 'string', 'data.js sets reserve.endpoint');
 assert(config.endpoint === '' || /^https:\/\//.test(config.endpoint), 'reserve.endpoint is empty or https');
-const wishlistPage = fs.readFileSync(path.join(root, 'cart.html'), 'utf8');
-assert(/<form class="reserve" hidden data-reserve-form>/.test(wishlistPage), 'The form starts hidden');
+const wishlistPage = read('cart.html');
+assert(/<form class="card pad reserve" hidden data-reserve-form>/.test(wishlistPage), 'The form starts hidden');
 assert(/type="email" required/.test(wishlistPage), 'Email is required');
 assert(/name="_gotcha" tabindex="-1"/.test(wishlistPage), 'Spam trap is present and out of the tab order');
-console.log('Shop checks passed: catalogue and order, tasting notes, search, wishlist storage, corrupt or blocked storage, page links and the reservation form.');
+console.log('Shop checks passed: catalogue and order, printed cards, tasting notes, search, wishlist storage, corrupt or blocked storage, page links and the reservation form.');

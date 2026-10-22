@@ -1,9 +1,14 @@
 /* Catalogue and brew guides for Lights Landing Coffee.
    The five coffees on sale, cheapest first. Names, lots, processes, tasting
    notes and farm stories are translated from the roaster's notes for each
-   coffee; prices and sizes are the shop's. `image` is the label artwork,
-   `bag` a photo of the bag. The roast and the roaster's brew recipes are the
-   same for every coffee and live in product.html.
+   coffee; prices and sizes are the shop's.
+
+   `card` is what the café's printed wall card says: the 「tag」 in the corner,
+   the Chinese and English names line by line, the 风味表现 notes and a
+   short About. `art` is
+   that card's marbled colour; `bag` a photo of the bag. The roast and the
+   roaster's brew recipes are the same for every coffee and live in
+   product.html.
 
    `processes` lists every process a lot is sold as (the shelf's Process
    filter matches any of them); `process` is how it reads on the page.
@@ -24,8 +29,14 @@ window.LIGHTS = (function () {
       notes: 'Orange juice · Buddha’s hand · nectarine · jasmine green tea',
       price: 16,
       size: '100g',
-      image: 'uploads/label-alo-main-station.jpg',
-      fit: 'contain',   // label art: show it whole; use 'cover' for photos
+      card: {
+        tag: '2026',
+        zh: ['埃塞俄比亚 阿洛', '西达摩 奔莎 主站', '74158 零发酵 水洗'],
+        en: ['Ethiopia ALO Sidamo', 'Bensa Main Station', '74158 Zero Fermentation Washed'],
+        notes: '橙汁 佛手柑 油桃 茉莉绿茶',
+        about: 'ALO is an Ethiopian green-coffee company founded in 2020 by Tamiru Tadesse, Cup of Excellence winner in its second year.'
+      },
+      art: 'uploads/card-alo-main-station.jpg',
       bag: 'uploads/bag-alo-main-station.jpg',
       label: {
         en: 'Ethiopia ALO Sidamo Bensa Main Station 74158 Zero Fermentation Washed',
@@ -56,8 +67,14 @@ window.LIGHTS = (function () {
       notes: 'Ripe yellow fruit · red grapefruit · redcurrant · cane sugar',
       price: 18,
       size: '100g',
-      image: 'uploads/label-bambito-estate.jpg',
-      fit: 'contain',   // label art: show it whole; use 'cover' for photos
+      card: {
+        tag: 'Catuai',
+        zh: ['巴拿马 沃肯', '芭比朵庄园', '黄卡杜艾 厌氧日晒'],
+        en: ['Panama Volcán', 'Bambito Estate', 'Yellow Catuai AN Natural'],
+        notes: '黄色水果 红柚 红醋栗 蔗糖',
+        about: 'One of Panama’s top estates, between two ridges at 1,660–1,800 m in Volcán. Best of Panama winner in 2021.'
+      },
+      art: 'uploads/card-bambito-estate.jpg',
       bag: 'uploads/bag-bambito-estate.jpg',
       label: {
         en: 'Panama Volcán Bambito Estate Yellow Catuai AN Natural',
@@ -97,8 +114,14 @@ window.LIGHTS = (function () {
       notes: 'Jasmine · orange · white peach · lychee · honey',
       price: 26,
       size: '100g',
-      image: 'uploads/label-finca-la-fresa.jpg',
-      fit: 'contain',   // label art: show it whole; use 'cover' for photos
+      card: {
+        tag: '#131',
+        zh: ['洪都拉斯 伦皮拉省', '草莓庄园', '瑰夏 Lot#131 水洗'],
+        en: ['Honduras Lempira', 'San Andrés Finca La Fresa', 'Geisha #131 Washed'],
+        notes: '茉莉 香橙 水蜜桃 荔枝 蜂蜜',
+        about: 'Grown in Lempira, Honduras, yet it tastes strongly of Panamanian Geisha: white flowers and clean citrus.'
+      },
+      art: 'uploads/card-finca-la-fresa.jpg',
       bag: 'uploads/bag-finca-la-fresa.jpg',
       label: {
         en: 'Honduras Lempira San Andrés Finca La Fresa Geisha Lot #131 Washed',
@@ -124,8 +147,14 @@ window.LIGHTS = (function () {
       notes: 'Jasmine · orange blossom · sweet lemon · Buddha’s hand',
       price: 39,
       size: '75g',
-      image: 'uploads/label-elida-estate.jpg',
-      fit: 'contain',   // label art: show it whole; use 'cover' for photos
+      card: {
+        tag: 'Vuelta',
+        zh: ['巴拿马 波奎特', '艾利达庄园 Vuelta地块', '瑰夏 暗房干燥日晒'],
+        en: ['Panama Boquete', 'Elida Estate Vuelta', 'Geisha DRD Natural'],
+        notes: '茉莉 橙花 甜柠檬 佛手柑',
+        about: 'The Lamastus family’s estate on the edge of Volcán Barú National Park, a legend of Best of Panama.'
+      },
+      art: 'uploads/card-elida-estate.jpg',
       bag: 'uploads/bag-elida-estate.jpg',
       label: {
         en: 'Panama Boquete Elida Estate Vuelta #0902-250226 Geisha DRD Natural',
@@ -154,8 +183,14 @@ window.LIGHTS = (function () {
       notes: 'Jasmine · Buddha’s hand · candied lemon · white peach · honey',
       price: 49,
       size: '75g',
-      image: 'uploads/label-gato-grande.jpg',
-      fit: 'contain',   // label art: show it whole; use 'cover' for photos
+      card: {
+        tag: 'K4',
+        zh: ['巴拿马 洛斯波索斯', 'Gato Grande 庄园', '瑰夏 酵母冷发酵日晒'],
+        en: ['Panama Los Pozos', 'Gato Grande', 'Geisha K4 CFY Natural'],
+        notes: '茉莉 佛手柑 糖渍柠檬 水蜜桃',
+        about: 'A coffee forest founded in 2023 in Los Pozos, Tierras Altas, by Yessie Hartman and Jean Paul.'
+      },
+      art: 'uploads/card-gato-grande.jpg',
       bag: 'uploads/bag-gato-grande.jpg',
       label: {
         en: 'Panama Tierras Altas Los Pozos Gato Grande Coffee Forest Lot #K4 Geisha Cold Fermentation Yeast Natural',

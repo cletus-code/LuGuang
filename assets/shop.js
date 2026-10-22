@@ -1,5 +1,5 @@
 /* Catalogue search and the wishlist. Ordering is closed for now, so "Add to
-   cart" saves a coffee here instead; the wishlist holds coffee ids only —
+   wishlist" saves a coffee here instead; the wishlist holds coffee ids only —
    never prices, which always come from the catalogue. */
 window.LIGHTS_SHOP = (function () {
   'use strict';
@@ -32,8 +32,9 @@ window.LIGHTS_SHOP = (function () {
     return String(value).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   }
   function matches(item, query) {
+    var label = item.label || {};
     var haystack = text([item.name, item.origin, item.region, item.process, item.variety,
-      item.notes, item.blurb, Object.values(item.specs || {}).join(' ')].join(' '));
+      item.notes, item.blurb, Object.values(item.specs || {}).join(' '), label.en, label.zh].join(' '));
     return text(query).trim().split(/\s+/).every(function (word) { return haystack.indexOf(word) >= 0; });
   }
   function money(dollars) {

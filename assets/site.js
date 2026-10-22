@@ -1,7 +1,8 @@
 /* Behaviour for Lights Landing Coffee.
-   Every page renders in full from its own HTML; this file only enhances —
-   the wishlist, coffee search and filters, the per-lot product page, and the
-   brew-method tabs. */
+   Pages carry their own text; this file draws the coffee cards from
+   assets/data.js (each turns over on a click) and runs the wishlist, the
+   shelf's search, filters and sort, each coffee's page, the brew-guide tabs
+   and the email reservations. Every white card gets its small lean here. */
 
 (function () {
   'use strict';
@@ -151,102 +152,475 @@
     } catch (error) {}
   }
 
+  /* ----------------------------------------------------------- wobble -- */
+  /* Every white card and coffee card is laid on the wall by hand: each keeps
+     one random lean for the visit, a few pixels at its edge whatever its
+     width, in a random direction. */
+
+  var LEANS = {};
+  var unnamed = 0;
+  function lean(key) {
+    if (!LEANS[key]) {
+      LEANS[key] = { d: Math.random() * 2 - 1, x: Math.random() * 3 - 1.5, y: Math.random() * 3 - 1.5 };
+    }
+    return LEANS[key];
+  }
+  function wobble() {
+    $$('.card, .bean').forEach(function (card) {
+      if (!card.dataset.lean) { card.dataset.lean = 'card-' + (unnamed += 1); }
+      var tilt = lean(card.dataset.lean);
+      var width = card.offsetWidth;
+      if (!width) { return; }
+      var degrees = tilt.d * Math.asin(Math.min(1, 4 / width)) * 180 / Math.PI;
+      card.style.setProperty('--tilt', degrees.toFixed(3) + 'deg');
+      card.style.setProperty('--nx', tilt.x.toFixed(2) + 'px');
+      card.style.setProperty('--ny', tilt.y.toFixed(2) + 'px');
+    });
+  }
+  /* A card's About gets whatever room its names leave, in whole lines:
+     never a line cut in half, and no About at all when one line won't fit
+     under its heading. */
+  function fitAbouts() {
+    $$('.bean__about').forEach(function (about) {
+      about.style.webkitLineClamp = '';
+      about.style.visibility = '';
+      var style = window.getComputedStyle(about);
+      var room = about.clientHeight - parseFloat(style.paddingTop);
+      var lines = Math.floor(room / parseFloat(style.lineHeight) + .05);
+      if (lines < 4) { about.style.webkitLineClamp = String(Math.max(lines, 1)); }
+      if (lines < 2) { about.style.visibility = 'hidden'; }
+    });
+  }
+  function initWobble() {
+    if (!$('.card')) { return; }
+    var timer = null;
+    window.addEventListener('resize', function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { wobble(); fitAbouts(); }, 150);
+    });
+    if (document.fonts) { document.fonts.ready.then(fitAbouts); }
+    wobble();
+  }
+
   /* --------------------------------------------------------- wishlist -- */
-  /* Ordering is closed for now. "Add to cart" saves the coffee to the
-     wishlist and opens cart.html, which says shopping is coming and lists
-     what is saved, with every other coffee ready to add. */
+  /* Ordering is closed for now. "Add to wishlist" saves the coffee in this
+     browser; cart.html says shopping is coming and lists what is saved. */
 
   var SHOP = window.LIGHTS_SHOP;
   var wishlist = SHOP ? SHOP.readWishlist() : [];
-  var refreshReserve = null;   /* set by initReserve on the wishlist page */
+  var painters = [];          /* every wishlist button on the page */
+  var onWishlistChange = [];  /* page parts that list what is saved */
+  var FAILED = 'Your browser could not save your wishlist. Private browsing or blocked site data can prevent it.';
 
-  function updateWishlistCount() {
-    $$('[data-wishlist-count]').forEach(function (node) { node.textContent = wishlist.length; });
+  function findCoffee(id) {
+    for (var i = 0; i < DATA.coffees.length; i += 1) {
+      if (DATA.coffees[i].id === id) { return DATA.coffees[i]; }
+    }
+    return null;
   }
-  function saveWishlist(ids, message) {
+  function isSaved(coffee) { return wishlist.indexOf(coffee.id) >= 0; }
+  function refreshWishlist() {
+    $$('[data-wishlist-count]').forEach(function (node) { node.textContent = wishlist.length; });
+    painters = painters.filter(function (painter) { return painter.button.isConnected; });
+    painters.forEach(function (painter) { painter.paint(); });
+    onWishlistChange.forEach(function (render) { render(); });
+  }
+  /* Returns false when the browser refused to store it. */
+  function saveWishlist(ids) {
     wishlist = SHOP.normalizeWishlist(ids);
     var saved = SHOP.writeWishlist(wishlist);
-    updateWishlistCount();
-    var status = $('[data-wishlist-status]');
-    if (status) {
-      status.textContent = saved ? message : 'Your browser could not save your wishlist. Private browsing or blocked site data can prevent it.';
-    }
+    refreshWishlist();
     return saved;
   }
-  function wishlistRow(coffee, saved) {
-    var row = el('li', 'cart-item');
-    var photo = el('a', 'cart-item__photo');
-    photo.href = 'product.html?id=' + encodeURIComponent(coffee.id);
-    photo.setAttribute('aria-label', coffee.name);
-    var image = el('img'); image.src = coffee.image; image.alt = '';
-    photo.appendChild(image);
-    var detail = el('div', 'cart-item__detail');
-    var name = el('a', 'cart-item__name', coffee.name); name.href = photo.href;
-    detail.appendChild(name);
-    detail.appendChild(el('p', 'cart-item__options', coffee.origin + ' · ' + coffee.process));
-    detail.appendChild(el('p', 'meta', SHOP.priceLabel(coffee)));
-    var toggle = el('button', 'text-action', saved ? 'Remove' : 'Add to wishlist');
-    toggle.type = 'button';
-    toggle.id = 'wishlist-' + coffee.id;
-    toggle.setAttribute('aria-label', (saved ? 'Remove ' : 'Add ') + coffee.name + (saved ? ' from' : ' to') + ' your wishlist');
-    toggle.addEventListener('click', function () {
-      if (saved) { saveWishlist(SHOP.remove(wishlist, coffee.id), coffee.name + ' removed from your wishlist.'); }
-      else { saveWishlist(SHOP.add(wishlist, coffee.id), coffee.name + ' added to your wishlist.'); }
-      renderWishlist(toggle.id);
-    });
-    var controls = el('div', 'cart-item__controls');
-    controls.appendChild(toggle);
-    detail.appendChild(controls);
-    row.appendChild(photo); row.appendChild(detail);
-    return row;
-  }
-  function renderWishlist(focusId) {
-    var root = $('[data-wishlist-page]');
-    if (!root || !SHOP) { return; }
-    var list = $('[data-wishlist-items]', root);
-    var more = $('[data-wishlist-more]', root);
-    list.replaceChildren(); more.replaceChildren();
-    DATA.coffees.forEach(function (coffee) {
-      var saved = wishlist.indexOf(coffee.id) >= 0;
-      (saved ? list : more).appendChild(wishlistRow(coffee, saved));
-    });
-    $('[data-wishlist-empty]', root).hidden = wishlist.length > 0;
-    $('[data-wishlist-more-section]', root).hidden = wishlist.length === DATA.coffees.length;
-    if (refreshReserve) { refreshReserve(); }
-    if (focusId) {
-      var target = $('#' + focusId);
-      if (target) { target.focus(); }
+  function wishButton(coffee, className, status) {
+    var button = el('button', className);
+    button.type = 'button';
+    function paint() {
+      var on = isSaved(coffee);
+      button.textContent = on ? 'On your wishlist' : 'Add to wishlist';
+      button.setAttribute('aria-pressed', String(on));
     }
+    button.addEventListener('click', function () {
+      var ok = saveWishlist(isSaved(coffee) ? SHOP.remove(wishlist, coffee.id) : SHOP.add(wishlist, coffee.id));
+      if (status) { status.textContent = ok ? '' : FAILED; }
+    });
+    paint();
+    painters.push({ button: button, paint: paint });
+    return button;
   }
   function initWishlist() {
     if (!SHOP) { return; }
-    updateWishlistCount();
-
-    var root = $('[data-wishlist-page]');
-    if (root) {
-      var added = SHOP.coffee(param('added'));
-      var status = $('[data-wishlist-status]', root);
-      if (added && wishlist.indexOf(added.id) >= 0) {
-        status.textContent = added.name + ' is on your wishlist.';
-      } else if (added) {
-        status.textContent = 'Your browser could not save ' + added.name + ' to your wishlist. Private browsing or blocked site data can prevent it.';
-      }
-      // Say it once: a reload after removing the coffee should not repeat it.
-      if (param('added') !== null) { window.history.replaceState(null, '', 'cart.html'); }
-      renderWishlist();
-    }
+    refreshWishlist();
     window.addEventListener('storage', function (event) {
       if (event.key === SHOP.key || event.key === null) {
-        wishlist = SHOP.readWishlist(); updateWishlistCount(); renderWishlist();
+        wishlist = SHOP.readWishlist();
+        refreshWishlist();
       }
     });
-    $$('[data-add-to-cart]').forEach(function (button) {
-      button.addEventListener('click', function () {
-        var coffee = findCoffee(param('id')) || DATA.coffees[0];
-        saveWishlist(SHOP.add(wishlist, coffee.id), coffee.name + ' added to your wishlist.');
-        window.location.href = 'cart.html?added=' + encodeURIComponent(coffee.id);
+  }
+
+  /* -------------------------------------------------------- bean card -- */
+  /* Front: the café's printed wall card. Back: white, with the basic info,
+     a wishlist button and a link to the coffee's own page. */
+
+  function lines(node, list) {
+    list.forEach(function (text, i) {
+      if (i) { node.appendChild(document.createElement('br')); }
+      node.appendChild(document.createTextNode(text));
+    });
+    return node;
+  }
+  function chinese(node) { node.lang = 'zh-Hans'; return node; }
+  function productURL(coffee) { return 'product.html?id=' + encodeURIComponent(coffee.id); }
+  /* Absolute, because a url() in a custom property resolves against the
+     stylesheet that uses it, not this page. */
+  function artURL(coffee) { return 'url("' + new URL(coffee.art, document.baseURI).href + '")'; }
+
+  /* The lot, altitude or harvest the label gives, whichever it has. */
+  function lotLine(coffee) {
+    var key = ['Lot', 'Altitude', 'Harvest'].filter(function (name) { return coffee.specs[name]; })[0];
+    return key ? [key, coffee.specs[key]] : null;
+  }
+  /* [label, value, optional on phone-sized cards] */
+  function basics(coffee) {
+    var rows = [['Region', coffee.region], ['Variety', coffee.variety, true], ['Process', coffee.process]];
+    var lot = lotLine(coffee);
+    if (lot) { rows.push([lot[0], lot[1], true]); }
+    rows.push(['Price', SHOP.priceLabel(coffee)], ['Tasting', coffee.notes, true]);
+    return rows;
+  }
+  function specList(rows, compact) {
+    var dl = el('dl', 'specs');
+    rows.forEach(function (row) {
+      var dt = el('dt', null, row[0]);
+      var dd = el('dd', null, row[1]);
+      if (compact && row[2]) { dt.classList.add('opt'); dd.classList.add('opt'); }
+      dl.appendChild(dt);
+      dl.appendChild(dd);
+    });
+    return dl;
+  }
+
+  /* `key` names where the card sits, so the same coffee in two places keeps
+     two leans. Home leads with the coffee's page; elsewhere the wishlist. */
+  function bean(coffee, key) {
+    var card = el('article', 'bean');
+    card.dataset.lean = coffee.id + '-' + key;
+    card.style.setProperty('--art', artURL(coffee));
+    card.setAttribute('aria-label', coffee.name);
+    var inner = el('div', 'bean__inner');
+
+    var front = el('div', 'bean__face bean__front');
+    front.appendChild(el('span', 'bean__art'));
+    var face = el('div', 'bean__body');
+    var tips = el('p', 'bean__tips');
+    tips.appendChild(el('small', null, 'Tips'));
+    tips.appendChild(el('b', null, '「' + coffee.card.tag + '」'));
+    face.appendChild(tips);
+    face.appendChild(chinese(lines(el('p', 'bean__zh'), coffee.card.zh)));
+    face.appendChild(lines(el('p', 'bean__en'), coffee.card.en));
+    face.appendChild(chinese(el('p', 'bean__notes', '风味表现【' + coffee.card.notes + '】')));
+    face.appendChild(el('p', 'bean__price', SHOP.priceLabel(coffee)));
+    var about = el('p', 'bean__about');
+    about.appendChild(el('b', null, 'About:'));
+    about.appendChild(document.createTextNode(coffee.card.about));
+    face.appendChild(about);
+    front.appendChild(face);
+    front.appendChild(el('span', 'bean__mark'));
+    var hit = el('button', 'bean__hit');
+    hit.type = 'button';
+    hit.setAttribute('aria-label', 'Turn over ' + coffee.name + ' for details');
+    hit.setAttribute('aria-expanded', 'false');
+    front.appendChild(hit);
+
+    var back = el('div', 'bean__face bean__back');
+    back.inert = true;
+    var body = el('div', 'bean__body');
+    var top = el('div', 'bean__back-top');
+    top.appendChild(el('span', 'eyebrow', 'Basic info'));
+    var turn = el('button', 'bean__turn', 'Turn back');
+    turn.type = 'button';
+    top.appendChild(turn);
+    body.appendChild(top);
+    body.appendChild(el('p', 'bean__back-en', coffee.card.en.slice(0, 2).join(' ')));
+    body.appendChild(chinese(el('p', 'bean__back-zh', coffee.card.zh.slice(0, 2).join(' '))));
+    body.appendChild(specList(basics(coffee), true));
+    var actions = el('div', 'bean__actions');
+    var status = el('p', 'bean__status');
+    status.setAttribute('role', 'status');
+    var featured = key === 'home';
+    var more = el('a', featured ? 'btn' : 'link', 'More about this coffee');
+    more.href = productURL(coffee);
+    if (featured) {
+      actions.appendChild(more);
+      actions.appendChild(wishButton(coffee, 'btn btn--quiet', status));
+    } else {
+      actions.appendChild(wishButton(coffee, 'btn', status));
+      actions.appendChild(more);
+    }
+    actions.appendChild(status);
+    body.appendChild(actions);
+    back.appendChild(body);
+
+    function flip(over) {
+      card.classList.toggle('is-flipped', over);
+      front.inert = over;
+      back.inert = !over;
+      hit.setAttribute('aria-expanded', String(over));
+      (over ? turn : hit).focus({ preventScroll: true });
+    }
+    hit.addEventListener('click', function () { flip(true); });
+    turn.addEventListener('click', function () { flip(false); });
+    back.addEventListener('click', function (event) {
+      if (!event.target.closest('a, .btn')) { flip(false); }
+    });
+    card.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && card.classList.contains('is-flipped')) { flip(false); }
+    });
+
+    inner.appendChild(front);
+    inner.appendChild(back);
+    card.appendChild(inner);
+    return card;
+  }
+
+  /* Fill a [data-beans] row, replacing its plain-link fallback. */
+  function fillBeans(container, coffees, key) {
+    container.replaceChildren();
+    coffees.forEach(function (coffee) { container.appendChild(bean(coffee, key)); });
+    wobble();
+    fitAbouts();
+  }
+  function initRows() {
+    if (!SHOP) { return; }
+    var home = $('[data-beans="home"]');
+    if (home) { fillBeans(home, DATA.coffees.slice(0, 3), 'home'); }
+  }
+
+  /* ------------------------------------------------------------ shelf -- */
+  /* Search, origin and process filters and price order, all kept in the
+     address so a filtered shelf can be shared or reloaded. */
+
+  function initShelf() {
+    var shelf = $('[data-beans="shelf"]');
+    if (!shelf || !SHOP) { return; }
+    var input = $('[data-coffee-search]');
+    var sort = $('[data-sort]');
+    var tally = $('[data-lot-count]');
+    var empty = $('[data-shelf-empty]');
+    var chosen = { origin: 'all', process: 'all' };
+
+    input.value = (param('q') || '').slice(0, 200);
+    if (param('sort') === 'desc') { sort.value = 'desc'; }
+    Object.keys(chosen).forEach(function (facet) {
+      var wanted = (param(facet) || '').toLowerCase();
+      $$('[data-facet="' + facet + '"]').forEach(function (chip) {
+        if (chip.dataset.value.toLowerCase() === wanted) { chosen[facet] = chip.dataset.value; }
       });
     });
+
+    function render(updateURL) {
+      var list = DATA.coffees.filter(function (coffee) {
+        return SHOP.matches(coffee, input.value) &&
+          (chosen.origin === 'all' || coffee.origin === chosen.origin) &&
+          (chosen.process === 'all' || coffee.processes.indexOf(chosen.process) >= 0);
+      }).sort(function (a, b) { return sort.value === 'desc' ? b.price - a.price : a.price - b.price; });
+      fillBeans(shelf, list, 'shelf');
+      tally.textContent = list.length + (list.length === 1 ? ' lot' : ' lots');
+      empty.hidden = list.length > 0;
+      $$('[data-facet]').forEach(function (chip) {
+        chip.setAttribute('aria-pressed', String(chosen[chip.dataset.facet] === chip.dataset.value));
+      });
+      if (updateURL) {
+        var url = new URL(window.location.href);
+        var query = input.value.trim();
+        if (query) { url.searchParams.set('q', query); } else { url.searchParams.delete('q'); }
+        Object.keys(chosen).forEach(function (facet) {
+          if (chosen[facet] === 'all') { url.searchParams.delete(facet); }
+          else { url.searchParams.set(facet, chosen[facet].toLowerCase()); }
+        });
+        if (sort.value === 'desc') { url.searchParams.set('sort', 'desc'); } else { url.searchParams.delete('sort'); }
+        url.hash = '';
+        window.history.replaceState(null, '', url);
+      }
+    }
+    input.addEventListener('input', function () { render(true); });
+    $('[data-search-form]').addEventListener('submit', function (event) { event.preventDefault(); render(true); });
+    sort.addEventListener('change', function () { render(true); });
+    $$('[data-facet]').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        chosen[chip.dataset.facet] = chip.dataset.value;
+        render(true);
+      });
+    });
+    $('[data-reset-shelf]').addEventListener('click', function () {
+      input.value = '';
+      chosen.origin = chosen.process = 'all';
+      render(true);
+      input.focus();
+    });
+    render(false);
+    if (window.location.hash === '#coffee-search') { input.focus(); }
+  }
+
+  /* ------------------------------------------------------ coffee page -- */
+
+  function text(selector, value) {
+    var node = $(selector);
+    if (node) { node.textContent = value; }
+    return node;
+  }
+  function renderProduct() {
+    var root = $('[data-product]');
+    if (!root || !SHOP) { return; }
+    var coffee = findCoffee(param('id')) || DATA.coffees[0];
+
+    document.title = coffee.name + ' — Lights Landing Coffee';
+    text('[data-product-eyebrow]', coffee.origin + ' · 「' + coffee.card.tag + '」');
+    lines(text('[data-product-zh]', ''), coffee.card.zh);
+    lines(text('[data-product-en]', ''), coffee.card.en);
+    text('[data-product-price]', SHOP.priceLabel(coffee));
+    var status = $('[data-wishlist-status]');
+    $('[data-product-wish]').replaceWith(wishButton(coffee, 'btn', status));
+
+    var rows = basics(coffee).filter(function (row) { return row[0] !== 'Price'; });
+    rows.splice(rows.length - 1, 0, ['Roast', coffee.specs.Roast]);
+    var specs = $('[data-product-specs]');
+    var fresh = specList(rows);
+    specs.replaceChildren();
+    while (fresh.firstChild) { specs.appendChild(fresh.firstChild); }
+    text('[data-product-blurb]', coffee.blurb);
+    var print = $('[data-product-print]');
+    print.replaceChildren(bean(coffee, 'print'));
+
+    var cup = $('[data-product-cup]');
+    cup.replaceChildren();
+    (coffee.cup || [['Tasting', coffee.tasting]]).forEach(function (pair) {
+      var row = el('div');
+      row.appendChild(el('dt', null, pair[0]));
+      row.appendChild(el('dd', null, pair[1]));
+      cup.appendChild(row);
+    });
+    text('[data-product-label-en]', coffee.label.en);
+    text('[data-product-label-zh]', coffee.label.zh);
+    var bag = $('[data-product-bag]');
+    bag.src = coffee.bag;
+    bag.alt = 'A bag of ' + coffee.name + ' with its printed tag';
+
+    var story = $('[data-product-story]');
+    story.replaceChildren();
+    coffee.story.forEach(function (para) { story.appendChild(el('p', null, para)); });
+    var awards = $('[data-product-awards]');
+    awards.replaceChildren();
+    (coffee.awards || []).forEach(function (line) { awards.appendChild(el('li', null, line)); });
+    $('[data-product-awards-block]').hidden = !coffee.awards;
+
+    var also = $('[data-beans="also"]');
+    fillBeans(also, DATA.coffees.filter(function (other) { return other !== coffee; }), 'also');
+  }
+
+  /* ------------------------------------------------------- brew guide -- */
+
+  function findGuide(id) {
+    for (var i = 0; i < DATA.guides.length; i += 1) {
+      if (DATA.guides[i].id === id) { return DATA.guides[i]; }
+    }
+    return null;
+  }
+  function paintGuide(guide) {
+    document.title = guide.title + ' — Lights Landing Coffee';
+    var image = $('[data-guide-image]');
+    image.src = guide.image;
+    image.alt = guide.alt;
+    text('[data-guide-title]', guide.title);
+    text('[data-guide-intro]', guide.intro);
+    text('[data-guide-note]', guide.note);
+
+    var glance = $('[data-guide-glance]');
+    glance.replaceChildren();
+    guide.glance.forEach(function (pair) {
+      glance.appendChild(el('dt', null, pair[0]));
+      glance.appendChild(el('dd', null, pair[1]));
+    });
+    var steps = $('[data-guide-steps]');
+    steps.replaceChildren();
+    guide.steps.forEach(function (step, i) {
+      var row = el('div', 'step');
+      row.appendChild(el('span', 'step__n', ('0' + (i + 1)).slice(-2)));
+      var body = el('div');
+      body.appendChild(el('h3', null, step[0]));
+      body.appendChild(el('p', null, step[1]));
+      row.appendChild(body);
+      steps.appendChild(row);
+    });
+    $$('[data-guide-tab]').forEach(function (tab) {
+      if (tab.dataset.guideTab === guide.id) { tab.setAttribute('aria-current', 'page'); }
+      else { tab.removeAttribute('aria-current'); }
+    });
+  }
+  function initGuide() {
+    if (!$('[data-guide-steps]')) { return; }
+    var guide = findGuide(param('m'));
+    if (guide) { paintGuide(guide); }
+    $$('[data-guide-tab]').forEach(function (tab) {
+      tab.addEventListener('click', function (event) {
+        var next = findGuide(tab.dataset.guideTab);
+        if (!next) { return; }
+        event.preventDefault();
+        paintGuide(next);
+        window.history.pushState({ m: next.id }, '', 'brew.html?m=' + next.id);
+      });
+    });
+    window.addEventListener('popstate', function () {
+      paintGuide(findGuide(param('m')) || DATA.guides[0]);
+    });
+  }
+
+  /* ---------------------------------------------------- wishlist page -- */
+
+  function wishRow(coffee) {
+    var row = el('li', 'wish-row');
+    var swatch = el('span', 'wish-row__swatch');
+    swatch.style.setProperty('--art', artURL(coffee));
+    row.appendChild(swatch);
+    var detail = el('div');
+    var name = chinese(el('a', 'wish-row__name', coffee.card.zh[1]));
+    name.href = productURL(coffee);
+    detail.appendChild(name);
+    detail.appendChild(el('div', 'wish-row__meta', coffee.name + ' · ' + SHOP.priceLabel(coffee)));
+    row.appendChild(detail);
+    var remove = el('button', null, 'Remove');
+    remove.type = 'button';
+    remove.setAttribute('aria-label', 'Remove ' + coffee.name + ' from your wishlist');
+    remove.addEventListener('click', function () {
+      var ok = saveWishlist(SHOP.remove(wishlist, coffee.id));
+      text('[data-wishlist-status]', ok ? coffee.name + ' removed from your wishlist.' : FAILED);
+    });
+    row.appendChild(remove);
+    return row;
+  }
+  function initWishlistPage() {
+    var list = $('[data-wishlist-items]');
+    if (!list || !SHOP) { return; }
+    var more = $('[data-beans="wish"]');
+    var shown = null;
+    function render() {
+      var saved = DATA.coffees.filter(isSaved);
+      var key = saved.map(function (coffee) { return coffee.id; }).join();
+      if (key === shown) { return; }
+      shown = key;
+      // A card added from below leaves the page; keep the keyboard nearby.
+      var lostFocus = more.contains(document.activeElement) || list.contains(document.activeElement);
+      list.replaceChildren();
+      saved.forEach(function (coffee) { list.appendChild(wishRow(coffee)); });
+      $('[data-wishlist-empty]').hidden = saved.length > 0;
+      var others = DATA.coffees.filter(function (coffee) { return !isSaved(coffee); });
+      $('[data-wishlist-more]').hidden = others.length === 0;
+      fillBeans(more, others, 'wish');
+      if (lostFocus) { $('[data-wishlist-heading]').focus(); }
+    }
+    onWishlistChange.push(render);
+    render();
   }
 
   /* ---------------------------------------------------- email reserve -- */
@@ -266,18 +640,16 @@
     var trap = $('[data-reserve-trap]', form);
     var sending = false;
 
-    /* Shelf order, the same as the wishlist shown above the form. */
-    function saved() {
-      return DATA.coffees.filter(function (coffee) { return wishlist.indexOf(coffee.id) >= 0; });
-    }
+    /* Shelf order, the same as the wishlist beside the form. */
+    function saved() { return DATA.coffees.filter(isSaved); }
     function names(coffees) {
       return coffees.map(function (coffee) { return coffee.name + ' (' + SHOP.priceLabel(coffee) + ')'; }).join(', ');
     }
-    refreshReserve = function () {
+    function refresh() {
       var coffees = saved();
       listing.textContent = coffees.length ? 'Reserving: ' + names(coffees) + '.' : 'Add a coffee to your wishlist to reserve it.';
       submit.disabled = sending || coffees.length === 0;
-    };
+    }
 
     form.addEventListener('submit', function (event) {
       event.preventDefault();
@@ -285,7 +657,7 @@
       if (sending || !coffees.length || !form.reportValidity()) { return; }
       var address = email.value.trim();
       sending = true;
-      refreshReserve();
+      refresh();
       status.textContent = 'Sending your reservation…';
       window.fetch(endpoint, {
         method: 'POST',
@@ -308,236 +680,25 @@
         status.textContent = 'Your reservation didn’t go through. Check your connection and try again.';
       }).then(function () {
         sending = false;
-        refreshReserve();
+        refresh();
       });
     });
 
+    onWishlistChange.push(refresh);
     form.hidden = false;
-    refreshReserve();
-  }
-
-  /* -------------------------------------------------- option swatches -- */
-  /* Size and grind on the product page: one selection per row. */
-
-  function initChoiceGroups() {
-    $$('[data-choice-group]').forEach(function (group) {
-      group.addEventListener('click', function (event) {
-        var button = event.target.closest('.choice');
-        if (!button || button.disabled || !group.contains(button)) { return; }
-
-        $$('.choice', group).forEach(function (other) {
-          other.setAttribute('aria-pressed', String(other === button));
-        });
-      });
-    });
-  }
-
-  /* ---------------------------------------------------------- filters -- */
-
-  function initFilters() {
-    var listing = $('[data-listing]');
-    if (!listing || !SHOP) { return; }
-    var cards = $$('[data-coffee]', listing);
-    var tally = $('[data-lot-count]');
-    var empty = $('[data-listing-empty]');
-    var input = $('[data-coffee-search]');
-    var reset = $('[data-reset-search]');
-    var chosen = { origin: 'all', process: 'all' };
-    input.value = (param('q') || '').slice(0, 200);
-    Object.keys(chosen).forEach(function (facet) {
-      var value = param(facet);
-      if ($$('[data-facet="' + facet + '"]').some(function (button) { return button.dataset.value === value; })) {
-        chosen[facet] = value;
-      }
-    });
-    function apply(updateURL) {
-      var shown = 0;
-      cards.forEach(function (card) {
-        var id = new URL(card.href).searchParams.get('id');
-        var coffee = SHOP.coffee(id);
-        var ok = coffee && SHOP.matches(coffee, input.value) && Object.keys(chosen).every(function (facet) {
-          // A coffee sold as more than one process lists each, space-separated.
-          return chosen[facet] === 'all' || card.dataset[facet].toLowerCase().split(/\s+/).indexOf(chosen[facet]) >= 0;
-        });
-        card.hidden = !ok;
-        if (ok) { shown += 1; }
-      });
-      $$('[data-facet]').forEach(function (button) {
-        button.setAttribute('aria-pressed', String(chosen[button.dataset.facet] === button.dataset.value));
-      });
-      tally.textContent = shown + (shown === 1 ? ' lot' : ' lots');
-      empty.hidden = shown > 0;
-      reset.hidden = !input.value && Object.values(chosen).every(function (value) { return value === 'all'; });
-      if (updateURL) {
-        var url = new URL(window.location.href);
-        if (input.value.trim()) { url.searchParams.set('q', input.value.trim()); } else { url.searchParams.delete('q'); }
-        Object.keys(chosen).forEach(function (facet) {
-          if (chosen[facet] === 'all') { url.searchParams.delete(facet); } else { url.searchParams.set(facet, chosen[facet]); }
-        });
-        window.history.replaceState(null, '', url);
-      }
-    }
-    input.addEventListener('input', function () { apply(true); });
-    $('[data-search-form]').addEventListener('submit', function (event) { event.preventDefault(); apply(true); });
-    reset.addEventListener('click', function () {
-      input.value = ''; Object.keys(chosen).forEach(function (facet) { chosen[facet] = 'all'; }); apply(true); input.focus();
-    });
-    $$('[data-facet]').forEach(function (button) {
-      button.addEventListener('click', function () { chosen[button.dataset.facet] = button.dataset.value; apply(true); });
-    });
-    apply(false);
-    if (window.location.hash === '#coffee-search') { input.focus(); }
-  }
-
-  /* --------------------------------------------------- product detail -- */
-
-  function findCoffee(id) {
-    for (var i = 0; i < DATA.coffees.length; i += 1) {
-      if (DATA.coffees[i].id === id) { return DATA.coffees[i]; }
-    }
-    return null;
-  }
-
-  function renderProduct() {
-    var root = $('[data-product]');
-    if (!root) { return; }
-
-    var coffee = findCoffee(param('id')) || DATA.coffees[0];
-    if (!coffee) { return; }
-
-    document.title = coffee.name + ' — Lights Landing Coffee';
-
-    var well = $('[data-product-well]', root);
-    var img  = $('[data-product-image]', root);
-    img.src = coffee.image;
-    img.alt = coffee.name + ' — label artwork';
-    well.classList.toggle('product__well--photo', coffee.fit === 'cover');
-
-    $('[data-product-eyebrow]', root).textContent =
-      [coffee.origin, coffee.region, coffee.process].filter(Boolean).join(' · ');
-    $('[data-product-name]', root).textContent  = coffee.name;
-    $('[data-product-notes]', root).textContent = coffee.notes;
-    $('[data-product-blurb]', root).textContent = coffee.blurb;
-    $('[data-product-size]', root).textContent = coffee.size;
-    $('[data-product-price]', root).textContent = 'Add to cart — ' + SHOP.money(coffee.price);
-
-    var specs = $('[data-product-specs]', root);
-    specs.innerHTML = '';
-    Object.keys(coffee.specs).forEach(function (key) {
-      var wrap = el('div');
-      wrap.appendChild(el('dt', null, key));
-      wrap.appendChild(el('dd', null, coffee.specs[key]));
-      specs.appendChild(wrap);
-    });
-
-    // In the cup: aroma, palate and finish, or one line when that is all
-    // the roaster gave.
-    var cup = $('[data-product-cup]');
-    if (cup) {
-      cup.innerHTML = '';
-      (coffee.cup || [['Tasting', coffee.tasting]]).forEach(function (pair) {
-        var wrap = el('div');
-        wrap.appendChild(el('dt', null, pair[0]));
-        wrap.appendChild(el('dd', null, pair[1]));
-        cup.appendChild(wrap);
-      });
-      $('[data-product-label-en]').textContent = coffee.label.en;
-      $('[data-product-label-zh]').textContent = coffee.label.zh;
-      var bag = $('[data-product-bag]');
-      bag.src = coffee.bag;
-      bag.alt = 'A bag of ' + coffee.name;
-    }
-
-    var story = $('[data-product-story]');
-    if (story) {
-      story.innerHTML = '';
-      coffee.story.forEach(function (para) { story.appendChild(el('p', null, para)); });
-    }
-
-    var awards = $('[data-product-awards]');
-    if (awards) {
-      awards.innerHTML = '';
-      (coffee.awards || []).forEach(function (line) { awards.appendChild(el('li', null, line)); });
-      $('[data-product-awards-block]').hidden = !coffee.awards;
-    }
-  }
-
-  /* -------------------------------------------------------- brew tabs -- */
-
-  function findGuide(id) {
-    for (var i = 0; i < DATA.guides.length; i += 1) {
-      if (DATA.guides[i].id === id) { return DATA.guides[i]; }
-    }
-    return null;
-  }
-
-  function paintGuide(guide) {
-    document.title = guide.title + ' — Lights Landing Coffee';
-
-    var image = $('[data-guide-image]');
-    image.src = guide.image;
-    image.alt = guide.alt;
-
-    $('[data-guide-title]').textContent = guide.title;
-    $('[data-guide-intro]').textContent = guide.intro;
-
-    var glance = $('[data-guide-glance]');
-    glance.innerHTML = '';
-    guide.glance.forEach(function (pair) {
-      glance.appendChild(el('dt', null, pair[0]));
-      glance.appendChild(el('dd', null, pair[1]));
-    });
-
-    $('[data-guide-note]').textContent = guide.note;
-
-    var steps = $('[data-guide-steps]');
-    steps.innerHTML = '';
-    guide.steps.forEach(function (step, i) {
-      var row  = el('div', 'step');
-      var body = el('div');
-
-      row.appendChild(el('div', 'step__n', ('0' + (i + 1)).slice(-2)));
-      body.appendChild(el('div', 'step__title', step[0]));
-      body.appendChild(el('div', 'step__text', step[1]));
-      row.appendChild(body);
-      steps.appendChild(row);
-    });
-
-    $$('[data-guide-tab]').forEach(function (tab) {
-      tab.setAttribute('aria-selected', String(tab.dataset.guideTab === guide.id));
-    });
-  }
-
-  function initGuide() {
-    if (!$('[data-guide-steps]')) { return; }
-
-    var guide = findGuide(param('m'));
-    if (guide) { paintGuide(guide); }
-
-    $$('[data-guide-tab]').forEach(function (tab) {
-      tab.addEventListener('click', function (event) {
-        var next = findGuide(tab.dataset.guideTab);
-        if (!next) { return; }
-
-        event.preventDefault();
-        paintGuide(next);
-        history.pushState({ m: next.id }, '', 'brew.html?m=' + next.id);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    });
-
-    window.addEventListener('popstate', function () {
-      paintGuide(findGuide(param('m')) || DATA.guides[0]);
-    });
+    refresh();
+    wobble();
   }
 
   /* ------------------------------------------------------------- boot -- */
 
   initFanLogo();
   initWishlist();
-  initReserve();
-  initChoiceGroups();
-  initFilters();
+  initRows();
+  initShelf();
   renderProduct();
   initGuide();
+  initWishlistPage();
+  initReserve();
+  initWobble();
 })();
