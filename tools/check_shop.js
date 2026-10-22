@@ -64,6 +64,7 @@ for (const name of fs.readdirSync(root).filter(name => name.endsWith('.html'))) 
   assert(html.includes('href="coffee.html#coffee-search"'), name + ': Search is a real link');
   assert(html.includes('<a class="cart" href="cart.html">Wishlist · <span data-wishlist-count>0</span></a>'), name + ': Wishlist link');
   assert(!/free shipping/i.test(html), name + ': no shipping offers while ordering is closed');
+  assert(!/cupping on fridays|cupping, fridays|lightscoffee\.example/i.test(html), name + ': no Friday cupping or placeholder email');
   assert(html.indexOf('assets/shop.js') < html.indexOf('assets/site.js'), name + ': load shop rules before the UI');
   for (const [, id] of html.matchAll(/product\.html\?id=([a-z0-9-]+)/g)) {
     assert(catalog.some(coffee => coffee.id === id), name + ': links to a coffee on sale (' + id + ')');
