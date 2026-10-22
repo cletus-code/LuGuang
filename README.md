@@ -40,9 +40,9 @@ The **中** at the top right puts the whole site into Chinese; there it reads
   Chinese wording, edit `i18n.js`; to add text, give it a new key there.
 - **Coffees and brew guides** carry their Chinese in `data.js` under `zh`. The
   tasting notes and estate stories are the roaster's own Chinese.
-- **Cards** in English show no Chinese at all: the English names lead, with
-  the tasting notes in English. In Chinese they read like the café's wall
-  cards: the Chinese names and 「tag」 over the English, and 风味表现.
+- **Cards** carry only their own language: in English the English names and
+  tasting notes, with no Chinese at all; in Chinese the Chinese names, the
+  「tag」 and 风味表现, with no English names.
 - **The choice** is remembered in the browser (`lights.lang`). A first visit
   follows the browser's language. `?lang=zh` or `?lang=en` on any link sets
   it, so a Chinese link can be shared. A small script in each page's head

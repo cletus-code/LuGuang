@@ -552,10 +552,10 @@
     tips.appendChild(el('small', null, 'Tips'));
     tips.appendChild(el('b', null, tag(coffee)));
     face.appendChild(tips);
-    // In Chinese the card reads like the café's: Chinese names over the
-    // English. In English it carries no Chinese at all.
-    if (isZh()) { face.appendChild(lines(el('p', 'bean__zh'), coffee.card.zh)); }
-    face.appendChild(lines(el('p', isZh() ? 'bean__en' : 'bean__en bean__en--lead'), coffee.card.en));
+    // Each language's card carries only its own names, which leaves the
+    // room for the tasting notes.
+    face.appendChild(isZh() ? lines(el('p', 'bean__zh'), coffee.card.zh)
+      : lines(el('p', 'bean__en'), coffee.card.en));
     face.appendChild(el('p', 'bean__price', SHOP.priceLabel(coffee)));
     face.appendChild(tasting(coffee));
     front.appendChild(face);
@@ -573,12 +573,7 @@
     var back = el('div', 'bean__face bean__back');
     var body = el('div', 'bean__body');
     body.appendChild(el('span', 'eyebrow', L('Basic info', '基本信息')));
-    if (isZh()) {
-      body.appendChild(el('p', 'bean__back-title', coffee.card.zh.slice(0, 2).join(' ')));
-      body.appendChild(el('p', 'bean__back-sub', coffee.card.en.slice(0, 2).join(' ')));
-    } else {
-      body.appendChild(el('p', 'bean__back-title', coffee.card.en.slice(0, 2).join(' ')));
-    }
+    body.appendChild(el('p', 'bean__back-title', L(coffee.card.en, coffee.card.zh).slice(0, 2).join(' ')));
     body.appendChild(specList(basics(coffee), true));
     var actions = el('div', 'bean__actions');
     var status = el('p', 'bean__status');

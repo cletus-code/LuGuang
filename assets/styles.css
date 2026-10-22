@@ -221,9 +221,8 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 .bean__tips small { display: block; font-size: max(8px, 3.6cqw); font-style: italic; }
 .bean__tips b { font: 700 max(9px, 4.6cqw) / 1.2 var(--sans); }
 .bean__zh { font: 700 7.4cqw / 1.24 var(--zh); margin: 0; }
-.bean__en { font: 400 6.6cqw / 1.14 var(--sans); margin: 4cqw 0 0; letter-spacing: -.01em; }
-/* Without the Chinese above it, the English is the card's title. */
-.bean__en--lead { font-weight: 700; font-size: 7.6cqw; line-height: 1.2; margin: 0; }
+/* On an English card the English names are the title. */
+.bean__en { font: 700 7.6cqw / 1.2 var(--sans); margin: 0; letter-spacing: -.01em; }
 .bean__price { font-size: max(9.5px, 4.3cqw); margin: 2.5cqw 0 0; font-variant-numeric: tabular-nums; }
 .bean__taste { flex: 0 1 auto; min-height: 0; margin: auto 0 0; padding: 4cqw 10cqw 0 0; overflow: hidden; font-size: max(8px, 3.5cqw); line-height: 1.4; }
 .bean__taste > b { display: block; font-weight: 600; margin-bottom: 1cqw; }
@@ -240,7 +239,6 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 .bean__back .bean__body { position: absolute; inset: 0; padding: 7cqw 7cqw 6cqw; display: flex; flex-direction: column; gap: 3cqw; overflow-y: auto; }
 .bean__back .eyebrow { font-size: max(9.5px, 4cqw); }
 .bean__back-title { font: 700 max(12.5px, 6cqw) / 1.25 var(--sans); margin: 0; }
-.bean__back-sub { font: 500 max(11px, 4.6cqw) / 1.35 var(--sans); color: var(--grey); margin: 0; }
 .bean__back .specs { font-size: max(11px, 4.8cqw); line-height: 1.35; gap: 1.4cqw 4cqw; padding-top: 3cqw; border-top: 1px solid var(--line); }
 .bean__back .specs dt { font-size: max(9px, 3.6cqw); }
 /* Phone-sized cards keep the essentials on the back: region, process, price. */
