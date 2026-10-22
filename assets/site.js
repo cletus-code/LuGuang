@@ -1,8 +1,9 @@
 /* Behaviour for Lights Landing Coffee.
-   Pages carry their own text; this file draws the coffee cards from
-   assets/data.js (each turns over on a click) and runs the wishlist, the
-   shelf's search, filters and sort, each coffee's page, the brew-guide tabs
-   and the email reservations. Every white card gets its small lean here. */
+   Pages carry their own English text; this file puts them into Chinese
+   when asked, draws the coffee cards from assets/data.js, and runs the
+   wishlist, the shelf's search, filters and sort, each coffee's page, the
+   brew-guide tabs and the email reservations. Every white card gets its
+   small lean here. */
 
 (function () {
   'use strict';
@@ -22,6 +23,87 @@
     if (className) { node.className = className; }
     if (text != null) { node.textContent = text; }
     return node;
+  }
+
+  /* --------------------------------------------------------- language -- */
+  /* English or Chinese. Text marked data-i18n in a page swaps to its
+     Chinese in assets/i18n.js; coffees and guides carry their own `zh`.
+     The choice is kept in this browser; ?lang=zh or ?lang=en in a link
+     sets it, and a first visit follows the browser's language. */
+
+  var ZH = window.LIGHTS_ZH || {};
+  var LANG_KEY = 'lights.lang';
+  var lang = (function () {
+    var asked = null, stored = null;
+    try {
+      asked = param('lang');
+      stored = window.localStorage.getItem(LANG_KEY);
+    } catch (error) {}
+    if (asked === 'zh' || asked === 'en') {
+      try { window.localStorage.setItem(LANG_KEY, asked); } catch (error) {}
+      return asked;
+    }
+    if (stored === 'zh' || stored === 'en') { return stored; }
+    return /^zh/i.test((window.navigator && window.navigator.language) || '') ? 'zh' : 'en';
+  })();
+  var rerenders = [];            /* parts drawn by script, redrawn on a switch */
+  var englishHTML = new Map();   /* each translated node's own English */
+
+  function isZh() { return lang === 'zh'; }
+  /* A piece of interface text in the current language. */
+  function L(en, zh) { return isZh() ? zh : en; }
+  /* A coffee's or guide's field in the current language. */
+  function loc(item, field) {
+    return isZh() && item.zh && item.zh[field] != null ? item.zh[field] : item[field];
+  }
+  var LABELS = { Region: '产区', Variety: '品种', Process: '处理法', Lot: '批次', Altitude: '海拔',
+    Harvest: '产季', Roast: '烘焙度', Price: '价格', Tasting: '风味' };
+  function label(name) { return L(name, LABELS[name] || name); }
+
+  function translatePage() {
+    var root = document.documentElement;
+    if (!root) { return; }
+    root.lang = isZh() ? 'zh-Hans' : 'en';
+    $$('[data-i18n]').forEach(function (node) {
+      if (!englishHTML.has(node)) { englishHTML.set(node, node.innerHTML); }
+      var chinese = ZH[node.dataset.i18n];
+      node.innerHTML = isZh() && chinese != null ? chinese : englishHTML.get(node);
+    });
+    $$('[data-i18n-attr]').forEach(function (node) {
+      node.dataset.i18nAttr.split(',').forEach(function (pair) {
+        var name = pair.split(':')[0], key = pair.split(':')[1];
+        var keep = 'data-en-' + name;
+        if (!node.hasAttribute(keep)) { node.setAttribute(keep, node.getAttribute(name) || ''); }
+        node.setAttribute(name, isZh() && ZH[key] != null ? ZH[key] : node.getAttribute(keep));
+      });
+    });
+    var toggle = $('[data-lang-toggle]');
+    if (toggle) {
+      toggle.textContent = L('中', 'EN');
+      toggle.lang = L('zh-Hans', 'en');
+      toggle.setAttribute('aria-label', L('切换到中文', 'Switch to English'));
+    }
+    root.classList.remove('is-translating');
+  }
+  function initLanguage() {
+    translatePage();
+    var toggle = $('[data-lang-toggle]');
+    if (!toggle) { return; }
+    toggle.addEventListener('click', function () {
+      lang = isZh() ? 'en' : 'zh';
+      try { window.localStorage.setItem(LANG_KEY, lang); } catch (error) {}
+      // A ?lang= left in the address would undo the choice on a reload.
+      if (param('lang') !== null) {
+        var url = new URL(window.location.href);
+        url.searchParams.delete('lang');
+        window.history.replaceState(window.history.state, '', url);
+      }
+      translatePage();
+      refreshWishlist();
+      rerenders.forEach(function (draw) { draw(); });
+      wobble();
+      fitAbouts();
+    });
   }
 
   /* ------------------------------------------------------- fan logo -- */
@@ -210,7 +292,10 @@
   var wishlist = SHOP ? SHOP.readWishlist() : [];
   var painters = [];          /* every wishlist button on the page */
   var onWishlistChange = [];  /* page parts that list what is saved */
-  var FAILED = 'Your browser could not save your wishlist. Private browsing or blocked site data can prevent it.';
+  function failed() {
+    return L('Your browser could not save your wishlist. Private browsing or blocked site data can prevent it.',
+      '你的浏览器无法保存心愿单。无痕浏览或被屏蔽的网站数据可能导致这个问题。');
+  }
 
   function findCoffee(id) {
     for (var i = 0; i < DATA.coffees.length; i += 1) {
@@ -220,7 +305,14 @@
   }
   function isSaved(coffee) { return wishlist.indexOf(coffee.id) >= 0; }
   function refreshWishlist() {
-    $$('[data-wishlist-count]').forEach(function (node) { node.textContent = wishlist.length; });
+    var n = wishlist.length;
+    $$('[data-wishlist-count]').forEach(function (node) {
+      node.textContent = n;
+      node.hidden = n === 0;
+    });
+    $$('[data-wishlist-link]').forEach(function (link) {
+      link.setAttribute('aria-label', L('Wishlist, ' + n + (n === 1 ? ' coffee' : ' coffees'), '心愿单，' + n + ' 款咖啡'));
+    });
     painters = painters.filter(function (painter) { return painter.button.isConnected; });
     painters.forEach(function (painter) { painter.paint(); });
     onWishlistChange.forEach(function (render) { render(); });
@@ -237,12 +329,12 @@
     button.type = 'button';
     function paint() {
       var on = isSaved(coffee);
-      button.textContent = on ? 'On your wishlist' : 'Add to wishlist';
+      button.textContent = on ? L('On your wishlist', '已在心愿单') : L('Add to wishlist', '加入心愿单');
       button.setAttribute('aria-pressed', String(on));
     }
     button.addEventListener('click', function () {
       var ok = saveWishlist(isSaved(coffee) ? SHOP.remove(wishlist, coffee.id) : SHOP.add(wishlist, coffee.id));
-      if (status) { status.textContent = ok ? '' : FAILED; }
+      if (status) { status.textContent = ok ? '' : failed(); }
     });
     paint();
     painters.push({ button: button, paint: paint });
@@ -270,23 +362,25 @@
     });
     return node;
   }
-  function chinese(node) { node.lang = 'zh-Hans'; return node; }
   function productURL(coffee) { return 'product.html?id=' + encodeURIComponent(coffee.id); }
   /* Absolute, because a url() in a custom property resolves against the
      stylesheet that uses it, not this page. */
   function artURL(coffee) { return 'url("' + new URL(coffee.art, document.baseURI).href + '")'; }
 
-  /* The lot, altitude or harvest the label gives, whichever it has. */
-  function lotLine(coffee) {
-    var key = ['Lot', 'Altitude', 'Harvest'].filter(function (name) { return coffee.specs[name]; })[0];
-    return key ? [key, coffee.specs[key]] : null;
-  }
-  /* [label, value, optional on phone-sized cards] */
-  function basics(coffee) {
-    var rows = [['Region', coffee.region], ['Variety', coffee.variety, true], ['Process', coffee.process]];
-    var lot = lotLine(coffee);
-    if (lot) { rows.push([lot[0], lot[1], true]); }
-    rows.push(['Price', SHOP.priceLabel(coffee)], ['Tasting', coffee.notes, true]);
+  /* The 「tag」 printed in the card's corner; the brackets are Chinese. */
+  function tag(coffee) { return L(coffee.card.tag, '「' + coffee.card.tag + '」'); }
+
+  /* [label, value, optional on phone-sized cards]. A coffee's page lists
+     the roast where a card lists the price. */
+  function basics(coffee, onPage) {
+    var specs = loc(coffee, 'specs');
+    var rows = [[label('Region'), loc(coffee, 'region')], [label('Variety'), loc(coffee, 'variety'), true],
+      [label('Process'), loc(coffee, 'process')]];
+    // The lot, altitude or harvest the label gives, whichever it has.
+    var lot = ['Lot', 'Altitude', 'Harvest'].filter(function (name) { return specs[name]; })[0];
+    if (lot) { rows.push([label(lot), specs[lot], true]); }
+    rows.push(onPage ? [label('Roast'), specs.Roast] : [label('Price'), SHOP.priceLabel(coffee)]);
+    rows.push([label('Tasting'), loc(coffee, 'notes'), true]);
     return rows;
   }
   function specList(rows, compact) {
@@ -421,7 +515,7 @@
     var card = el('article', 'bean');
     card.dataset.lean = coffee.id + '-' + key;
     card.style.setProperty('--art', artURL(coffee));
-    card.setAttribute('aria-label', coffee.name);
+    card.setAttribute('aria-label', loc(coffee, 'name'));
     var inner = el('div', 'bean__inner');
 
     var front = el('div', 'bean__face bean__front');
@@ -429,15 +523,17 @@
     var face = el('div', 'bean__body');
     var tips = el('p', 'bean__tips');
     tips.appendChild(el('small', null, 'Tips'));
-    tips.appendChild(el('b', null, '「' + coffee.card.tag + '」'));
+    tips.appendChild(el('b', null, tag(coffee)));
     face.appendChild(tips);
-    face.appendChild(chinese(lines(el('p', 'bean__zh'), coffee.card.zh)));
-    face.appendChild(lines(el('p', 'bean__en'), coffee.card.en));
-    face.appendChild(chinese(el('p', 'bean__notes', '风味表现【' + coffee.card.notes + '】')));
+    // In Chinese the card reads like the café's: Chinese names over the
+    // English. In English it carries no Chinese at all.
+    if (isZh()) { face.appendChild(lines(el('p', 'bean__zh'), coffee.card.zh)); }
+    face.appendChild(lines(el('p', isZh() ? 'bean__en' : 'bean__en bean__en--lead'), coffee.card.en));
+    face.appendChild(el('p', 'bean__notes', L('Tasting: ' + coffee.notes, '风味表现【' + coffee.card.notes + '】')));
     face.appendChild(el('p', 'bean__price', SHOP.priceLabel(coffee)));
     var about = el('p', 'bean__about');
-    about.appendChild(el('b', null, 'About:'));
-    about.appendChild(document.createTextNode(coffee.card.about));
+    about.appendChild(el('b', null, L('About:', '关于：')));
+    about.appendChild(document.createTextNode(L(coffee.card.about, coffee.zh.about)));
     face.appendChild(about);
     front.appendChild(face);
     front.appendChild(el('span', 'bean__mark'));
@@ -447,21 +543,25 @@
     if (url) {
       var hit = el('a', 'bean__hit');
       hit.href = url;
-      hit.setAttribute('aria-label', coffee.name + ': ' + coffee.origin + ', ' + SHOP.priceLabel(coffee));
+      hit.setAttribute('aria-label', loc(coffee, 'name') + L(': ', '：') + loc(coffee, 'origin') + L(', ', '，') + SHOP.priceLabel(coffee));
       front.appendChild(hit);
     }
 
     var back = el('div', 'bean__face bean__back');
     var body = el('div', 'bean__body');
-    body.appendChild(el('span', 'eyebrow', 'Basic info'));
-    body.appendChild(el('p', 'bean__back-en', coffee.card.en.slice(0, 2).join(' ')));
-    body.appendChild(chinese(el('p', 'bean__back-zh', coffee.card.zh.slice(0, 2).join(' '))));
+    body.appendChild(el('span', 'eyebrow', L('Basic info', '基本信息')));
+    if (isZh()) {
+      body.appendChild(el('p', 'bean__back-title', coffee.card.zh.slice(0, 2).join(' ')));
+      body.appendChild(el('p', 'bean__back-sub', coffee.card.en.slice(0, 2).join(' ')));
+    } else {
+      body.appendChild(el('p', 'bean__back-title', coffee.card.en.slice(0, 2).join(' ')));
+    }
     body.appendChild(specList(basics(coffee), true));
     var actions = el('div', 'bean__actions');
     var status = el('p', 'bean__status');
     status.setAttribute('role', 'status');
     var featured = key === 'home';
-    var more = url ? el('a', featured ? 'btn' : 'link', 'More about this coffee') : null;
+    var more = url ? el('a', featured ? 'btn' : 'link', L('More about this coffee', '了解这支咖啡')) : null;
     if (more) { more.href = url; }
     if (featured) {
       actions.appendChild(more);
@@ -505,7 +605,9 @@
     if (!SHOP) { return; }
     var home = $('[data-beans="home"]');
     if (home) {
-      fillBeans(home, DATA.coffees.slice(0, 3), 'home');
+      var draw = function () { fillBeans(home, DATA.coffees.slice(0, 3), 'home'); };
+      draw();
+      rerenders.push(draw);
       hintSwipe(home);
     }
   }
@@ -539,7 +641,7 @@
           (chosen.process === 'all' || coffee.processes.indexOf(chosen.process) >= 0);
       }).sort(function (a, b) { return sort.value === 'desc' ? b.price - a.price : a.price - b.price; });
       fillBeans(shelf, list, 'shelf');
-      tally.textContent = list.length + (list.length === 1 ? ' lot' : ' lots');
+      tally.textContent = L(list.length + (list.length === 1 ? ' lot' : ' lots'), list.length + ' 款');
       empty.hidden = list.length > 0;
       $$('[data-facet]').forEach(function (chip) {
         chip.setAttribute('aria-pressed', String(chosen[chip.dataset.facet] === chip.dataset.value));
@@ -573,6 +675,7 @@
       input.focus();
     });
     render(false);
+    rerenders.push(function () { render(false); });
     hintSwipe(shelf);
     if (window.location.hash === '#coffee-search') { input.focus(); }
   }
@@ -588,49 +691,52 @@
     var root = $('[data-product]');
     if (!root || !SHOP) { return; }
     var coffee = findCoffee(param('id')) || DATA.coffees[0];
+    function paint() {
+      document.title = L(coffee.name + ' — Lights Landing Coffee', coffee.zh.name + ' — 陆光咖啡');
+      text('[data-product-eyebrow]', loc(coffee, 'origin') + ' · ' + tag(coffee));
+      // In Chinese the name is the card's Chinese, with its English below.
+      lines(text('[data-product-name]', ''), isZh() ? coffee.card.zh : coffee.card.en);
+      var sub = text('[data-product-sub]', '');
+      if (isZh()) { lines(sub, coffee.card.en); }
+      sub.hidden = !isZh();
+      text('[data-product-price]', SHOP.priceLabel(coffee));
+      var wish = wishButton(coffee, 'btn', $('[data-wishlist-status]'));
+      wish.setAttribute('data-product-wish', '');
+      $('[data-product-wish]').replaceWith(wish);
 
-    document.title = coffee.name + ' — Lights Landing Coffee';
-    text('[data-product-eyebrow]', coffee.origin + ' · 「' + coffee.card.tag + '」');
-    lines(text('[data-product-zh]', ''), coffee.card.zh);
-    lines(text('[data-product-en]', ''), coffee.card.en);
-    text('[data-product-price]', SHOP.priceLabel(coffee));
-    var status = $('[data-wishlist-status]');
-    $('[data-product-wish]').replaceWith(wishButton(coffee, 'btn', status));
+      var specs = $('[data-product-specs]');
+      var fresh = specList(basics(coffee, true));
+      specs.replaceChildren();
+      while (fresh.firstChild) { specs.appendChild(fresh.firstChild); }
+      text('[data-product-blurb]', loc(coffee, 'blurb'));
+      $('[data-product-print]').replaceChildren(bean(coffee, 'print'));
 
-    var rows = basics(coffee).filter(function (row) { return row[0] !== 'Price'; });
-    rows.splice(rows.length - 1, 0, ['Roast', coffee.specs.Roast]);
-    var specs = $('[data-product-specs]');
-    var fresh = specList(rows);
-    specs.replaceChildren();
-    while (fresh.firstChild) { specs.appendChild(fresh.firstChild); }
-    text('[data-product-blurb]', coffee.blurb);
-    var print = $('[data-product-print]');
-    print.replaceChildren(bean(coffee, 'print'));
+      var cup = $('[data-product-cup]');
+      cup.replaceChildren();
+      (loc(coffee, 'cup') || [[L('Tasting', '风味表现'), loc(coffee, 'tasting')]]).forEach(function (pair) {
+        var row = el('div');
+        row.appendChild(el('dt', null, pair[0]));
+        row.appendChild(el('dd', null, pair[1]));
+        cup.appendChild(row);
+      });
+      text('[data-product-label-en]', coffee.label.en);
+      text('[data-product-label-zh]', coffee.label.zh).hidden = !isZh();
+      var bag = $('[data-product-bag]');
+      bag.src = coffee.bag;
+      bag.alt = L('A bag of ' + coffee.name + ' with its printed tag', coffee.zh.name + '的咖啡袋和挂牌');
 
-    var cup = $('[data-product-cup]');
-    cup.replaceChildren();
-    (coffee.cup || [['Tasting', coffee.tasting]]).forEach(function (pair) {
-      var row = el('div');
-      row.appendChild(el('dt', null, pair[0]));
-      row.appendChild(el('dd', null, pair[1]));
-      cup.appendChild(row);
-    });
-    text('[data-product-label-en]', coffee.label.en);
-    text('[data-product-label-zh]', coffee.label.zh);
-    var bag = $('[data-product-bag]');
-    bag.src = coffee.bag;
-    bag.alt = 'A bag of ' + coffee.name + ' with its printed tag';
+      var story = $('[data-product-story]');
+      story.replaceChildren();
+      loc(coffee, 'story').forEach(function (para) { story.appendChild(el('p', null, para)); });
+      var awards = $('[data-product-awards]');
+      awards.replaceChildren();
+      (loc(coffee, 'awards') || []).forEach(function (line) { awards.appendChild(el('li', null, line)); });
+      $('[data-product-awards-block]').hidden = !coffee.awards;
 
-    var story = $('[data-product-story]');
-    story.replaceChildren();
-    coffee.story.forEach(function (para) { story.appendChild(el('p', null, para)); });
-    var awards = $('[data-product-awards]');
-    awards.replaceChildren();
-    (coffee.awards || []).forEach(function (line) { awards.appendChild(el('li', null, line)); });
-    $('[data-product-awards-block]').hidden = !coffee.awards;
-
-    var also = $('[data-beans="also"]');
-    fillBeans(also, DATA.coffees.filter(function (other) { return other !== coffee; }), 'also');
+      fillBeans($('[data-beans="also"]'), DATA.coffees.filter(function (other) { return other !== coffee; }), 'also');
+    }
+    paint();
+    rerenders.push(paint);
   }
 
   /* ------------------------------------------------------- brew guide -- */
@@ -641,24 +747,26 @@
     }
     return null;
   }
+  var shownGuide = null;
   function paintGuide(guide) {
-    document.title = guide.title + ' — Lights Landing Coffee';
+    shownGuide = guide;
+    document.title = L(guide.title + ' — Lights Landing Coffee', guide.zh.title + ' — 陆光咖啡');
     var image = $('[data-guide-image]');
     image.src = guide.image;
-    image.alt = guide.alt;
-    text('[data-guide-title]', guide.title);
-    text('[data-guide-intro]', guide.intro);
-    text('[data-guide-note]', guide.note);
+    image.alt = loc(guide, 'alt');
+    text('[data-guide-title]', loc(guide, 'title'));
+    text('[data-guide-intro]', loc(guide, 'intro'));
+    text('[data-guide-note]', loc(guide, 'note'));
 
     var glance = $('[data-guide-glance]');
     glance.replaceChildren();
-    guide.glance.forEach(function (pair) {
+    loc(guide, 'glance').forEach(function (pair) {
       glance.appendChild(el('dt', null, pair[0]));
       glance.appendChild(el('dd', null, pair[1]));
     });
     var steps = $('[data-guide-steps]');
     steps.replaceChildren();
-    guide.steps.forEach(function (step, i) {
+    loc(guide, 'steps').forEach(function (step, i) {
       var row = el('div', 'step');
       row.appendChild(el('span', 'step__n', ('0' + (i + 1)).slice(-2)));
       var body = el('div');
@@ -668,14 +776,16 @@
       steps.appendChild(row);
     });
     $$('[data-guide-tab]').forEach(function (tab) {
+      var named = findGuide(tab.dataset.guideTab);
+      if (named) { tab.textContent = loc(named, 'name'); }
       if (tab.dataset.guideTab === guide.id) { tab.setAttribute('aria-current', 'page'); }
       else { tab.removeAttribute('aria-current'); }
     });
   }
   function initGuide() {
     if (!$('[data-guide-steps]')) { return; }
-    var guide = findGuide(param('m'));
-    if (guide) { paintGuide(guide); }
+    paintGuide(findGuide(param('m')) || DATA.guides[0]);
+    rerenders.push(function () { paintGuide(shownGuide); });
     $$('[data-guide-tab]').forEach(function (tab) {
       tab.addEventListener('click', function (event) {
         var next = findGuide(tab.dataset.guideTab);
@@ -698,17 +808,17 @@
     swatch.style.setProperty('--art', artURL(coffee));
     row.appendChild(swatch);
     var detail = el('div');
-    var name = chinese(el('a', 'wish-row__name', coffee.card.zh[1]));
+    var name = el('a', 'wish-row__name', loc(coffee, 'name'));
     name.href = productURL(coffee);
     detail.appendChild(name);
-    detail.appendChild(el('div', 'wish-row__meta', coffee.name + ' · ' + SHOP.priceLabel(coffee)));
+    detail.appendChild(el('div', 'wish-row__meta', loc(coffee, 'origin') + ' · ' + SHOP.priceLabel(coffee)));
     row.appendChild(detail);
-    var remove = el('button', null, 'Remove');
+    var remove = el('button', null, L('Remove', '移除'));
     remove.type = 'button';
-    remove.setAttribute('aria-label', 'Remove ' + coffee.name + ' from your wishlist');
+    remove.setAttribute('aria-label', L('Remove ' + coffee.name + ' from your wishlist', '从心愿单移除' + coffee.zh.name));
     remove.addEventListener('click', function () {
       var ok = saveWishlist(SHOP.remove(wishlist, coffee.id));
-      text('[data-wishlist-status]', ok ? coffee.name + ' removed from your wishlist.' : FAILED);
+      text('[data-wishlist-status]', ok ? L(coffee.name + ' removed from your wishlist.', '已从心愿单移除' + loc(coffee, 'name') + '。') : failed());
     });
     row.appendChild(remove);
     return row;
@@ -734,6 +844,7 @@
       if (lostFocus) { $('[data-wishlist-heading]').focus(); }
     }
     onWishlistChange.push(render);
+    rerenders.push(function () { shown = null; render(); });
     render();
   }
 
@@ -759,9 +870,15 @@
     function names(coffees) {
       return coffees.map(function (coffee) { return coffee.name + ' (' + SHOP.priceLabel(coffee) + ')'; }).join(', ');
     }
+    /* What the visitor reads; the email to the shop is always in English. */
+    function shownNames(coffees) {
+      return isZh() ? coffees.map(function (coffee) { return coffee.zh.name + '（' + SHOP.priceLabel(coffee) + '）'; }).join('、')
+        : names(coffees);
+    }
     function refresh() {
       var coffees = saved();
-      listing.textContent = coffees.length ? 'Reserving: ' + names(coffees) + '.' : 'Add a coffee to your wishlist to reserve it.';
+      listing.textContent = coffees.length ? L('Reserving: ' + names(coffees) + '.', '预留：' + shownNames(coffees) + '。')
+        : L('Add a coffee to your wishlist to reserve it.', '先把咖啡加入心愿单，才能预留。');
       submit.disabled = sending || coffees.length === 0;
     }
 
@@ -772,7 +889,7 @@
       var address = email.value.trim();
       sending = true;
       refresh();
-      status.textContent = 'Sending your reservation…';
+      status.textContent = L('Sending your reservation…', '正在发送你的预留…');
       window.fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -785,13 +902,14 @@
         })
       }).then(function (response) {
         if (!response.ok) {
-          status.textContent = 'We couldn’t take that reservation just now. Please try again in a moment.';
+          status.textContent = L('We couldn’t take that reservation just now. Please try again in a moment.', '暂时无法接收这次预留，请稍后再试。');
           return;
         }
-        status.textContent = 'Thank you. Your reservation for ' + names(coffees) + ' is in, and we’ll email ' + address + ' when the shop opens.';
+        status.textContent = L('Thank you. Your reservation for ' + names(coffees) + ' is in, and we’ll email ' + address + ' when the shop opens.',
+          '谢谢。你已预留' + shownNames(coffees) + '，开业时我们会发邮件到 ' + address + '。');
         email.value = '';
       }).catch(function () {
-        status.textContent = 'Your reservation didn’t go through. Check your connection and try again.';
+        status.textContent = L('Your reservation didn’t go through. Check your connection and try again.', '预留没有发送成功。请检查网络后再试。');
       }).then(function () {
         sending = false;
         refresh();
@@ -799,6 +917,7 @@
     });
 
     onWishlistChange.push(refresh);
+    rerenders.push(refresh);
     form.hidden = false;
     refresh();
     wobble();
@@ -806,6 +925,7 @@
 
   /* ------------------------------------------------------------- boot -- */
 
+  initLanguage();
   initFanLogo();
   initWishlist();
   initRows();

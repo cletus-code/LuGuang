@@ -3,66 +3,83 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Coffee — Lights Landing Coffee</title>
+<title data-i18n="title.coffee">Coffee — Lights Landing Coffee</title>
 <meta name="description" content="Everything on the shelf right now: single-lot coffees from Ethiopia, Honduras and Panama.">
+<script>
+/* Hide the page until site.js has put it into Chinese, so Chinese readers
+   never see a flash of English. site.js clears this; the timer is a guard. */
+try {
+  var lang = new URLSearchParams(location.search).get('lang') || localStorage.getItem('lights.lang') ||
+    (/^zh/i.test(navigator.language || '') ? 'zh' : 'en');
+  if (lang === 'zh') {
+    document.documentElement.lang = 'zh-Hans';
+    document.documentElement.classList.add('is-translating');
+    setTimeout(function () { document.documentElement.classList.remove('is-translating'); }, 1500);
+  }
+} catch (error) {}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=bean-wall-2">
+<link rel="stylesheet" href="assets/styles.css?v=i18n-1">
 </head>
 <body>
 
 <div class="wrap">
-  <p class="card announce">Online shop opening soon · save coffees to your wishlist</p>
+  <p class="card announce" data-i18n="announce">Online shop opening soon · save coffees to your wishlist</p>
 
   <header class="card masthead">
     <a class="brand" href="index.html">
       <span class="brand__mark" aria-hidden="true"></span>
-      <span class="visually-hidden">Lights Landing Coffee · 陆光咖啡 — home</span>
+      <span class="visually-hidden" data-i18n="brand">Lights Landing Coffee · 陆光咖啡 — home</span>
     </a>
-    <nav class="nav" aria-label="Primary">
-      <a href="coffee.html" aria-current="page">Coffee</a>
-      <a href="brew.html">Brew guide</a>
-      <a href="cafe.html">Café</a>
-      <a href="about.html">About</a>
+    <nav class="nav" aria-label="Primary" data-i18n-attr="aria-label:nav.label">
+      <a href="coffee.html" aria-current="page" data-i18n="nav.coffee">Coffee</a>
+      <a href="brew.html" data-i18n="nav.brew">Brew guide</a>
+      <a href="cafe.html" data-i18n="nav.cafe">Café</a>
+      <a href="about.html" data-i18n="nav.about">About</a>
     </nav>
     <div class="masthead__end">
-      <a href="coffee.html#coffee-search">Search</a>
-      <a class="pill cart" href="cart.html">Wishlist · <span data-wishlist-count>0</span></a>
+      <form class="find" action="coffee.html" method="get" role="search">
+        <label class="find__icon" for="site-search"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10.5" cy="10.5" r="6.5" fill="none"/><path d="M15.4 15.4 21 21" stroke-linecap="square"/></svg><span class="visually-hidden" data-i18n="search.label">Search coffee</span></label>
+        <input class="find__input" id="site-search" name="q" type="search" maxlength="200" placeholder="Search coffee" autocomplete="off" data-i18n-attr="placeholder:search.placeholder">
+      </form>
+      <button class="lang" type="button" lang="zh-Hans" aria-label="切换到中文" data-lang-toggle>中</button>
+      <a class="cart" href="cart.html" aria-label="Wishlist" data-wishlist-link><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2 3.5h2.8l2.5 11h10.6l2.4-8H6.1" fill="none"/><circle cx="9.2" cy="19.2" r="1.5" fill="none"/><circle cx="16.6" cy="19.2" r="1.5" fill="none"/></svg><span class="cart__count" data-wishlist-count hidden>0</span></a>
     </div>
   </header>
 
   <main class="view">
     <section class="card pad shelf-head">
       <div class="shelf-head__title">
-        <h1 class="h-page">Coffee</h1>
-        <p class="eyebrow">Single lots · updated weekly</p>
+        <h1 class="h-page" data-i18n="coffee.title">Coffee</h1>
+        <p class="eyebrow" data-i18n="coffee.eyebrow">Single lots · updated weekly</p>
       </div>
-      <p class="prose" style="margin:0">Everything on the shelf right now. <span class="on-hover">Rest the pointer on a card to turn it over, and click it for the whole story.</span><span class="on-touch">Swipe a card sideways to turn it over, and tap it for the whole story.</span> Online ordering opens soon — add coffees to your wishlist in the meantime.</p>
+      <p class="prose" style="margin:0"><span data-i18n="coffee.intro">Everything on the shelf right now.</span> <span class="on-hover" data-i18n="coffee.howHover">Rest the pointer on a card to turn it over, and click it for the whole story.</span><span class="on-touch" data-i18n="coffee.howTouch">Swipe a card sideways to turn it over, and tap it for the whole story.</span> <span data-i18n="coffee.closed">Online ordering opens soon — add coffees to your wishlist in the meantime.</span></p>
     </section>
 
-    <form class="card bar" action="coffee.html" method="get" role="search" aria-label="Search, filter and sort" data-search-form>
-      <label class="visually-hidden" for="coffee-search">Search coffee</label>
-      <input class="search" id="coffee-search" name="q" type="search" maxlength="200" placeholder="Search: name, origin, flavour" autocomplete="off" data-coffee-search>
-      <div class="bar__group" role="group" aria-label="Origin">
-        <span class="bar__label" aria-hidden="true">Origin</span>
-          <button class="chip" type="button" data-facet="origin" data-value="all" aria-pressed="true">All</button>
-          <button class="chip" type="button" data-facet="origin" data-value="Ethiopia" aria-pressed="false">Ethiopia</button>
-          <button class="chip" type="button" data-facet="origin" data-value="Honduras" aria-pressed="false">Honduras</button>
-          <button class="chip" type="button" data-facet="origin" data-value="Panama" aria-pressed="false">Panama</button>
+    <form class="card bar" action="coffee.html" method="get" role="search" aria-label="Search, filter and sort" data-i18n-attr="aria-label:bar.label" data-search-form>
+      <label class="visually-hidden" for="coffee-search" data-i18n="search.label">Search coffee</label>
+      <input class="search" id="coffee-search" name="q" type="search" maxlength="200" placeholder="Search: name, origin, flavour" autocomplete="off" data-i18n-attr="placeholder:bar.placeholder" data-coffee-search>
+      <div class="bar__group" role="group" aria-label="Origin" data-i18n-attr="aria-label:bar.origin">
+        <span class="bar__label" aria-hidden="true" data-i18n="bar.origin">Origin</span>
+          <button class="chip" type="button" data-facet="origin" data-value="all" aria-pressed="true" data-i18n="filter.all">All</button>
+          <button class="chip" type="button" data-facet="origin" data-value="Ethiopia" aria-pressed="false" data-i18n="filter.ethiopia">Ethiopia</button>
+          <button class="chip" type="button" data-facet="origin" data-value="Honduras" aria-pressed="false" data-i18n="filter.honduras">Honduras</button>
+          <button class="chip" type="button" data-facet="origin" data-value="Panama" aria-pressed="false" data-i18n="filter.panama">Panama</button>
       </div>
-      <div class="bar__group" role="group" aria-label="Process">
-        <span class="bar__label" aria-hidden="true">Process</span>
-          <button class="chip" type="button" data-facet="process" data-value="all" aria-pressed="true">All</button>
-          <button class="chip" type="button" data-facet="process" data-value="Washed" aria-pressed="false">Washed</button>
-          <button class="chip" type="button" data-facet="process" data-value="Natural" aria-pressed="false">Natural</button>
+      <div class="bar__group" role="group" aria-label="Process" data-i18n-attr="aria-label:bar.process">
+        <span class="bar__label" aria-hidden="true" data-i18n="bar.process">Process</span>
+          <button class="chip" type="button" data-facet="process" data-value="all" aria-pressed="true" data-i18n="filter.all">All</button>
+          <button class="chip" type="button" data-facet="process" data-value="Washed" aria-pressed="false" data-i18n="filter.washed">Washed</button>
+          <button class="chip" type="button" data-facet="process" data-value="Natural" aria-pressed="false" data-i18n="filter.natural">Natural</button>
       </div>
       <div class="bar__end">
         <span class="count" role="status" aria-live="polite" data-lot-count>5 lots</span>
-        <label class="sort">Sort
+        <label class="sort"><span data-i18n="bar.sort">Sort</span>
           <select name="sort" data-sort>
-            <option value="asc">Price, low to high</option>
-            <option value="desc">Price, high to low</option>
+            <option value="asc" data-i18n="bar.asc">Price, low to high</option>
+            <option value="desc" data-i18n="bar.desc">Price, high to low</option>
           </select>
         </label>
       </div>
@@ -78,24 +95,25 @@
       </ul>
     </div>
     <div class="card pad" hidden data-shelf-empty>
-      <p style="margin:0">No coffees match. <button class="link" type="button" style="text-decoration:underline" data-reset-shelf>Clear the search and filters</button></p>
+      <p style="margin:0"><span data-i18n="coffee.none">No coffees match.</span> <button class="link" type="button" style="text-decoration:underline" data-reset-shelf data-i18n="coffee.reset">Clear the search and filters</button></p>
     </div>
   </main>
 
   <footer class="card footer">
-    <a href="index.html"><strong>Lights Landing</strong></a>
-    <a href="coffee.html">Coffee</a>
-    <a href="brew.html">Brew guide</a>
-    <a href="cafe.html">Café</a>
-    <a href="about.html">About</a>
-    <span>Shipping</span>
-    <span>Privacy</span>
+    <a href="index.html"><strong data-i18n="footer.brand">Lights Landing</strong></a>
+    <a href="coffee.html" data-i18n="nav.coffee">Coffee</a>
+    <a href="brew.html" data-i18n="nav.brew">Brew guide</a>
+    <a href="cafe.html" data-i18n="nav.cafe">Café</a>
+    <a href="about.html" data-i18n="nav.about">About</a>
+    <span data-i18n="footer.shipping">Shipping</span>
+    <span data-i18n="footer.privacy">Privacy</span>
     <span class="footer__copy">© 2026 Lights Landing Coffee</span>
   </footer>
 </div>
 
-<script src="assets/data.js?v=bean-wall-2"></script>
-<script src="assets/shop.js?v=bean-wall-2"></script>
-<script src="assets/site.js?v=bean-wall-2"></script>
+<script src="assets/data.js?v=i18n-1"></script>
+<script src="assets/i18n.js?v=i18n-1"></script>
+<script src="assets/shop.js?v=i18n-1"></script>
+<script src="assets/site.js?v=i18n-1"></script>
 </body>
 </html>

@@ -25,8 +25,46 @@ python3 -m http.server 8000
 | `cart.html` | Wishlist — shopping is coming soon, saved coffees, email reservations |
 
 `assets/styles.css` is the whole design, `assets/data.js` the catalogue and
-brew guides, `assets/shop.js` the search and wishlist rules, and
-`assets/site.js` the page behaviour.
+brew guides, `assets/i18n.js` the Chinese for each page's text,
+`assets/shop.js` the search and wishlist rules, and `assets/site.js` the page
+behaviour.
+
+## English and Chinese
+
+The **中** at the top right puts the whole site into Chinese; there it reads
+**EN** and switches back. The page changes in place, without reloading.
+
+- **Page text** is written in English in each HTML file. Every translatable
+  element carries `data-i18n="key"` (or `data-i18n-attr="placeholder:key"` for
+  attributes), and `assets/i18n.js` holds the Chinese for each key. To change
+  Chinese wording, edit `i18n.js`; to add text, give it a new key there.
+- **Coffees and brew guides** carry their Chinese in `data.js` under `zh`. The
+  tasting notes and estate stories are the roaster's own Chinese.
+- **Cards** in English show no Chinese at all: the English names lead, with
+  "Tasting:" notes and an English About. In Chinese they read like the café's
+  wall cards: the Chinese names and 「tag」 over the English, and 风味表现.
+- **The choice** is remembered in the browser (`lights.lang`). A first visit
+  follows the browser's language. `?lang=zh` or `?lang=en` on any link sets
+  it, so a Chinese link can be shared. A small script in each page's head
+  hides the page for the moment it takes to switch, so Chinese readers never
+  see English flash first.
+- Reservation emails to the shop are always in English.
+
+## The header
+
+The logo sits at the left, Coffee · Brew guide · Café · About are spread evenly
+across the middle, and three icons sit at the right:
+
+- **Search** is a magnifying glass. Hovering (or tapping, or tabbing to it)
+  slides it left and opens an underline to type into; Enter opens the shelf
+  filtered by that search. Its room is reserved, so opening it doesn't move
+  the menu.
+- **中 / EN** switches language.
+- **The cart** opens the wishlist; a small black square shows how many
+  coffees are on it, and disappears at zero.
+
+On phones the menu takes its own row under the logo and icons, spread edge to
+edge.
 
 ## The design
 
@@ -86,8 +124,8 @@ set from the previous design (`uploads/torn-*`, rebuilt by
 Page text is in each page's HTML. The coffee cards need JavaScript; without
 it, each row of cards is a plain list of links to the coffees' pages.
 
-- **Search** in the header opens the shelf's search field. Names (English and
-  Chinese), origin, region, process, variety, lot and tasting notes match,
+- **Search** (the header's or the shelf's own) matches names (English and
+  Chinese), origin, region, process, variety, lot and tasting notes in either language,
   ignoring case and accents. Search, filters and sort live in the URL
   (`?q=`, `origin=`, `process=`, `sort=desc`), so a filtered shelf can be shared.
 - **Coffee page** fills from `data.js` for whichever `?id=` is asked for;
@@ -96,7 +134,7 @@ it, each row of cards is a plain list of links to the coffees' pages.
   linkable and the back button works.
 - **Ordering is closed for now.** "Add to wishlist" on a card's back or a
   coffee's page saves it in place ("On your wishlist"; click again to remove).
-  The header reads "Wishlist · N". `cart.html` says shopping is coming soon,
+  The header's cart shows how many are saved. `cart.html` says shopping is coming soon,
   lists the wishlist, and shows every other coffee's card. The wishlist is
   coffee ids only (`lights.wishlist` in this browser's storage), syncs between
   tabs, and says so when the browser refuses to save it.

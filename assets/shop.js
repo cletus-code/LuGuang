@@ -33,8 +33,10 @@ window.LIGHTS_SHOP = (function () {
   }
   function matches(item, query) {
     var label = item.label || {};
+    var zh = item.zh || {};
     var haystack = text([item.name, item.origin, item.region, item.process, item.variety,
-      item.notes, item.blurb, Object.values(item.specs || {}).join(' '), label.en, label.zh].join(' '));
+      item.notes, item.blurb, Object.values(item.specs || {}).join(' '), label.en, label.zh,
+      zh.name, zh.origin, zh.region, zh.process, zh.variety, zh.notes].join(' '));
     return text(query).trim().split(/\s+/).every(function (word) { return haystack.indexOf(word) >= 0; });
   }
   function money(dollars) {

@@ -3,96 +3,114 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Café — Lights Landing Coffee</title>
+<title data-i18n="title.cafe">Café — Lights Landing Coffee</title>
 <meta name="description" content="2nd floor, 12 Huangxing South Road, Changsha, China. Open every day, 9:30–20:00.">
+<script>
+/* Hide the page until site.js has put it into Chinese, so Chinese readers
+   never see a flash of English. site.js clears this; the timer is a guard. */
+try {
+  var lang = new URLSearchParams(location.search).get('lang') || localStorage.getItem('lights.lang') ||
+    (/^zh/i.test(navigator.language || '') ? 'zh' : 'en');
+  if (lang === 'zh') {
+    document.documentElement.lang = 'zh-Hans';
+    document.documentElement.classList.add('is-translating');
+    setTimeout(function () { document.documentElement.classList.remove('is-translating'); }, 1500);
+  }
+} catch (error) {}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=bean-wall-2">
+<link rel="stylesheet" href="assets/styles.css?v=i18n-1">
 </head>
 <body>
 
 <div class="wrap">
-  <p class="card announce">Online shop opening soon · save coffees to your wishlist</p>
+  <p class="card announce" data-i18n="announce">Online shop opening soon · save coffees to your wishlist</p>
 
   <header class="card masthead">
     <a class="brand" href="index.html">
       <span class="brand__mark" aria-hidden="true"></span>
-      <span class="visually-hidden">Lights Landing Coffee · 陆光咖啡 — home</span>
+      <span class="visually-hidden" data-i18n="brand">Lights Landing Coffee · 陆光咖啡 — home</span>
     </a>
-    <nav class="nav" aria-label="Primary">
-      <a href="coffee.html">Coffee</a>
-      <a href="brew.html">Brew guide</a>
-      <a href="cafe.html" aria-current="page">Café</a>
-      <a href="about.html">About</a>
+    <nav class="nav" aria-label="Primary" data-i18n-attr="aria-label:nav.label">
+      <a href="coffee.html" data-i18n="nav.coffee">Coffee</a>
+      <a href="brew.html" data-i18n="nav.brew">Brew guide</a>
+      <a href="cafe.html" aria-current="page" data-i18n="nav.cafe">Café</a>
+      <a href="about.html" data-i18n="nav.about">About</a>
     </nav>
     <div class="masthead__end">
-      <a href="coffee.html#coffee-search">Search</a>
-      <a class="pill cart" href="cart.html">Wishlist · <span data-wishlist-count>0</span></a>
+      <form class="find" action="coffee.html" method="get" role="search">
+        <label class="find__icon" for="site-search"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10.5" cy="10.5" r="6.5" fill="none"/><path d="M15.4 15.4 21 21" stroke-linecap="square"/></svg><span class="visually-hidden" data-i18n="search.label">Search coffee</span></label>
+        <input class="find__input" id="site-search" name="q" type="search" maxlength="200" placeholder="Search coffee" autocomplete="off" data-i18n-attr="placeholder:search.placeholder">
+      </form>
+      <button class="lang" type="button" lang="zh-Hans" aria-label="切换到中文" data-lang-toggle>中</button>
+      <a class="cart" href="cart.html" aria-label="Wishlist" data-wishlist-link><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2 3.5h2.8l2.5 11h10.6l2.4-8H6.1" fill="none"/><circle cx="9.2" cy="19.2" r="1.5" fill="none"/><circle cx="16.6" cy="19.2" r="1.5" fill="none"/></svg><span class="cart__count" data-wishlist-count hidden>0</span></a>
     </div>
   </header>
 
   <main class="view">
     <section class="card split">
       <div class="split__text">
-        <p class="eyebrow">The café</p>
-        <h1 class="h-page">2nd floor, 12 Huangxing South Road, Changsha, China</h1>
-        <p class="lede">Hidden away in the foliage above the bustling city traffic. An open airy oasis with freshly roasted beans sourced from across the globe.</p>
+        <p class="eyebrow" data-i18n="nav.cafe">The café</p>
+        <h1 class="h-page" data-i18n="cafe.address">2nd floor, 12 Huangxing South Road, Changsha, China</h1>
+        <p class="lede" data-i18n="cafe.lede">Hidden away in the foliage above the bustling city traffic. An open airy oasis with freshly roasted beans sourced from across the globe.</p>
         <div class="hours">
-          <h2 class="eyebrow">Hours</h2>
-          <span>Every day · 9:30–20:00</span>
-          <span class="small">Closed public holidays</span>
+          <h2 class="eyebrow" data-i18n="cafe.hours">Hours</h2>
+          <span data-i18n="cafe.everyday">Every day · 9:30–20:00</span>
+          <span class="small" data-i18n="cafe.holidays">Closed public holidays</span>
         </div>
-        <a class="link" href="https://maps.google.com/?q=12+Huangxing+South+Road,+Changsha" rel="noopener">Directions</a>
+        <a class="link" href="https://maps.google.com/?q=12+Huangxing+South+Road,+Changsha" rel="noopener" data-i18n="cafe.directions">Directions</a>
       </div>
-      <img src="uploads/cafe-counter.jpg" alt="The counter at Lu Guang, grinder and espresso machine under the window">
+      <img src="uploads/cafe-counter.jpg" alt="The counter at Lu Guang, grinder and espresso machine under the window" data-i18n-attr="alt:img.counter">
     </section>
 
     <section class="card pad stack" style="gap:22px">
-      <h2 class="h-section">On the bar</h2>
+      <h2 class="h-section" data-i18n="cafe.bar">On the bar</h2>
       <div class="menu">
         <div>
-          <h3>Espresso</h3>
-          <div class="menu__row"><span>Espresso</span><span>3.20</span></div>
-          <div class="menu__row"><span>Cortado</span><span>3.80</span></div>
-          <div class="menu__row"><span>Flat white</span><span>4.40</span></div>
-          <div class="menu__row"><span>Latte</span><span>4.60</span></div>
+          <h3 data-i18n="cafe.espresso">Espresso</h3>
+          <div class="menu__row"><span data-i18n="menu.espresso">Espresso</span><span>3.20</span></div>
+          <div class="menu__row"><span data-i18n="menu.cortado">Cortado</span><span>3.80</span></div>
+          <div class="menu__row"><span data-i18n="menu.flatwhite">Flat white</span><span>4.40</span></div>
+          <div class="menu__row"><span data-i18n="menu.latte">Latte</span><span>4.60</span></div>
         </div>
         <div>
-          <h3>Filter &amp; cold</h3>
-          <div class="menu__row"><span>Batch brew</span><span>3.40</span></div>
-          <div class="menu__row"><span>V60, single lot</span><span>5.00</span></div>
-          <div class="menu__row"><span>Iced filter</span><span>4.20</span></div>
-          <div class="menu__row"><span>Cold brew</span><span>4.60</span></div>
+          <h3 data-i18n="cafe.filter">Filter &amp; cold</h3>
+          <div class="menu__row"><span data-i18n="menu.batch">Batch brew</span><span>3.40</span></div>
+          <div class="menu__row"><span data-i18n="menu.v60">V60, single lot</span><span>5.00</span></div>
+          <div class="menu__row"><span data-i18n="menu.iced">Iced filter</span><span>4.20</span></div>
+          <div class="menu__row"><span data-i18n="menu.cold">Cold brew</span><span>4.60</span></div>
         </div>
       </div>
     </section>
 
     <div class="prints">
-      <figure class="card photo-print"><img src="uploads/cafe-window.jpg" alt="Frosted window lettering and plants in the café"><figcaption>The window, Huangxing South Road</figcaption></figure>
-      <figure class="card photo-print"><img src="uploads/latte.jpg" alt="A latte seen from above"><figcaption>Latte, from the bar</figcaption></figure>
+      <figure class="card photo-print"><img src="uploads/cafe-window.jpg" alt="Frosted window lettering and plants in the café" data-i18n-attr="alt:img.window"><figcaption data-i18n="cafe.window">The window, Huangxing South Road</figcaption></figure>
+      <figure class="card photo-print"><img src="uploads/latte.jpg" alt="A latte seen from above" data-i18n-attr="alt:img.latte"><figcaption data-i18n="cafe.latte">Latte, from the bar</figcaption></figure>
       <section class="card pad stack">
-        <h2 class="h-section">Take it home</h2>
-        <p class="prose" style="margin:0">Every lot on the bar is on the shelf too. Online ordering opens soon.</p>
-        <a class="link" href="coffee.html">See the shelf</a>
+        <h2 class="h-section" data-i18n="cafe.home">Take it home</h2>
+        <p class="prose" style="margin:0" data-i18n="cafe.homeText">Every lot on the bar is on the shelf too. Online ordering opens soon.</p>
+        <a class="link" href="coffee.html" data-i18n="cafe.shelf">See the shelf</a>
       </section>
     </div>
   </main>
 
   <footer class="card footer">
-    <a href="index.html"><strong>Lights Landing</strong></a>
-    <a href="coffee.html">Coffee</a>
-    <a href="brew.html">Brew guide</a>
-    <a href="cafe.html">Café</a>
-    <a href="about.html">About</a>
-    <span>Shipping</span>
-    <span>Privacy</span>
+    <a href="index.html"><strong data-i18n="footer.brand">Lights Landing</strong></a>
+    <a href="coffee.html" data-i18n="nav.coffee">Coffee</a>
+    <a href="brew.html" data-i18n="nav.brew">Brew guide</a>
+    <a href="cafe.html" data-i18n="nav.cafe">Café</a>
+    <a href="about.html" data-i18n="nav.about">About</a>
+    <span data-i18n="footer.shipping">Shipping</span>
+    <span data-i18n="footer.privacy">Privacy</span>
     <span class="footer__copy">© 2026 Lights Landing Coffee</span>
   </footer>
 </div>
 
-<script src="assets/data.js?v=bean-wall-2"></script>
-<script src="assets/shop.js?v=bean-wall-2"></script>
-<script src="assets/site.js?v=bean-wall-2"></script>
+<script src="assets/data.js?v=i18n-1"></script>
+<script src="assets/i18n.js?v=i18n-1"></script>
+<script src="assets/shop.js?v=i18n-1"></script>
+<script src="assets/site.js?v=i18n-1"></script>
 </body>
 </html>
