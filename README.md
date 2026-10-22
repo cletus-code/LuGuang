@@ -43,9 +43,17 @@ brew guides, `assets/shop.js` the search and wishlist rules, and
 - **The coffee card** (`.bean`) is drawn by `site.js` from `data.js`: front
   `card.zh`, `card.en`, `card.tag`, `card.notes`, `card.about` over its `art`
   (`uploads/card-*.jpg`). Sizes are container units, so it scales like a print.
-  Its About shows as many whole lines as fit. Click or Enter turns it over;
-  clicking anywhere on the back (or Escape) turns it back. On the home page the
-  back leads with "More about this coffee"; elsewhere with "Add to wishlist".
+  Its About shows as many whole lines as fit. The back leads with "More about
+  this coffee" on the home page and with "Add to wishlist" elsewhere.
+- **Turning a card.** With a mouse, a card turns over while the pointer rests
+  on it (and while the keyboard is inside it). On a phone it turns under the
+  finger: a sideways swipe drags it round in 3D, lifting it off the wall and
+  shading the face as it goes edge-on, and letting go springs it to the nearer
+  side, or over when flicked. Up-and-down swipes still scroll. The first card
+  on the shelf and home page gives one small wobble per visit on touch screens,
+  so people know it moves. A click or tap anywhere on a card, front or back,
+  opens the coffee's page; only "Add to wishlist" stays put. The card on a
+  coffee's own page only turns. Reduced Motion skips the animation.
 - **Search and sort** are a thin underline, not a box.
 
 ## Animated masthead logo

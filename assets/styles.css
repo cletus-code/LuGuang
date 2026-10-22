@@ -15,7 +15,6 @@
   --sans: 'Helvetica Neue', Helvetica, Arial, 'Noto Sans SC', 'PingFang SC', sans-serif;
   --zh: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   --t: 200ms;
-  --flip: 650ms;
   --ease: cubic-bezier(.2, .7, .2, 1);
 }
 
@@ -160,16 +159,27 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 /* ---- the bean card ----------------------------------------------------- */
 /* Printed like the café's wall cards: a thin white border round the coffee's
    marbled colour, black type, 「tag」 top right, logo bottom right. Sizes are
-   in container units so the card scales like a print. Click turns it over;
-   click anywhere on the back turns it back. */
+   in container units so the card scales like a print. site.js turns it:
+   on hover with a mouse, under the finger on a touch screen. */
 .beans { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 26px 22px; padding: 4px; }
-.bean { position: relative; aspect-ratio: 5 / 7; perspective: 1400px; container-type: inline-size; transition: transform var(--t) var(--ease); }
-.bean:not(.is-flipped):hover { transform: translate(var(--nx, 0px), calc(var(--ny, 0px) - 4px)) rotate(0deg); }
-.bean__inner { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform var(--flip) cubic-bezier(.3, .6, .2, 1); }
-.bean.is-flipped .bean__inner { transform: rotateY(180deg); }
+.bean {
+  position: relative; aspect-ratio: 5 / 7; perspective: 1000px; container-type: inline-size;
+  cursor: pointer; transition: transform var(--t) var(--ease);
+  /* Sideways swipes turn the card; up and down still scroll the page. */
+  touch-action: pan-y; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.bean__inner { position: absolute; inset: 0; transform-style: preserve-3d; }
 .bean__face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: var(--paper); box-shadow: var(--shadow); overflow: hidden; }
-.bean:not(.is-flipped):hover .bean__front { box-shadow: var(--shadow-lift); }
 .bean__back { transform: rotateY(180deg); }
+/* Only the side facing up takes clicks. */
+.bean.is-flipped .bean__front, .bean:not(.is-flipped) .bean__back { pointer-events: none; }
+/* Turned edge-on, a face falls into shadow. */
+.bean__face::after { content: ""; position: absolute; inset: 0; z-index: 3; background: var(--ink); opacity: calc(var(--edge, 0) * .3); pointer-events: none; }
+.bean.is-held .bean__face { box-shadow: var(--shadow-lift); }
+@media (hover: hover) {
+  .bean:hover { transform: translate(var(--nx, 0px), calc(var(--ny, 0px) - 4px)) rotate(0deg); }
+  .bean:hover .bean__face { box-shadow: var(--shadow-lift); }
+}
 
 .bean__art { position: absolute; inset: 3cqw; background: var(--art) center / cover; }
 .bean__front .bean__body { position: absolute; inset: 3cqw; padding: 6cqw 7cqw 6cqw; display: flex; flex-direction: column; }
@@ -189,14 +199,8 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 /* A short row of cards (home, "you may also like") spreads across the wall. */
 .beans--row { grid-template-columns: repeat(auto-fit, minmax(200px, 250px)); justify-content: space-evenly; }
 
-.bean__back { cursor: pointer; }
 .bean__back .bean__body { position: absolute; inset: 0; padding: 7cqw 7cqw 6cqw; display: flex; flex-direction: column; gap: 3cqw; overflow-y: auto; }
-.bean__back-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .bean__back .eyebrow { font-size: max(9.5px, 4cqw); }
-/* Clicking anywhere on the back turns the card over. This button exists for
-   keyboards and screen readers only, and shows itself when tabbed to. */
-.bean__turn { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.bean__turn:focus-visible { position: static; width: auto; height: auto; clip-path: none; font-size: max(11px, 4.6cqw); text-decoration: underline; text-underline-offset: 3px; }
 .bean__back-en { font: 700 max(12.5px, 6cqw) / 1.25 var(--sans); margin: 0; }
 .bean__back-zh { font: 500 max(11px, 4.6cqw) / 1.35 var(--zh); color: var(--grey); margin: 0; }
 .bean__back .specs { font-size: max(11px, 4.8cqw); line-height: 1.35; gap: 1.4cqw 4cqw; padding-top: 3cqw; border-top: 1px solid var(--line); }
@@ -346,7 +350,10 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
   .guide__head { padding: 22px 18px 4px; }
   .guide__glance, .guide__steps { padding-left: 18px; padding-right: 18px; }
 }
+/* Instructions for the device in hand. */
+@media (hover: none) { .on-hover { display: none; } }
+@media (hover: hover) { .on-touch { display: none; } }
 @media (prefers-reduced-motion: reduce) {
-  .bean, .bean__inner, .chip, .btn { transition: none !important; }
-  .bean:not(.is-flipped):hover { transform: translate(var(--nx, 0px), var(--ny, 0px)) rotate(var(--tilt, 0deg)); }
+  .bean, .chip, .btn { transition: none !important; }
+  .bean:hover { transform: translate(var(--nx, 0px), var(--ny, 0px)) rotate(var(--tilt, 0deg)); }
 }

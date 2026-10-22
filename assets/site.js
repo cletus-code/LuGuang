@@ -301,6 +301,120 @@
     return dl;
   }
 
+  /* ---------------------------------------------------- turning a card -- */
+  /* With a mouse, a card turns over while the pointer rests on it (or while
+     the keyboard is inside it). On a touch screen it turns under the finger:
+     a sideways swipe drags it round like a real card, and letting go springs
+     it to the nearer side, or on over the edge when flicked. A click or tap
+     anywhere on the card, front or back, opens the coffee's page; only the
+     wishlist button does something else. */
+
+  var REDUCED = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+  var SPRING = 170;   /* stiffness, 1/s² */
+
+  function turnable(card, inner, url) {
+    var angle = 0;          /* degrees; even multiples of 180 show the front */
+    var frame = null;
+    var drag = null;        /* the swipe in progress */
+    var swipedAt = 0;       /* a swipe's own click must not open the page */
+
+    function paint(degrees) {
+      angle = degrees;
+      // Mid-turn the card comes up off the wall and its face darkens, the
+      // way a card held edge-on to the light does.
+      var edge = Math.abs(Math.sin(degrees * Math.PI / 180));
+      inner.style.transform = 'translateZ(' + (edge * 28).toFixed(1) + 'px) rotateY(' + degrees.toFixed(2) + 'deg)';
+      card.style.setProperty('--edge', edge.toFixed(3));
+      card.classList.toggle('is-flipped', Math.abs(Math.round(degrees / 180)) % 2 === 1);
+    }
+    /* A damped spring: it carries the finger's speed and settles with a
+       small overshoot, so the card has weight. */
+    function springTo(target, velocity, damping) {
+      if (frame !== null) { window.cancelAnimationFrame(frame); frame = null; }
+      if (REDUCED.matches || !window.requestAnimationFrame) { paint(target); return; }
+      var x = angle, v = velocity || 0, last = null;
+      var friction = 2 * (damping || .62) * Math.sqrt(SPRING);
+      function step(now) {
+        if (last === null) { last = now; }
+        var dt = Math.min(.032, (now - last) / 1000);
+        last = now;
+        v += (-SPRING * (x - target) - friction * v) * dt;
+        x += v * dt;
+        if (Math.abs(x - target) < .3 && Math.abs(v) < 3) { paint(target); frame = null; return; }
+        paint(x);
+        frame = window.requestAnimationFrame(step);
+      }
+      frame = window.requestAnimationFrame(step);
+    }
+    /* The nearest resting angle that shows the front (0) or the back (1). */
+    function side(which) {
+      return Math.round((angle - which * 180) / 360) * 360 + which * 180;
+    }
+
+    card.addEventListener('pointerenter', function (event) {
+      if (event.pointerType === 'mouse') { springTo(side(1), 0, .8); }
+    });
+    card.addEventListener('pointerleave', function (event) {
+      // Stay turned only while the keyboard is working inside the card.
+      var keyboard = card.contains(document.activeElement) && document.activeElement.matches(':focus-visible');
+      if (event.pointerType === 'mouse' && !keyboard) { springTo(side(0), 0, .8); }
+    });
+    card.addEventListener('focusin', function () { springTo(side(1), 0, .8); });
+    card.addEventListener('focusout', function (event) {
+      if (!card.contains(event.relatedTarget) && !card.matches(':hover')) { springTo(side(0), 0, .8); }
+    });
+
+    card.addEventListener('pointerdown', function (event) {
+      if (event.pointerType === 'mouse' || !event.isPrimary) { return; }
+      drag = { x: event.clientX, y: event.clientY, from: angle, moving: false, t: event.timeStamp, last: angle, v: 0 };
+    });
+    card.addEventListener('pointermove', function (event) {
+      if (!drag) { return; }
+      var dx = event.clientX - drag.x, dy = event.clientY - drag.y;
+      if (!drag.moving) {
+        if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { drag = null; return; }   // a scroll
+        if (Math.abs(dx) < 8) { return; }
+        drag.moving = true;
+        card.setPointerCapture(event.pointerId);
+        card.classList.add('is-held');
+        if (frame !== null) { window.cancelAnimationFrame(frame); frame = null; }
+      }
+      // A swipe across the whole card turns it about two-thirds over.
+      var degrees = drag.from + dx / card.offsetWidth * 120;
+      var dt = Math.max(1, event.timeStamp - drag.t);
+      drag.v = .7 * drag.v + .3 * (degrees - drag.last) / dt * 1000;
+      drag.last = degrees;
+      drag.t = event.timeStamp;
+      paint(degrees);
+    });
+    function release() {
+      if (!drag) { return; }
+      var moved = drag.moving, from = drag.from, v = drag.v;
+      drag = null;
+      if (!moved) { return; }
+      card.classList.remove('is-held');
+      swipedAt = Date.now();
+      // Go to the side the card would coast to, but never more than one
+      // turn from where the swipe began.
+      var target = Math.round((angle + v * .18) / 180) * 180;
+      target = Math.max(from - 180, Math.min(from + 180, target));
+      springTo(target, v);
+    }
+    card.addEventListener('pointerup', release);
+    card.addEventListener('pointercancel', release);
+
+    card.addEventListener('click', function (event) {
+      if (Date.now() - swipedAt < 400) { event.preventDefault(); return; }
+      if (!url || event.target.closest('button, a')) { return; }
+      window.location.href = url;
+    });
+
+    return {
+      /* A small sideways wobble that shows a card can be turned. */
+      nudge: function () { springTo(angle, 420, .35); }
+    };
+  }
+
   /* `key` names where the card sits, so the same coffee in two places keeps
      two leans. Home leads with the coffee's page; elsewhere the wishlist. */
   function bean(coffee, key) {
@@ -327,21 +441,19 @@
     face.appendChild(about);
     front.appendChild(face);
     front.appendChild(el('span', 'bean__mark'));
-    var hit = el('button', 'bean__hit');
-    hit.type = 'button';
-    hit.setAttribute('aria-label', 'Turn over ' + coffee.name + ' for details');
-    hit.setAttribute('aria-expanded', 'false');
-    front.appendChild(hit);
+    // The coffee's own page is the card's link. The card on that page
+    // only turns over.
+    var url = key === 'print' ? null : productURL(coffee);
+    if (url) {
+      var hit = el('a', 'bean__hit');
+      hit.href = url;
+      hit.setAttribute('aria-label', coffee.name + ': ' + coffee.origin + ', ' + SHOP.priceLabel(coffee));
+      front.appendChild(hit);
+    }
 
     var back = el('div', 'bean__face bean__back');
-    back.inert = true;
     var body = el('div', 'bean__body');
-    var top = el('div', 'bean__back-top');
-    top.appendChild(el('span', 'eyebrow', 'Basic info'));
-    var turn = el('button', 'bean__turn', 'Turn back');
-    turn.type = 'button';
-    top.appendChild(turn);
-    body.appendChild(top);
+    body.appendChild(el('span', 'eyebrow', 'Basic info'));
     body.appendChild(el('p', 'bean__back-en', coffee.card.en.slice(0, 2).join(' ')));
     body.appendChild(chinese(el('p', 'bean__back-zh', coffee.card.zh.slice(0, 2).join(' '))));
     body.appendChild(specList(basics(coffee), true));
@@ -349,39 +461,37 @@
     var status = el('p', 'bean__status');
     status.setAttribute('role', 'status');
     var featured = key === 'home';
-    var more = el('a', featured ? 'btn' : 'link', 'More about this coffee');
-    more.href = productURL(coffee);
+    var more = url ? el('a', featured ? 'btn' : 'link', 'More about this coffee') : null;
+    if (more) { more.href = url; }
     if (featured) {
       actions.appendChild(more);
       actions.appendChild(wishButton(coffee, 'btn btn--quiet', status));
     } else {
       actions.appendChild(wishButton(coffee, 'btn', status));
-      actions.appendChild(more);
+      if (more) { actions.appendChild(more); }
     }
     actions.appendChild(status);
     body.appendChild(actions);
     back.appendChild(body);
 
-    function flip(over) {
-      card.classList.toggle('is-flipped', over);
-      front.inert = over;
-      back.inert = !over;
-      hit.setAttribute('aria-expanded', String(over));
-      (over ? turn : hit).focus({ preventScroll: true });
-    }
-    hit.addEventListener('click', function () { flip(true); });
-    turn.addEventListener('click', function () { flip(false); });
-    back.addEventListener('click', function (event) {
-      if (!event.target.closest('a, .btn')) { flip(false); }
-    });
-    card.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && card.classList.contains('is-flipped')) { flip(false); }
-    });
-
     inner.appendChild(front);
     inner.appendChild(back);
     card.appendChild(inner);
+    card.turn = turnable(card, inner, url);
     return card;
+  }
+
+  /* On a touch screen nothing says a card can be swiped, so the first card
+     on the page gives one small wobble, once a visit. */
+  function hintSwipe(container) {
+    var card = container.querySelector('.bean');
+    var touch = window.matchMedia && window.matchMedia('(hover: none)').matches;
+    if (!card || !touch || REDUCED.matches) { return; }
+    try {
+      if (window.sessionStorage.getItem('lights-swipe-hint')) { return; }
+      window.sessionStorage.setItem('lights-swipe-hint', '1');
+    } catch (error) {}
+    setTimeout(function () { card.turn.nudge(); }, 700);
   }
 
   /* Fill a [data-beans] row, replacing its plain-link fallback. */
@@ -394,7 +504,10 @@
   function initRows() {
     if (!SHOP) { return; }
     var home = $('[data-beans="home"]');
-    if (home) { fillBeans(home, DATA.coffees.slice(0, 3), 'home'); }
+    if (home) {
+      fillBeans(home, DATA.coffees.slice(0, 3), 'home');
+      hintSwipe(home);
+    }
   }
 
   /* ------------------------------------------------------------ shelf -- */
@@ -460,6 +573,7 @@
       input.focus();
     });
     render(false);
+    hintSwipe(shelf);
     if (window.location.hash === '#coffee-search') { input.focus(); }
   }
 
