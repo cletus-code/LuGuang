@@ -4,8 +4,8 @@
    coffee; prices and sizes are the shop's.
 
    `card` is what the café's printed wall card says: the 「tag」 in the corner,
-   the Chinese and English names line by line, the 风味表现 notes and a
-   short About. `art` is
+   the Chinese and English names line by line, and the 风味表现 notes in one
+   line, for when the full tasting notes don't fit. `art` is
    that card's marbled colour; `bag` a photo of the bag. The roast and the
    roaster's brew recipes are the same for every coffee and live in
    product.html.
@@ -36,8 +36,7 @@ window.LIGHTS = (function () {
         tag: '2026',
         zh: ['埃塞俄比亚 阿洛', '西达摩 奔莎 主站', '74158 零发酵 水洗'],
         en: ['Ethiopia ALO Sidamo', 'Bensa Main Station', '74158 Zero Fermentation Washed'],
-        notes: '橙汁 佛手柑 油桃 茉莉绿茶',
-        about: 'ALO is an Ethiopian green-coffee company founded in 2020 by Tamiru Tadesse, Cup of Excellence winner in its second year.'
+        notes: '橙汁 佛手柑 油桃 茉莉绿茶'
       },
       art: 'uploads/card-alo-main-station.jpg',
       bag: 'uploads/bag-alo-main-station.jpg',
@@ -49,7 +48,6 @@ window.LIGHTS = (function () {
         "variety": "74158",
         "notes": "橙汁 · 佛手柑 · 油桃 · 茉莉绿茶",
         "blurb": "阿洛奔莎主站的74158，零发酵水洗：先是柑橘与柠檬草，再是橙汁与油桃，最后是悠长的茉莉绿茶尾韵。",
-        "about": "埃塞俄比亚生豆贸易公司，2020年由Tamiru Tadesse创立，第二年即夺得COE冠军。",
         "specs": {
           "Variety": "74158",
           "Process": "零发酵水洗",
@@ -110,8 +108,7 @@ window.LIGHTS = (function () {
         tag: 'Catuai',
         zh: ['巴拿马 沃肯', '芭比朵庄园', '黄卡杜艾 厌氧日晒'],
         en: ['Panama Volcán', 'Bambito Estate', 'Yellow Catuai AN Natural'],
-        notes: '黄色水果 红柚 红醋栗 蔗糖',
-        about: 'One of Panama’s top estates, between two ridges at 1,660–1,800 m in Volcán. Best of Panama winner in 2021.'
+        notes: '黄色水果 红柚 红醋栗 蔗糖'
       },
       art: 'uploads/card-bambito-estate.jpg',
       bag: 'uploads/bag-bambito-estate.jpg',
@@ -123,7 +120,6 @@ window.LIGHTS = (function () {
         "variety": "黄卡杜艾",
         "notes": "成熟黄色水果 · 红柚 · 红醋栗 · 蔗糖",
         "blurb": "巴拿马沃肯芭比朵庄园的黄卡杜艾，厌氧日晒：成熟黄色水果与苹果干，红柚与红醋栗，蔗糖般的尾韵。",
-        "about": "巴拿马顶级庄园之一，位于沃肯海拔1660–1800米的两座山脊之间。2021年BOP冠军。",
         "specs": {
           "Variety": "黄卡杜艾",
           "Process": "厌氧日晒",
@@ -202,8 +198,7 @@ window.LIGHTS = (function () {
         tag: '#131',
         zh: ['洪都拉斯 伦皮拉省', '草莓庄园', '瑰夏 Lot#131 水洗'],
         en: ['Honduras Lempira', 'San Andrés Finca La Fresa', 'Geisha #131 Washed'],
-        notes: '茉莉 香橙 水蜜桃 荔枝 蜂蜜',
-        about: 'Grown in Lempira, Honduras, yet it tastes strongly of Panamanian Geisha: white flowers and clean citrus.'
+        notes: '茉莉 香橙 水蜜桃 荔枝 蜂蜜'
       },
       art: 'uploads/card-finca-la-fresa.jpg',
       bag: 'uploads/bag-finca-la-fresa.jpg',
@@ -215,7 +210,6 @@ window.LIGHTS = (function () {
         "variety": "瑰夏",
         "notes": "茉莉 · 香橙 · 水蜜桃 · 荔枝 · 蜂蜜",
         "blurb": "洪都拉斯伦皮拉省草莓庄园的水洗瑰夏，Lot #131：浓郁茉莉、香橙、水蜜桃、荔枝与蜂蜜。",
-        "about": "种在洪都拉斯伦皮拉，却有着突出的巴拿马瑰夏风味：白色花香与干净的柑橘。",
         "specs": {
           "Variety": "瑰夏",
           "Process": "水洗",
@@ -257,8 +251,7 @@ window.LIGHTS = (function () {
         tag: 'Vuelta',
         zh: ['巴拿马 波奎特', '艾利达庄园 Vuelta地块', '瑰夏 暗房干燥日晒'],
         en: ['Panama Boquete', 'Elida Estate Vuelta', 'Geisha DRD Natural'],
-        notes: '茉莉 橙花 甜柠檬 佛手柑',
-        about: 'The Lamastus family’s estate on the edge of Volcán Barú National Park, a legend of Best of Panama.'
+        notes: '茉莉 橙花 甜柠檬 佛手柑'
       },
       art: 'uploads/card-elida-estate.jpg',
       bag: 'uploads/bag-elida-estate.jpg',
@@ -270,7 +263,6 @@ window.LIGHTS = (function () {
         "variety": "瑰夏",
         "notes": "茉莉 · 橙花 · 甜柠檬 · 佛手柑",
         "blurb": "巴拿马波奎特艾利达庄园Vuelta地块的瑰夏，暗房干燥日晒：茉莉与橙花，甜柠檬与佛手柑，悠长的软糖甜感。",
-        "about": "Lamastus家族经营，坐落在巴鲁火山国家公园边缘，BOP的传奇庄园之一。",
         "specs": {
           "Variety": "瑰夏",
           "Process": "暗房干燥日晒",
@@ -327,8 +319,7 @@ window.LIGHTS = (function () {
         tag: 'K4',
         zh: ['巴拿马 洛斯波索斯', 'Gato Grande 庄园', '瑰夏 酵母冷发酵日晒'],
         en: ['Panama Los Pozos', 'Gato Grande', 'Geisha K4 CFY Natural'],
-        notes: '茉莉 佛手柑 糖渍柠檬 水蜜桃',
-        about: 'A coffee forest founded in 2023 in Los Pozos, Tierras Altas, by Yessie Hartman and Jean Paul.'
+        notes: '茉莉 佛手柑 糖渍柠檬 水蜜桃'
       },
       art: 'uploads/card-gato-grande.jpg',
       bag: 'uploads/bag-gato-grande.jpg',
@@ -340,7 +331,6 @@ window.LIGHTS = (function () {
         "variety": "瑰夏",
         "notes": "茉莉 · 佛手柑 · 糖渍柠檬 · 水蜜桃 · 花蜜",
         "blurb": "巴拿马洛斯波索斯Gato Grande咖啡森林的瑰夏K4，酵母冷发酵日晒：茉莉与佛手柑，糖渍柠檬与水蜜桃，花蜜般的尾韵。",
-        "about": "2023年建立于蒂埃拉斯阿尔塔斯洛斯波索斯的咖啡森林，由Yessie Hartman与Jean Paul经营。",
         "specs": {
           "Variety": "瑰夏",
           "Process": "酵母冷发酵日晒",

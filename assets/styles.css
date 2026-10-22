@@ -224,14 +224,16 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 .bean__en { font: 400 6.6cqw / 1.14 var(--sans); margin: 4cqw 0 0; letter-spacing: -.01em; }
 /* Without the Chinese above it, the English is the card's title. */
 .bean__en--lead { font-weight: 700; font-size: 7.6cqw; line-height: 1.2; margin: 0; }
-.bean__notes { font: 400 max(9.5px, 4.1cqw) / 1.35 var(--sans); margin: 6cqw 0 0; }
 .bean__price { font-size: max(9.5px, 4.3cqw); margin: 2.5cqw 0 0; font-variant-numeric: tabular-nums; }
-.bean__about { font-size: max(8px, 3.5cqw); line-height: 1.4; margin: auto 0 0; padding-top: 4cqw; padding-right: 10cqw; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
-.bean__about b { display: block; font-weight: 600; margin-bottom: 1cqw; }
+.bean__taste { flex: 0 1 auto; min-height: 0; margin: auto 0 0; padding: 4cqw 10cqw 0 0; overflow: hidden; font-size: max(8px, 3.5cqw); line-height: 1.4; }
+.bean__taste > b { display: block; font-weight: 600; margin-bottom: 1cqw; }
+.bean__taste p { margin: 0; }
+.bean__taste-full p + p { margin-top: .5cqw; }
+.bean__taste-full span { font-weight: 600; }
+.bean__taste-short { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
 .bean__mark { position: absolute; right: 6cqw; bottom: 5cqw; width: 7cqw; height: 7cqw; background: var(--ink); -webkit-mask: url(../uploads/logo.svg) center / contain no-repeat; mask: url(../uploads/logo.svg) center / contain no-repeat; }
 .bean__hit { position: absolute; inset: 0; z-index: 2; }
 .bean__hit:focus-visible { outline-offset: -6px; }
-@container (max-width: 215px) { .bean__about { display: none; } }
 /* A short row of cards (home, "you may also like") spreads across the wall. */
 .beans--row { grid-template-columns: repeat(auto-fit, minmax(200px, 250px)); justify-content: space-evenly; }
 

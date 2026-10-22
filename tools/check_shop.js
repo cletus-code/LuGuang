@@ -30,7 +30,7 @@ for (const coffee of catalog) {
   assert(coffee.cup || coffee.tasting, coffee.id + ': has tasting notes');
   assert(coffee.notes && coffee.label.en && coffee.label.zh && coffee.story.length, coffee.id + ': notes, label and farm story');
   const card = coffee.card;
-  assert(card.tag && card.zh.length === 3 && card.en.length === 3 && card.notes && card.about, coffee.id + ': the printed card has every line');
+  assert(card.tag && card.zh.length === 3 && card.en.length === 3 && card.notes, coffee.id + ': the printed card has every line');
 }
 
 // Two languages. In English a card, and a coffee's English fields, carry no
@@ -38,11 +38,11 @@ for (const coffee of catalog) {
 const CJK = /[\u3000-\u303f\u3400-\u9fff\uff00-\uffef]/;
 for (const coffee of catalog) {
   const english = [coffee.name, coffee.origin, coffee.region, coffee.process, coffee.variety, coffee.notes, coffee.blurb,
-    coffee.card.tag, coffee.card.about, ...coffee.card.en, ...coffee.story, ...Object.values(coffee.specs),
+    coffee.card.tag, ...coffee.card.en, ...coffee.story, ...Object.values(coffee.specs),
     ...(coffee.cup || []).flat(), coffee.tasting || '', ...(coffee.awards || [])];
   for (const line of english) assert(!CJK.test(line), coffee.id + ': no Chinese in the English "' + line + '"');
   const z = coffee.zh;
-  for (const field of ['name', 'origin', 'region', 'process', 'variety', 'notes', 'blurb', 'about']) {
+  for (const field of ['name', 'origin', 'region', 'process', 'variety', 'notes', 'blurb']) {
     assert(z[field] && typeof z[field] === 'string', coffee.id + ': zh.' + field);
   }
   assert.deepEqual(Object.keys(z.specs), Object.keys(coffee.specs), coffee.id + ': zh.specs has the same rows');

@@ -41,8 +41,8 @@ The **中** at the top right puts the whole site into Chinese; there it reads
 - **Coffees and brew guides** carry their Chinese in `data.js` under `zh`. The
   tasting notes and estate stories are the roaster's own Chinese.
 - **Cards** in English show no Chinese at all: the English names lead, with
-  "Tasting:" notes and an English About. In Chinese they read like the café's
-  wall cards: the Chinese names and 「tag」 over the English, and 风味表现.
+  the tasting notes in English. In Chinese they read like the café's wall
+  cards: the Chinese names and 「tag」 over the English, and 风味表现.
 - **The choice** is remembered in the browser (`lights.lang`). A first visit
   follows the browser's language. `?lang=zh` or `?lang=en` on any link sets
   it, so a Chinese link can be shared. A small script in each page's head
@@ -79,9 +79,12 @@ edge.
   The only colour is each coffee's card and the photographs. The brew-guide
   photo is black and white.
 - **The coffee card** (`.bean`) is drawn by `site.js` from `data.js`: front
-  `card.zh`, `card.en`, `card.tag`, `card.notes`, `card.about` over its `art`
-  (`uploads/card-*.jpg`). Sizes are container units, so it scales like a print.
-  Its About shows as many whole lines as fit. The back leads with "More about
+  `card.zh`, `card.en`, `card.tag` and the price over its `art`
+  (`uploads/card-*.jpg`), with the roaster's tasting notes (aroma, palate,
+  finish; in English, their translation) at the foot. Sizes are container
+  units, so it scales like a print. Where the full notes don't fit, the card
+  shows them as one line of flavours (`card.notes`, or `notes` in English),
+  in whole lines. The back leads with "More about
   this coffee" on the home page and with "Add to wishlist" elsewhere.
 - **Turning a card.** With a mouse, a card turns over while the pointer rests
   on it (and while the keyboard is inside it). On a phone it turns under the
@@ -194,8 +197,8 @@ Written to fill the design's templates, and worth a review:
 
 - **Espresso and Iced recipes** (`assets/data.js`) — the original design only
   specified V60. There is no French press guide.
-- **The cards' About lines and 风味表现** are shortened from the roaster's notes
-  to fit a card.
+- **The cards' one-line 风味表现** is shortened from the roaster's notes, for
+  cards too small for the full notes.
 
 ## Not built
 

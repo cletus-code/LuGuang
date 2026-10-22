@@ -102,7 +102,7 @@
       refreshWishlist();
       rerenders.forEach(function (draw) { draw(); });
       wobble();
-      fitAbouts();
+      fitTastes();
     });
   }
 
@@ -259,18 +259,26 @@
       card.style.setProperty('--ny', tilt.y.toFixed(2) + 'px');
     });
   }
-  /* A card's About gets whatever room its names leave, in whole lines:
-     never a line cut in half, and no About at all when one line won't fit
-     under its heading. */
-  function fitAbouts() {
-    $$('.bean__about').forEach(function (about) {
-      about.style.webkitLineClamp = '';
-      about.style.visibility = '';
-      var style = window.getComputedStyle(about);
-      var room = about.clientHeight - parseFloat(style.paddingTop);
+  /* The tasting notes at the foot of a card get whatever room its names
+     leave. They show in full (aroma, palate, finish) where that fits, as one
+     line of flavours where it doesn't, and in whole lines either way: never
+     a line cut in half. */
+  function fitTastes() {
+    $$('.bean__taste').forEach(function (taste) {
+      var full = taste.querySelector('.bean__taste-full');
+      var short = taste.querySelector('.bean__taste-short');
+      full.hidden = false;
+      short.hidden = true;
+      short.style.webkitLineClamp = '';
+      taste.style.visibility = '';
+      if (taste.scrollHeight <= taste.clientHeight + 1) { return; }
+      full.hidden = true;
+      short.hidden = false;
+      var style = window.getComputedStyle(short);
+      var room = taste.clientHeight - short.offsetTop + taste.offsetTop;
       var lines = Math.floor(room / parseFloat(style.lineHeight) + .05);
-      if (lines < 4) { about.style.webkitLineClamp = String(Math.max(lines, 1)); }
-      if (lines < 2) { about.style.visibility = 'hidden'; }
+      short.style.webkitLineClamp = String(Math.max(lines, 1));
+      if (lines < 1) { taste.style.visibility = 'hidden'; }
     });
   }
   function initWobble() {
@@ -278,9 +286,9 @@
     var timer = null;
     window.addEventListener('resize', function () {
       clearTimeout(timer);
-      timer = setTimeout(function () { wobble(); fitAbouts(); }, 150);
+      timer = setTimeout(function () { wobble(); fitTastes(); }, 150);
     });
-    if (document.fonts) { document.fonts.ready.then(fitAbouts); }
+    if (document.fonts) { document.fonts.ready.then(fitTastes); }
     wobble();
   }
 
@@ -509,6 +517,25 @@
     };
   }
 
+  /* The foot of a card: the roaster's tasting notes (in English, their
+     translation), and a one-line version for when the card is too small. */
+  function tasting(coffee) {
+    var taste = el('div', 'bean__taste');
+    taste.appendChild(el('b', null, L('Tasting notes', '风味表现')));
+    var full = el('div', 'bean__taste-full');
+    (loc(coffee, 'cup') || [[null, loc(coffee, 'tasting')]]).forEach(function (pair) {
+      var row = el('p');
+      if (pair[0]) { row.appendChild(el('span', null, pair[0] + L(': ', '：'))); }
+      row.appendChild(document.createTextNode(pair[1]));
+      full.appendChild(row);
+    });
+    taste.appendChild(full);
+    var short = el('p', 'bean__taste-short', L(coffee.notes, coffee.card.notes));
+    short.hidden = true;
+    taste.appendChild(short);
+    return taste;
+  }
+
   /* `key` names where the card sits, so the same coffee in two places keeps
      two leans. Home leads with the coffee's page; elsewhere the wishlist. */
   function bean(coffee, key) {
@@ -529,12 +556,8 @@
     // English. In English it carries no Chinese at all.
     if (isZh()) { face.appendChild(lines(el('p', 'bean__zh'), coffee.card.zh)); }
     face.appendChild(lines(el('p', isZh() ? 'bean__en' : 'bean__en bean__en--lead'), coffee.card.en));
-    face.appendChild(el('p', 'bean__notes', L('Tasting: ' + coffee.notes, '风味表现【' + coffee.card.notes + '】')));
     face.appendChild(el('p', 'bean__price', SHOP.priceLabel(coffee)));
-    var about = el('p', 'bean__about');
-    about.appendChild(el('b', null, L('About:', '关于：')));
-    about.appendChild(document.createTextNode(L(coffee.card.about, coffee.zh.about)));
-    face.appendChild(about);
+    face.appendChild(tasting(coffee));
     front.appendChild(face);
     front.appendChild(el('span', 'bean__mark'));
     // The coffee's own page is the card's link. The card on that page
@@ -599,7 +622,7 @@
     container.replaceChildren();
     coffees.forEach(function (coffee) { container.appendChild(bean(coffee, key)); });
     wobble();
-    fitAbouts();
+    fitTastes();
   }
   function initRows() {
     if (!SHOP) { return; }
