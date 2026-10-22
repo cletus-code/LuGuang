@@ -113,8 +113,7 @@ window.LIGHTS = (function () {
   ];
 
   /* Brew guides. The V60 recipe is the design (3c). Espresso and Iced use the
-     numbers given on the product page's "Brew it this way" cards; the French
-     press recipe is written here. */
+     numbers given on the product page's "Brew it this way" cards. */
   var guides = [
     {
       id: 'v60',
@@ -137,29 +136,6 @@ window.LIGHTS = (function () {
         ['First pour, to 150 g', 'Pour steadily in circles, keeping the bed level. Avoid the paper wall.'],
         ['Final pour, to 240 g', 'Finish by 1:45. Give the brewer one gentle swirl and let it draw down.'],
         ['Draw down and taste', 'Clear by 2:45. Sour means grind finer; bitter and dry means coarser.']
-      ]
-    },
-    {
-      id: 'french-press',
-      name: 'French press',
-      title: 'French press',
-      image: 'uploads/guide-french-press.jpg',
-      alt: 'Decanting brewed coffee into a cup',
-      intro: 'The least fussy way to brew well. Full immersion, no pouring technique to get wrong — just weight, time, and a careful decant.',
-      glance: [
-        ['Ratio', '1:15'],
-        ['Dose', '30 g'],
-        ['Water', '450 g at 94 °C'],
-        ['Grind', 'coarse'],
-        ['Total time', '9:00']
-      ],
-      note: 'A three-cup press. Skip the paper filter here — the body is the point.',
-      steps: [
-        ['Dose and wet', 'Add 30 g of coarse coffee, then pour all 450 g of water in one go. Start the timer.'],
-        ['Break the crust, 4:00', 'Stir the floating crust twice with a spoon. Most of it will sink.'],
-        ['Skim, 4:30', 'Lift the foam and floating grounds off the top with two spoons and discard them.'],
-        ['Rest to 9:00', 'Leave it alone. The fines settle on their own, which is what keeps the cup clean.'],
-        ['Press and decant', 'Press the plunger just below the surface and pour the whole thing out. Coffee left on the grounds keeps extracting.']
       ]
     },
     {

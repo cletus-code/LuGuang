@@ -177,9 +177,9 @@ Worth checking against the bags:
 The V60 recipe, the café menu and the rest of the page copy are the design's own.
 Written to fill the design's templates, and worth a review:
 
-- **French press recipe** (`assets/data.js`) — the 3c tab row names four
-  methods and the design only specifies V60. Espresso and Iced use the numbers
-  from 3b's "Brew it this way" cards.
+- **Espresso and Iced recipes** (`assets/data.js`) — the design only specifies
+  V60; these two use the numbers from 3b's "Brew it this way" cards. There is
+  no French press guide.
 
 ## Not built
 
