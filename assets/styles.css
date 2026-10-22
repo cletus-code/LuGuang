@@ -217,7 +217,7 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 
 .bean__art { position: absolute; inset: 3cqw; background: var(--art) center / cover; }
 .bean__front .bean__body { position: absolute; inset: 3cqw; padding: 6cqw 7cqw 6cqw; display: flex; flex-direction: column; }
-.bean__tips { align-self: flex-end; text-align: right; line-height: 1.1; margin: 0 0 7cqw; }
+.bean__tips { align-self: flex-end; max-width: 72%; text-align: right; line-height: 1.1; margin: 0 0 7cqw; }
 .bean__tips small { display: block; font-size: max(8px, 3.6cqw); font-style: italic; }
 .bean__tips b { font: 700 max(9px, 4.6cqw) / 1.2 var(--sans); }
 .bean__zh { font: 700 7.4cqw / 1.24 var(--zh); margin: 0; }

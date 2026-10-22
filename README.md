@@ -42,7 +42,7 @@ The **中** at the top right puts the whole site into Chinese; there it reads
   tasting notes and estate stories are the roaster's own Chinese.
 - **Cards** carry only their own language: in English the English names and
   tasting notes, with no Chinese at all; in Chinese the Chinese names, the
-  「tag」 and 风味表现, with no English names.
+  「process」 and 风味表现, with no English names.
 - **The choice** is remembered in the browser (`lights.lang`). A first visit
   follows the browser's language. `?lang=zh` or `?lang=en` on any link sets
   it, so a Chinese link can be shared. A small script in each page's head
@@ -79,7 +79,7 @@ edge.
   The only colour is each coffee's card and the photographs. The brew-guide
   photo is black and white.
 - **The coffee card** (`.bean`) is drawn by `site.js` from `data.js`: front
-  `card.zh`, `card.en`, `card.tag` and the price over its `art`
+  `card.zh` or `card.en`, the price, and the process in the corner, over its `art`
   (`uploads/card-*.jpg`), with the roaster's tasting notes (aroma, palate,
   finish; in English, their translation) at the foot. Sizes are container
   units, so it scales like a print. Where the full notes don't fit, the card

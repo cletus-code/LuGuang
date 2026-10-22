@@ -375,8 +375,8 @@
      stylesheet that uses it, not this page. */
   function artURL(coffee) { return 'url("' + new URL(coffee.art, document.baseURI).href + '")'; }
 
-  /* The 「tag」 printed in the card's corner; the brackets are Chinese. */
-  function tag(coffee) { return L(coffee.card.tag, '「' + coffee.card.tag + '」'); }
+  /* The process, printed in a card's corner; the brackets are Chinese. */
+  function processCue(coffee) { return L(coffee.process, '「' + coffee.zh.process + '」'); }
 
   /* [label, value, optional on phone-sized cards]. A coffee's page lists
      the roast where a card lists the price. */
@@ -549,8 +549,8 @@
     front.appendChild(el('span', 'bean__art'));
     var face = el('div', 'bean__body');
     var tips = el('p', 'bean__tips');
-    tips.appendChild(el('small', null, 'Tips'));
-    tips.appendChild(el('b', null, tag(coffee)));
+    tips.appendChild(el('small', null, L('Process', '处理法')));
+    tips.appendChild(el('b', null, processCue(coffee)));
     face.appendChild(tips);
     // Each language's card carries only its own names, which leaves the
     // room for the tasting notes.
@@ -711,7 +711,7 @@
     var coffee = findCoffee(param('id')) || DATA.coffees[0];
     function paint() {
       document.title = L(coffee.name + ' — Lights Landing Coffee', coffee.zh.name + ' — 陆光咖啡');
-      text('[data-product-eyebrow]', loc(coffee, 'origin') + ' · ' + tag(coffee));
+      text('[data-product-eyebrow]', loc(coffee, 'origin') + ' · ' + processCue(coffee));
       // In Chinese the name is the card's Chinese, with its English below.
       lines(text('[data-product-name]', ''), isZh() ? coffee.card.zh : coffee.card.en);
       var sub = text('[data-product-sub]', '');

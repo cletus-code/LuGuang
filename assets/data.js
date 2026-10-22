@@ -3,9 +3,9 @@
    notes and farm stories are translated from the roaster's notes for each
    coffee; prices and sizes are the shop's.
 
-   `card` is what the café's printed wall card says: the 「tag」 in the corner,
-   the Chinese and English names line by line, and the 风味表现 notes in one
-   line, for when the full tasting notes don't fit. `art` is
+   `card` is what the café's printed wall card says: the Chinese and English
+   names line by line, and the 风味表现 notes in one line, for when the full
+   tasting notes don't fit. The card's corner shows the `process`. `art` is
    that card's marbled colour; `bag` a photo of the bag. The roast and the
    roaster's brew recipes are the same for every coffee and live in
    product.html.
@@ -33,7 +33,6 @@ window.LIGHTS = (function () {
       price: 16,
       size: '100g',
       card: {
-        tag: '2026',
         zh: ['埃塞俄比亚 阿洛', '西达摩 奔莎 主站', '74158 零发酵 水洗'],
         en: ['Ethiopia ALO Sidamo', 'Bensa Main Station', '74158 Zero Fermentation Washed'],
         notes: '橙汁 佛手柑 油桃 茉莉绿茶'
@@ -105,7 +104,6 @@ window.LIGHTS = (function () {
       price: 18,
       size: '100g',
       card: {
-        tag: 'Catuai',
         zh: ['巴拿马 沃肯', '芭比朵庄园', '黄卡杜艾 厌氧日晒'],
         en: ['Panama Volcán', 'Bambito Estate', 'Yellow Catuai AN Natural'],
         notes: '黄色水果 红柚 红醋栗 蔗糖'
@@ -195,7 +193,6 @@ window.LIGHTS = (function () {
       price: 26,
       size: '100g',
       card: {
-        tag: '#131',
         zh: ['洪都拉斯 伦皮拉省', '草莓庄园', '瑰夏 Lot#131 水洗'],
         en: ['Honduras Lempira', 'San Andrés Finca La Fresa', 'Geisha #131 Washed'],
         notes: '茉莉 香橙 水蜜桃 荔枝 蜂蜜'
@@ -241,14 +238,13 @@ window.LIGHTS = (function () {
       name: 'Elida Estate',
       origin: 'Panama',
       region: 'Boquete, Vuelta',
-      process: 'DRD natural',
+      process: 'Dark-room dried natural',
       processes: ['Natural'],
       variety: 'Geisha',
       notes: 'Jasmine · orange blossom · sweet lemon · Buddha’s hand',
       price: 39,
       size: '75g',
       card: {
-        tag: 'Vuelta',
         zh: ['巴拿马 波奎特', '艾利达庄园 Vuelta地块', '瑰夏 暗房干燥日晒'],
         en: ['Panama Boquete', 'Elida Estate Vuelta', 'Geisha DRD Natural'],
         notes: '茉莉 橙花 甜柠檬 佛手柑'
@@ -316,7 +312,6 @@ window.LIGHTS = (function () {
       price: 49,
       size: '75g',
       card: {
-        tag: 'K4',
         zh: ['巴拿马 洛斯波索斯', 'Gato Grande 庄园', '瑰夏 酵母冷发酵日晒'],
         en: ['Panama Los Pozos', 'Gato Grande', 'Geisha K4 CFY Natural'],
         notes: '茉莉 佛手柑 糖渍柠檬 水蜜桃'
