@@ -59,7 +59,8 @@ across the middle, and three icons sit at the right:
   slides it left and opens an underline to type into; Enter opens the shelf
   filtered by that search. Its room is reserved, so opening it doesn't move
   the menu.
-- **中 / EN** switches language.
+- **中 / EN** switches language. Like the menu items, it draws an underline
+  from left to right on hover; the page you're on keeps its underline.
 - **The cart** opens the wishlist; a small black square shows how many
   coffees are on it, and disappears at zero.
 
@@ -96,6 +97,9 @@ edge.
   opens the coffee's page; only "Add to wishlist" stays put. The card on a
   coffee's own page only turns. Reduced Motion skips the animation.
 - **Search and sort** are a thin underline, not a box.
+- **Even rows.** Cards side by side share one height, with their links or
+  buttons at the foot, so rows line up (home, About, wishlist). The home
+  page's brew methods are large buttons, one above another.
 
 ## Animated masthead logo
 
