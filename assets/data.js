@@ -166,19 +166,19 @@ window.LIGHTS = (function () {
         ['Finish', 'Cane-sugar sweetness, layered and heady.']
       ],
       story: [
-        'One of Panama’s top estates, Bambito has always been well loved, but it produces very little each year, so few people know it. Both of this year’s Bambito lots are intense: the Geisha with strong florals and full Buddha’s-hand citrus, and this anaerobic natural Yellow Catuai with ripe fruit — heady, shifting and solid, yet still round.',
+        'One of Panama’s top estates, Bambito has always been well loved, but it produces very little each year, so few people know it. Both of this year’s Bambito lots are intense: the Geisha with strong florals and full Buddha’s-hand citrus, and this anaerobic natural Yellow Catuai with ripe fruit: heady, shifting and solid, yet still round.',
         'The estate lies between 1,660 and 1,800 metres, running east to west between two ridges, with national forest on both sides. Besides the views, the ridges give Bambito its own microclimate, sheltering the trees from the summer north winds and the extremes of high altitude.',
         'Two natural springs water the trees and keep the whole estate supplied. Bambito also has its own greenhouse, where the coffee is stored, and a cupping lab for quality control.',
         'Bambito has been known in Panama for a long time, shaped by generations of work. The Sittón family’s eldest manager today remembers that her father, Alberto Sittón Rios, took the estate over from the generation before him in 1945, and how he smiled whenever he talked about it. “This is the best of what our family has,” he used to say. “It has to carry on.”'
       ],
       awards: [
-        '2023 Best of Panama — 13th, Geisha washed',
-        '2022 Best of Panama — 9th, Geisha washed',
-        '2021 Best of Panama — 1st, Geisha washed',
-        '2021 Best of Panama — 5th, Geisha natural',
-        '2021 Best of Panama — 4th, traditional varieties washed',
-        '2020 Best of Panama — 3rd, Geisha washed',
-        '2019 Best of Panama — 5th, Geisha washed'
+        '2023 Best of Panama, 13th, Geisha washed',
+        '2022 Best of Panama, 9th, Geisha washed',
+        '2021 Best of Panama, 1st, Geisha washed',
+        '2021 Best of Panama, 5th, Geisha natural',
+        '2021 Best of Panama, 4th, traditional varieties washed',
+        '2020 Best of Panama, 3rd, Geisha washed',
+        '2019 Best of Panama, 5th, Geisha washed'
       ]
     },
     {
@@ -224,13 +224,13 @@ window.LIGHTS = (function () {
         en: 'Honduras Lempira San Andrés Finca La Fresa Geisha Lot #131 Washed',
         zh: '洪都拉斯 伦皮拉省 草莓庄园 瑰夏 Lot#131 水洗'
       },
-      blurb: 'Washed Geisha, lot #131, from Finca La Fresa — “the strawberry farm” — in San Andrés, Lempira, Honduras: rich jasmine, orange, white peach, lychee and honey.',
+      blurb: 'Washed Geisha, lot #131, from Finca La Fresa (“the strawberry farm”) in San Andrés, Lempira, Honduras: rich jasmine, orange, white peach, lychee and honey.',
       specs: { Variety: 'Geisha', Process: 'Washed', Lot: '#131', Roast: 'Light' },
       tasting: 'Rich jasmine, orange, white peach, lychee and honey.',
       story: [
         'Both Honduran Geishas we brought in this time have excellent floral and fruit character. They are grown in Lempira, yet taste strongly of Panamanian Geisha: a prominent white-flower aroma, very clean, fine citrus sweet-tart juiciness and a fresh, peach-like sweetness. Geishas this good are rarely this good value.',
         'Honduras sits in northern Central America, with the Caribbean to the north and the Pacific’s Gulf of Fonseca to the south. Most of the country is mountains and plateaus; it is the most mountainous country in Central America, with everything a coffee farm needs. The coastal plains are tropical rainforest and the highlands subtropical forest, mild all year, with plenty of rain and clear dry and wet seasons.',
-        'Honduras came to coffee late, but it is now one of the world’s largest arabica producers, with six coffee regions and some 280,000 hectares of farms. Its coffees have the floral, fruity aroma and soft juiciness of Central America, a hint of exotic spice in the aroma and a nutty, chocolate body later on — balanced and layered.'
+        'Honduras came to coffee late, but it is now one of the world’s largest arabica producers, with six coffee regions and some 280,000 hectares of farms. Its coffees have the floral, fruity aroma and soft juiciness of Central America, a hint of exotic spice in the aroma and a nutty, chocolate body later on. Balanced and layered.'
       ]
     },
     {
@@ -297,7 +297,7 @@ window.LIGHTS = (function () {
       ],
       story: [
         'Almost every Elida lot did well in 2026. Most were processed in a cold room or a dark room, which makes them especially delicate and pronounced, with the strong floral and fruit character of Panamanian Geisha.',
-        'Elida Estate is in the highlands of Boquete, Panama, run by the Lamastus family — one of the legendary farms of recent Best of Panama competitions. It sits on the edge of Volcán Barú National Park, and the rich volcanic soil, cloud-forest climate and very high altitude give Elida’s coffees clean florals, juiciness and fine layers.'
+        'Elida Estate is in the highlands of Boquete, Panama, and is run by the Lamastus family. It is one of the legendary farms of recent Best of Panama competitions. It sits on the edge of Volcán Barú National Park, and the rich volcanic soil, cloud-forest climate and very high altitude give Elida’s coffees clean florals, juiciness and fine layers.'
       ]
     },
     {
@@ -365,9 +365,9 @@ window.LIGHTS = (function () {
         ['Finish', 'A honey-like sweetness, delicate, clean and lasting.']
       ],
       story: [
-        'Gato Grande Coffee Forest was founded in 2023 in Los Pozos, Tierras Altas — an important area in Best of Panama every year. The very high altitude, low average temperature and wide swing between day and night stretch out the ripening of the cherries, and that slow growth lets the Geisha here build up more sugars and other compounds, for a richer cup.',
+        'Gato Grande Coffee Forest was founded in 2023 in Los Pozos, Tierras Altas, an important area in Best of Panama every year. The very high altitude, low average temperature and wide swing between day and night stretch out the ripening of the cherries, and that slow growth lets the Geisha here build up more sugars and other compounds, for a richer cup.',
         'Yessie Hartman and Jean Paul, who run the farm, both come from well-known Panamanian coffee families: Yessie is the eldest daughter of the owner of the Hartmann estate, and Jean Paul is general manager of Carmen Estate. With deep experience in growing and management, and the support of both estates, Gato Grande has finished its second harvest this year, and all of its Geishas are very-high-quality micro-lots.',
-        'This lot has excellent green beans with a high density. At first crack in the roaster you can smell heavy florals and citrus — jasmine, Buddha’s hand, lemon — with a clear sweetness. All that the beans have built up makes the cup heady and layered: very heavy white florals and Buddha’s hand in the dry fragrance; candied lemon and white peach, sweet, juicy, smooth and shifting, on the palate; then a honey-like sweetness and a fine, clean, lasting finish.',
+        'This lot has excellent green beans with a high density. At first crack in the roaster you can smell heavy florals and citrus (jasmine, Buddha’s hand, lemon) and a clear sweetness. All that the beans have built up makes the cup heady and layered: very heavy white florals and Buddha’s hand in the dry fragrance; candied lemon and white peach, sweet, juicy, smooth and shifting, on the palate; then a honey-like sweetness and a fine, clean, lasting finish.',
         'Besides its heavy florals, this cold-fermented natural Geisha has a richer, more varied juiciness than a traditional washed: sweet peach and ripe cherry stand out, with a rock-sugar sweetness, solid, fine and long.'
       ]
     }
@@ -382,7 +382,7 @@ window.LIGHTS = (function () {
         "name": "V60",
         "title": "手冲 · V60",
         "alt": "在吧台上往V60里注水",
-        "intro": "一杯干净、可重复的配方。任何锥形滤杯都适用——比例比器具更重要。",
+        "intro": "一杯干净、可重复的配方。任何锥形滤杯都适用，比例比器具更重要。",
         "glance": [
           [
             "粉水比",
@@ -433,7 +433,7 @@ window.LIGHTS = (function () {
       title: 'Pour-over, V60',
       image: 'uploads/pourover-hero.jpg',
       alt: 'Pouring water over a V60 on the brew bar',
-      intro: 'A clean, repeatable recipe for a single cup. Anything in a cone works — the ratio matters more than the brewer.',
+      intro: 'A clean, repeatable recipe for a single cup. Anything in a cone works. The ratio matters more than the brewer.',
       glance: [
         ['Ratio', '1:16'],
         ['Dose', '15 g'],
@@ -553,7 +553,7 @@ window.LIGHTS = (function () {
             "中细"
           ]
         ],
-        "note": "冰块是配方的一部分，不是点缀——它就是剩下的那部分水。",
+        "note": "冰块不是点缀，而是配方的一部分：它就是剩下的那部分水。",
         "steps": [
           [
             "准备分享壶",
@@ -589,7 +589,7 @@ window.LIGHTS = (function () {
         ['Ice', '120 g in the carafe'],
         ['Grind', 'medium-fine']
       ],
-      note: 'The ice is part of the recipe, not a garnish — it is the rest of the water.',
+      note: 'The ice is part of the recipe, not a garnish. It is the rest of the water.',
       steps: [
         ['Load the carafe', 'Weigh 120 g of ice into the vessel under the brewer before you start.'],
         ['Dose 20 g', 'Grind a little finer than you would for hot filter. Rinse the paper and level the bed.'],

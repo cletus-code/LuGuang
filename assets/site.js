@@ -710,7 +710,7 @@
     if (!root || !SHOP) { return; }
     var coffee = findCoffee(param('id')) || DATA.coffees[0];
     function paint() {
-      document.title = L(coffee.name + ' — Lights Landing Coffee', coffee.zh.name + ' — 陆光咖啡');
+      document.title = L(coffee.name + ' | Lights Landing Coffee', coffee.zh.name + ' | 陆光咖啡');
       text('[data-product-eyebrow]', loc(coffee, 'origin') + ' · ' + processCue(coffee));
       // In Chinese the name is the card's Chinese, with its English below.
       lines(text('[data-product-name]', ''), isZh() ? coffee.card.zh : coffee.card.en);
@@ -768,7 +768,7 @@
   var shownGuide = null;
   function paintGuide(guide) {
     shownGuide = guide;
-    document.title = L(guide.title + ' — Lights Landing Coffee', guide.zh.title + ' — 陆光咖啡');
+    document.title = L(guide.title + ' | Lights Landing Coffee', guide.zh.title + ' | 陆光咖啡');
     var image = $('[data-guide-image]');
     image.src = guide.image;
     image.alt = loc(guide, 'alt');

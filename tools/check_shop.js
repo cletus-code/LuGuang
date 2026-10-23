@@ -33,6 +33,11 @@ for (const coffee of catalog) {
   assert(card.zh.length === 3 && card.en.length === 3 && card.notes, coffee.id + ': the printed card has every line');
 }
 
+// No em dashes anywhere in what the site shows, in either language.
+for (const file of ['data.js', 'i18n.js', 'site.js']) {
+  assert(!fs.readFileSync(path.join(root, 'assets', file), 'utf8').includes('\u2014'), file + ': no em dashes');
+}
+
 // Two languages. In English a card, and a coffee's English fields, carry no
 // Chinese; every coffee and guide has its Chinese.
 const CJK = /[\u3000-\u303f\u3400-\u9fff\uff00-\uffef]/;
@@ -102,6 +107,7 @@ for (const name of fs.readdirSync(root).filter(name => name.endsWith('.html'))) 
   assert(order.every((at, n) => at > 0 && (n === 0 || at > order[n - 1])), name + ': data, Chinese, shop rules, then the UI');
   for (const id of links(html)) assert(catalog.some(coffee => coffee.id === id), name + ': links to a coffee on sale (' + id + ')');
   for (const [, file] of html.matchAll(/src="(uploads\/[^"]+)"/g)) assert(fs.existsSync(path.join(root, file)), name + ': ' + file + ' exists');
+  assert(!html.includes('\u2014'), name + ': no em dashes')
   for (const [, key] of html.matchAll(/data-i18n="([^"]+)"/g)) assert(typeof zh[key] === 'string', name + ': Chinese for ' + key);
   for (const [, pairs] of html.matchAll(/data-i18n-attr="([^"]+)"/g)) {
     for (const pair of pairs.split(',')) assert(typeof zh[pair.split(':')[1]] === 'string', name + ': Chinese for ' + pair);
@@ -119,7 +125,7 @@ assert.deepEqual(facets('origin'), Array.from(new Set(catalog.map(coffee => coff
 assert.deepEqual(Array.from(new Set(catalog.flatMap(coffee => coffee.processes))).filter(process => !facets('process').includes(process)), [],
   'A process filter for each process');
 const product = read('product.html');
-assert(product.includes('<title>' + catalog[0].name + ' — Lights Landing Coffee</title>') && !CJK.test(product.split('data-product-name>')[1].split('<')[0]) &&
+assert(product.includes('<title>' + catalog[0].name + ' | Lights Landing Coffee</title>') && !CJK.test(product.split('data-product-name>')[1].split('<')[0]) &&
   product.includes('data-product-price>' + shop.priceLabel(catalog[0]) + '<'), 'The coffee page shows the first coffee before it loads');
 // Email reservations: hidden until an https endpoint is configured.
 const config = load().shop && vm.runInContext('window.LIGHTS.reserve', (() => {
@@ -133,4 +139,4 @@ const wishlistPage = read('cart.html');
 assert(/<form class="card pad reserve" hidden data-reserve-form>/.test(wishlistPage), 'The form starts hidden');
 assert(/type="email" required/.test(wishlistPage), 'Email is required');
 assert(/name="_gotcha" tabindex="-1"/.test(wishlistPage), 'Spam trap is present and out of the tab order');
-console.log('Shop checks passed: catalogue and order, printed cards, tasting notes, English and Chinese, search, wishlist storage, corrupt or blocked storage, page links and the reservation form.');
+console.log('Shop checks passed: catalogue and order, printed cards, tasting notes, English and Chinese, no em dashes, search, wishlist storage, corrupt or blocked storage, page links and the reservation form.');

@@ -1,5 +1,5 @@
 /* Catalogue search and the wishlist. Ordering is closed for now, so "Add to
-   wishlist" saves a coffee here instead; the wishlist holds coffee ids only —
+   wishlist" saves a coffee here instead; the wishlist holds coffee ids only,
    never prices, which always come from the catalogue. */
 window.LIGHTS_SHOP = (function () {
   'use strict';

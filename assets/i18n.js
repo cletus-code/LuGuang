@@ -3,7 +3,7 @@
    own English is the other language. Coffees and brew guides carry their
    Chinese in assets/data.js, under `zh`. Values may hold simple markup. */
 window.LIGHTS_ZH = {
-  "about.brewText": "每一支豆子都附有在家就能用的配方——粉水比、研磨度、时间，以及味道不对时该调整什么。",
+  "about.brewText": "每一支豆子都附有在家就能用的配方：粉水比、研磨度、时间，以及味道不对时该调整什么。",
   "about.brewing": "冲煮",
   "about.cafeText": "长沙市黄兴南路12号2楼。每天营业，9:30–20:00。",
   "about.eyebrow": "关于",
@@ -11,7 +11,7 @@ window.LIGHTS_ZH = {
   "about.shelf": "看看现在有什么豆子",
   "about.title": "陆光咖啡",
   "about.what": "我们做什么",
-  "about.whatText": "<p>我们小批量采购咖啡，只用一台烘焙机，在它变老之前把它卖出去。没有哪一袋豆子会躺在仓库里等季节过去。</p><p>货架随产季更替——现在是埃塞俄比亚、洪都拉斯和巴拿马。遇到好的批次，第二年我们会回到同一个处理站，而不是去追逐新的。</p>",
+  "about.whatText": "<p>我们小批量采购咖啡，只用一台烘焙机，在它变老之前把它卖出去。没有哪一袋豆子会躺在仓库里等季节过去。</p><p>货架随产季更替，现在是埃塞俄比亚、洪都拉斯和巴拿马。遇到好的批次，第二年我们会回到同一个处理站，而不是去追逐新的。</p>",
   "announce": "网店即将开业 · 先把喜欢的咖啡加入心愿单",
   "bar.asc": "价格从低到高",
   "bar.desc": "价格从高到低",
@@ -20,7 +20,7 @@ window.LIGHTS_ZH = {
   "bar.placeholder": "搜索：名称、产地、风味",
   "bar.process": "处理法",
   "bar.sort": "排序",
-  "brand": "陆光咖啡 Lights Landing Coffee — 首页",
+  "brand": "陆光咖啡首页",
   "cafe.address": "中国长沙市黄兴南路12号2楼",
   "cafe.bar": "吧台饮品",
   "cafe.directions": "路线",
@@ -49,7 +49,7 @@ window.LIGHTS_ZH = {
   "cart.submit": "预留这些咖啡",
   "cart.title": "网店即将开业",
   "cart.yours": "你的心愿单",
-  "coffee.closed": "网店即将开业——在那之前，先把咖啡加入心愿单。",
+  "coffee.closed": "网店即将开业。在那之前，先把咖啡加入心愿单。",
   "coffee.eyebrow": "单一批次 · 每周更新",
   "coffee.howHover": "把鼠标停在卡片上就能翻面，点击查看完整介绍。",
   "coffee.howTouch": "横向滑动卡片把它翻过来，轻点查看完整介绍。",
@@ -75,7 +75,7 @@ window.LIGHTS_ZH = {
   "home.eyebrow": "陆光咖啡 · Lights Landing",
   "home.guides": "冲煮指南",
   "home.learn": "学习冲煮",
-  "home.learnText": "每种冲煮方式都有分步指南，在家就能照着做——粉水比、研磨度、时间。",
+  "home.learnText": "每种冲煮方式都有分步指南，在家就能照着做：粉水比、研磨度、时间。",
   "home.lede": "小批次咖啡，在日光下烘焙，烘好当周发货。",
   "home.roasts": "本周烘焙",
   "home.shop": "选购咖啡",
@@ -121,8 +121,8 @@ window.LIGHTS_ZH = {
   "product.water": "用水：软矿泉水，TDS约40–50。我们用农夫山泉。<a href=\"brew.html\">全部冲煮指南</a>",
   "search.label": "搜索咖啡",
   "search.placeholder": "搜索咖啡",
-  "title.about": "关于我们 — 陆光咖啡",
-  "title.cafe": "咖啡馆 — 陆光咖啡",
-  "title.cart": "心愿单 — 陆光咖啡",
-  "title.coffee": "咖啡豆 — 陆光咖啡"
+  "title.about": "关于我们 | 陆光咖啡",
+  "title.cafe": "咖啡馆 | 陆光咖啡",
+  "title.cart": "心愿单 | 陆光咖啡",
+  "title.coffee": "咖啡豆 | 陆光咖啡"
 };
