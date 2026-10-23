@@ -190,6 +190,8 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 .split > * { min-width: 0; }
 .split__text { padding: 34px; display: grid; gap: 18px; align-content: center; }
 .split > img { width: 100%; height: 100%; min-height: 260px; object-fit: cover; }
+/* A picture that needs more room, like the About page's sea at sunrise. */
+.split--tall > img { min-height: 440px; }
 .head-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px 20px; padding: 18px 26px; }
 .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
 .three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
@@ -388,6 +390,7 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
   .find { --open: min(11em, 34vw); }
   .split, .two, .recipes, .menu, .guide__body, .farm { grid-template-columns: minmax(0, 1fr); }
   .split > img { min-height: 220px; max-height: 300px; }
+  .split--tall > img { max-height: none; height: auto; aspect-ratio: 782 / 752; }
   .recipe, .recipe + .recipe { padding: 0; border-left: 0; }
   .recipe + .recipe { margin-top: 26px; }
   .guide__glance { border-right: 0; border-bottom: 1px solid var(--line); }

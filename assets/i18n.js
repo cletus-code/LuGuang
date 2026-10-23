@@ -84,7 +84,7 @@ window.LIGHTS_ZH = {
   "img.iced": "阳光下的一杯冰手冲",
   "img.latte": "俯拍的一杯拿铁",
   "img.roasting": "刚烘好的咖啡豆在冷却盘里翻动",
-  "img.room": "陆光咖啡坐满了人，大家围着吧台品尝",
+  "img.sea": "海上日出，和陆光的标志",
   "img.storefront": "陆光咖啡商店的橱窗",
   "img.window": "店里的磨砂窗字和绿植",
   "link.allCoffee": "全部咖啡",

@@ -120,7 +120,7 @@ is a stock texture.
 Not used by this design and safe to delete once you're sure: the torn-paper
 set from the previous design (`uploads/torn-*`, rebuilt by
 `tools/prepare_torn_paper.py` and checked by `tools/check_torn_paper.py`), and
-`iced-coffee.jpg` and `pack-*.jpg`.
+`cupping-room.jpg` and `pack-*.jpg`.
 
 > **Licence check needed** if the torn paper ever returns: it is derived from a
 > Pngtree asset (`pngtree-white-torn-paper-strips-with-cutout-edges`, image
