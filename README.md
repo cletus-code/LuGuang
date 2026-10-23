@@ -85,8 +85,8 @@ edge.
   finish; in English, their translation) at the foot. Sizes are container
   units, so it scales like a print. Where the full notes don't fit, the card
   shows them as one line of flavours (`card.notes`, or `notes` in English),
-  in whole lines. The back leads with "More about
-  this coffee" on the home page and with "Add to wishlist" elsewhere.
+  in whole lines. The back lists the basics and one button, "Add to
+  wishlist"; the card itself opens the coffee's page.
 - **Turning a card.** With a mouse, a card turns over while the pointer rests
   on it (and while the keyboard is inside it). On a phone it turns under the
   finger: a sideways swipe drags it round in 3D, lifting it off the wall and

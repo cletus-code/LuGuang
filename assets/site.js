@@ -578,16 +578,8 @@
     var actions = el('div', 'bean__actions');
     var status = el('p', 'bean__status');
     status.setAttribute('role', 'status');
-    var featured = key === 'home';
-    var more = url ? el('a', featured ? 'btn' : 'link', L('More about this coffee', '了解这支咖啡')) : null;
-    if (more) { more.href = url; }
-    if (featured) {
-      actions.appendChild(more);
-      actions.appendChild(wishButton(coffee, 'btn btn--quiet', status));
-    } else {
-      actions.appendChild(wishButton(coffee, 'btn', status));
-      if (more) { actions.appendChild(more); }
-    }
+    // The card itself opens the coffee's page; its one button saves it.
+    actions.appendChild(wishButton(coffee, 'btn', status));
     actions.appendChild(status);
     body.appendChild(actions);
     back.appendChild(body);

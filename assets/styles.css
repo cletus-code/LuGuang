@@ -269,8 +269,6 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 }
 .bean__actions { margin-top: auto; display: grid; gap: 2.4cqw; }
 .bean__actions .btn { padding: 2.8cqw 3cqw; font-size: max(11.5px, 4.8cqw); }
-.bean__actions .link { font-size: max(11px, 4.6cqw); text-align: center; }
-.bean__actions .btn--quiet { background: none; color: var(--ink); box-shadow: none; padding: 1cqw; text-decoration: underline; text-underline-offset: 3px; font-size: max(11px, 4.6cqw); }
 .bean__status { font-size: max(10px, 4cqw); color: var(--grey); margin: 0; text-align: center; }
 .bean__status:empty { display: none; }
 
