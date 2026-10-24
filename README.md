@@ -31,6 +31,7 @@ redirects to `/coffee`, keeping any `?id=` or `?lang=`).
 | `product.html` | One coffee, `?id=<id>` — basics, its printed card, tasting, the estate, roast, the roaster's recipes |
 | `brew.html` | Brew guides, `?m=<method>` — V60, Espresso, Iced |
 | `buying.html` | Buying guide: how to choose a coffee (a general placeholder until the shop's own) |
+| `privacy.html` | Privacy: what reservations collect, Formspree and Cloudflare, and deletion |
 | `cafe.html` | Address, hours, the bar menu, photos |
 | `about.html` | Who we are, roasting, brewing |
 | `cart.html` | Wishlist — shopping is coming soon, saved coffees, email reservations |
@@ -104,9 +105,9 @@ edge.
   on it (and while the keyboard is inside it). On a phone it turns under the
   finger: a sideways swipe drags it round in 3D, lifting it off the wall and
   shading the face as it goes edge-on, and letting go springs it to the nearer
-  side, or over when flicked. Up-and-down swipes still scroll. The first card
-  on the shelf and home page gives one small wobble per visit on touch screens,
-  so people know it moves. A click or tap anywhere on a card, front or back,
+  side, or over when flicked. Up-and-down swipes still scroll. When it first
+  comes into view, the first card on the shelf and home page starts to turn,
+  a tenth of the way, and settles back, so people know the cards turn. A click or tap anywhere on a card, front or back,
   opens the coffee's page; only "Add to wishlist" stays put. The card on a
   coffee's own page only turns. Reduced Motion skips the animation.
 - **Search and sort** are a thin underline, not a box.
@@ -223,6 +224,6 @@ Written to fill the design's templates, and worth a review:
 
 ## Not built
 
-Checkout/payment collection, accounts, a sourcing page, and the Shipping and
-Privacy pages remain outside this build. Ordering is closed: "Add to wishlist"
+Checkout/payment collection, accounts, a sourcing page and a Shipping page
+remain outside this build. Ordering is closed: "Add to wishlist"
 only saves in the browser, and no order or payment is submitted. Connect a payment service before enabling purchase completion.

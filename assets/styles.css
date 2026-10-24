@@ -394,6 +394,10 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 .step h3 { font-size: 16.5px; }
 .step p { margin: 4px 0 0; color: var(--grey); font-size: 14.5px; line-height: 1.65; }
 .buying .step p { max-width: 66ch; }
+.privacy { display: grid; gap: 30px; }
+.privacy__part { display: grid; gap: 10px; }
+.privacy ul { margin: 0 0 12px; padding-left: 20px; }
+.privacy li + li { margin-top: 6px; }
 
 /* ---- café --------------------------------------------------------------- */
 .hours { display: grid; gap: 4px; font-size: 15px; }
