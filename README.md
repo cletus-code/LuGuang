@@ -162,7 +162,7 @@ it, each row of cards is a plain list of links to the coffees' pages.
   lists the wishlist, and shows every other coffee's card. The wishlist is
   coffee ids only (`lights.wishlist` in this browser's storage), syncs between
   tabs, and says so when the browser refuses to save it.
-- **Reserve by email.** The wishlist page has a form: an email address, plus the coffees on the
+- **Reserve by email** (live, through Formspree form `mdeekonj`). The wishlist page has a form: an email address, plus the coffees on the
   wishlist, sent as one JSON POST (`email`, `coffees`, `coffee_ids`, `_subject`, and a `_gotcha`
   spam trap) to `reserve.endpoint` in `assets/data.js`. The visitor is told whether it went
   through. **The form stays hidden until that endpoint is set**, so nobody can submit into
