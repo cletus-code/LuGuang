@@ -8,6 +8,7 @@ window.LIGHTS_ZH = {
   "about.cafeText": "长沙市黄兴南路12号2楼。每天营业，9:30–20:00。",
   "about.eyebrow": "关于",
   "about.roastText": "每支咖啡都在我们的 Giesen W1A 上浅度烘焙，在发货前7天内完成，烘焙日期后13–15天风味最佳。网店即将开业。",
+  "about.slogan": "经你我之手，不负自然之味。",
   "about.shelf": "看看现在有什么豆子",
   "about.title": "陆光咖啡",
   "about.what": "我们是陆光咖啡店。",
