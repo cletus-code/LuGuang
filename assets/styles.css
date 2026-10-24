@@ -413,6 +413,8 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 .wish-row button { text-decoration: underline; text-underline-offset: 3px; font-size: 14px; }
 .reserve { display: grid; gap: 12px; }
 .reserve label { font-size: 14px; }
+.reserve__steps { margin: 0; padding-left: 20px; color: var(--grey); font-size: 15px; line-height: 1.7; }
+.reserve__steps li + li { margin-top: 4px; }
 .reserve__controls { display: flex; flex-wrap: wrap; gap: 10px; }
 .reserve input[type="email"] { flex: 1 1 240px; min-width: 0; border: 1px solid var(--ink); border-radius: 0; padding: 12px 14px; background: var(--paper); }
 .reserve__trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
