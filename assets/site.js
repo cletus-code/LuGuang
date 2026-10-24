@@ -539,7 +539,16 @@
 
     return {
       /* A small sideways wobble that shows a card can be turned. */
-      nudge: function () { springTo(angle, 420, .35); }
+      /* Lift the card a tenth of the way over (18° of its 180° turn), then
+         let it settle back, as a hint that it turns. Skipped if the card
+         is already moving, held or turned. */
+      peek: function () {
+        if (frame !== null || drag || Math.abs(angle - side(0)) > .5) { return; }
+        springTo(side(0) + 18, 0, .9);
+        setTimeout(function () {
+          if (!drag && !card.matches(':hover') && !card.contains(document.activeElement)) { springTo(side(0), 0, .75); }
+        }, 560);
+      }
     };
   }
 
@@ -617,17 +626,18 @@
     return card;
   }
 
-  /* On a touch screen nothing says a card can be swiped, so the first card
-     on the page gives one small wobble, once a visit. */
-  function hintSwipe(container) {
+  /* Nothing says a card can be turned, so the first card in a row starts
+     to turn, a tenth of the way, and settles back: once per page, when it
+     first comes into view. */
+  function hintTurn(container) {
     var card = container.querySelector('.bean');
-    var touch = window.matchMedia && window.matchMedia('(hover: none)').matches;
-    if (!card || !touch || REDUCED.matches) { return; }
-    try {
-      if (window.sessionStorage.getItem('lights-swipe-hint')) { return; }
-      window.sessionStorage.setItem('lights-swipe-hint', '1');
-    } catch (error) {}
-    setTimeout(function () { card.turn.nudge(); }, 700);
+    if (!card || REDUCED.matches) { return; }
+    function play() { setTimeout(function () { card.turn.peek(); }, 500); }
+    if (!window.IntersectionObserver) { play(); return; }
+    var watch = new window.IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) { watch.disconnect(); play(); }
+    }, { threshold: .6 });
+    watch.observe(card);
   }
 
   /* Fill a [data-beans] row, replacing its plain-link fallback. */
@@ -644,7 +654,7 @@
       var draw = function () { fillBeans(home, DATA.coffees.slice(0, 3), 'home'); };
       draw();
       rerenders.push(draw);
-      hintSwipe(home);
+      hintTurn(home);
     }
   }
 
@@ -712,7 +722,7 @@
     });
     render(false);
     rerenders.push(function () { render(false); });
-    hintSwipe(shelf);
+    hintTurn(shelf);
     if (window.location.hash === '#coffee-search') { input.focus(); }
   }
 
