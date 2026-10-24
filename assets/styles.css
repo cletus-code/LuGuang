@@ -65,20 +65,43 @@ img { display: block; max-width: 100%; }
 .announce { padding: 9px 16px; text-align: center; font-size: 12.5px; letter-spacing: .08em; margin: 0; background: var(--monstera); color: var(--paper); }
 /* Logo, then the menu spread evenly across the middle, then search,
    language and the wishlist cart. */
-.masthead { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; padding: 18px 28px; }
+.masthead { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; padding: 18px 28px; position: relative; z-index: 30; }
 .nav { flex: 1 1 auto; display: flex; justify-content: space-evenly; gap: 6px 20px; font-size: 15px; }
-.nav a { color: var(--grey); white-space: nowrap; }
-.nav a:hover, .nav a[aria-current="page"] { color: var(--ink); }
+.nav a, .nav__toggle { color: var(--grey); white-space: nowrap; font-size: inherit; }
+.nav a:hover, .nav a[aria-current="page"], .nav__toggle:hover, .nav__toggle.is-current, .nav__group.is-open .nav__toggle { color: var(--ink); }
 /* Menu items and the language switch share one underline: drawn left to
    right on hover or focus, and kept under the page you're on. */
-.nav a, .lang { position: relative; text-decoration: none; }
-.nav a::after, .lang::after {
+.nav a, .nav__toggle, .lang { position: relative; text-decoration: none; }
+.nav a::after, .nav__toggle::after, .lang::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 1px; background: currentColor;
   transform: scaleX(0); transform-origin: left center; transition: transform 300ms var(--ease);
 }
 .lang::after { left: 7px; right: 7px; bottom: 2px; }
 .nav a:hover::after, .nav a:focus-visible::after, .nav a[aria-current="page"]::after,
+.nav__toggle:hover::after, .nav__toggle:focus-visible::after, .nav__toggle.is-current::after,
 .lang:hover::after, .lang:focus-visible::after { transform: scaleX(1); }
+
+/* Learn opens a small white card holding Brew guide and Buying guide: on
+   hover with a mouse, on a tap or click, and from the keyboard. */
+.nav__group { position: relative; }
+.nav__toggle { display: inline-flex; flex-direction: row-reverse; gap: 4px; align-items: baseline; }
+.nav__toggle::before { content: "▾"; font-size: .7em; }
+.nav__menu {
+  position: absolute; top: 100%; left: 50%; z-index: 20; margin-top: 12px; min-width: 170px;
+  display: grid; gap: 2px; padding: 10px 6px; background: var(--paper); box-shadow: var(--shadow);
+  opacity: 0; visibility: hidden; transform: translate(-50%, -6px);
+  transition: opacity 200ms var(--ease), transform 200ms var(--ease), visibility 0s linear 200ms;
+}
+/* A bridge over the gap, so the pointer can travel from Learn to the card. */
+.nav__menu::before { content: ""; position: absolute; left: 0; right: 0; top: -14px; height: 14px; }
+.nav__menu a { padding: 8px 14px; justify-self: stretch; text-align: center; }
+.nav__menu a::after { left: 14px; right: 14px; bottom: 4px; }
+.nav__group.is-open .nav__menu, .nav__group:not([data-ready]):focus-within .nav__menu {
+  opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s;
+}
+@media (hover: hover) {
+  .nav__group:hover .nav__menu { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s; }
+}
 .masthead__end { display: flex; align-items: center; gap: 18px; }
 
 /* Search is a magnifying glass. Hovered or focused, it slides left and an
@@ -367,6 +390,7 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 .step__n { font-size: 13px; color: var(--grey); padding-top: 3px; font-variant-numeric: tabular-nums; }
 .step h3 { font-size: 16.5px; }
 .step p { margin: 4px 0 0; color: var(--grey); font-size: 14.5px; line-height: 1.65; }
+.buying .step p { max-width: 66ch; }
 
 /* ---- café --------------------------------------------------------------- */
 .hours { display: grid; gap: 4px; font-size: 15px; }
@@ -432,6 +456,6 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 @media (hover: none) { .on-hover { display: none; } }
 @media (hover: hover) { .on-touch { display: none; } }
 @media (prefers-reduced-motion: reduce) {
-  .bean, .chip, .btn, .find__input, .nav a::after, .lang::after, .methods .btn::after { transition: none !important; }
+  .bean, .chip, .btn, .find__input, .nav a::after, .nav__toggle::after, .lang::after, .methods .btn::after, .nav__menu { transition: none !important; }
   .bean:hover { transform: translate(var(--nx, 0px), var(--ny, 0px)) rotate(var(--tilt, 0deg)); }
 }

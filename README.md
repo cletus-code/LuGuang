@@ -30,6 +30,7 @@ redirects to `/coffee`, keeping any `?id=` or `?lang=`).
 | `coffee.html` | The shelf — every coffee card, with search, Origin / Process filters and price order |
 | `product.html` | One coffee, `?id=<id>` — basics, its printed card, tasting, the estate, roast, the roaster's recipes |
 | `brew.html` | Brew guides, `?m=<method>` — V60, Espresso, Iced |
+| `buying.html` | Buying guide: how to choose a coffee (a general placeholder until the shop's own) |
 | `cafe.html` | Address, hours, the bar menu, photos |
 | `about.html` | Who we are, roasting, brewing |
 | `cart.html` | Wishlist — shopping is coming soon, saved coffees, email reservations |
@@ -62,8 +63,8 @@ The **中** at the top right puts the whole site into Chinese; there it reads
 
 ## The header
 
-The logo sits at the left, Coffee · Brew guide · Café · About are spread evenly
-across the middle, and three icons sit at the right:
+The logo sits at the left, Coffee · Learn · Café · About are spread evenly
+across the middle (Learn opens a small menu with Brew guide and Buying guide), and three icons sit at the right:
 
 - **Search** is a magnifying glass. Hovering (or tapping, or tabbing to it)
   slides it left and opens an underline to type into; Enter opens the shelf

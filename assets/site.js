@@ -106,6 +106,32 @@
     });
   }
 
+  /* ------------------------------------------------------ learn menu -- */
+  /* Learn holds Brew guide and Buying guide. A mouse opens it by hovering
+     (CSS); a tap, click or Enter toggles it here. Escape, a click outside
+     or tabbing away closes it. */
+
+  function initLearnMenu() {
+    $$('[data-nav-group]').forEach(function (group) {
+      var toggle = $('.nav__toggle', group);
+      group.setAttribute('data-ready', '');
+      function set(open) {
+        group.classList.toggle('is-open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+      }
+      toggle.addEventListener('click', function () { set(!group.classList.contains('is-open')); });
+      document.addEventListener('click', function (event) {
+        if (!group.contains(event.target)) { set(false); }
+      });
+      group.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && group.classList.contains('is-open')) { set(false); toggle.focus(); }
+      });
+      group.addEventListener('focusout', function (event) {
+        if (!group.contains(event.relatedTarget)) { set(false); }
+      });
+    });
+  }
+
   /* ------------------------------------------------------- fan logo -- */
 
   function initFanLogo() {
@@ -936,6 +962,7 @@
   /* ------------------------------------------------------------- boot -- */
 
   initLanguage();
+  initLearnMenu();
   initFanLogo();
   initWishlist();
   initRows();
