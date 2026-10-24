@@ -87,7 +87,9 @@ edge.
   visit — a rotation that moves its edge about 4px whatever its width, plus a
   nudge of up to 1.5px — so the page looks laid down by hand.
 - **Black and white.** Ink `#121212`, grey `#5c5c5c` (6.6:1 on white), rules
-  `#e2e2e2`, wood `#ead6b6`. Helvetica Neue for Latin, Noto Sans SC for Chinese.
+  `#e2e2e2`, wood `#ead6b6`. Helvetica Neue for Latin; for Chinese, the device's own font (PingFang SC,
+  Microsoft YaHei or Noto Sans CJK), so nothing is fetched from Google Fonts,
+  which is blocked in mainland China.
   The only colour is each coffee's card and the photographs. The brew-guide
   photo is black and white.
 - **The coffee card** (`.bean`) is drawn by `site.js` from `data.js`: front

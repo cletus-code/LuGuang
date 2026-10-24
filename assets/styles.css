@@ -13,8 +13,11 @@
   --line: #e2e2e2;
   --shadow: 0 1px 1px rgba(64, 42, 14, .10), 0 8px 22px rgba(64, 42, 14, .18);
   --shadow-lift: 0 2px 2px rgba(64, 42, 14, .10), 0 16px 32px rgba(64, 42, 14, .24);
-  --sans: 'Helvetica Neue', Helvetica, Arial, 'Noto Sans SC', 'PingFang SC', sans-serif;
-  --zh: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  /* Chinese uses each device's own font (PingFang on Apple, Microsoft YaHei
+     on Windows, Noto Sans CJK on Android): nothing to download, so pages
+     load just as fast in mainland China, where Google Fonts is blocked. */
+  --sans: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif;
+  --zh: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif;
   --t: 200ms;
   --ease: cubic-bezier(.2, .7, .2, 1);
 }
