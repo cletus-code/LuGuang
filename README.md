@@ -31,6 +31,7 @@ redirects to `/coffee`, keeping any `?id=` or `?lang=`).
 | `product.html` | One coffee, `?id=<id>` — basics, its printed card, tasting, the estate, roast, the roaster's recipes |
 | `brew.html` | Brew guides, `?m=<method>` — V60, Espresso, Iced |
 | `buying.html` | Buying guide: how to choose a coffee (a general placeholder until the shop's own) |
+| `privacy.html` | Privacy: what reservations collect, Formspree and Cloudflare, and deletion |
 | `cafe.html` | Address, hours, the bar menu, photos |
 | `about.html` | Who we are, roasting, brewing |
 | `cart.html` | Wishlist — shopping is coming soon, saved coffees, email reservations |
@@ -223,6 +224,6 @@ Written to fill the design's templates, and worth a review:
 
 ## Not built
 
-Checkout/payment collection, accounts, a sourcing page, and the Shipping and
-Privacy pages remain outside this build. Ordering is closed: "Add to wishlist"
+Checkout/payment collection, accounts, a sourcing page and a Shipping page
+remain outside this build. Ordering is closed: "Add to wishlist"
 only saves in the browser, and no order or payment is submitted. Connect a payment service before enabling purchase completion.
