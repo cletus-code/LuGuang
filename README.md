@@ -12,6 +12,16 @@ No build step, no dependencies. Open `index.html`, or serve the folder:
 python3 -m http.server 8000
 ```
 
+## Deploying
+
+Cloudflare publishes the site as a Worker that serves these files
+(`wrangler.jsonc`). Every push to `main` deploys; pull requests get a preview
+build. Everything in the folder is published except what `.assetsignore`
+lists: the README, `tools/`, git files and the config itself. No build
+command is needed; the deploy command is Cloudflare's default,
+`npx wrangler deploy`. Pages are served at clean addresses (`/coffee.html`
+redirects to `/coffee`, keeping any `?id=` or `?lang=`).
+
 ## Pages
 
 | File | What it is |
@@ -97,6 +107,10 @@ edge.
   opens the coffee's page; only "Add to wishlist" stays put. The card on a
   coffee's own page only turns. Reduced Motion skips the animation.
 - **Search and sort** are a thin underline, not a box.
+- **Buttons and chips** change colour on hover with a sweep from left to
+  right: black ones fill white, white ones fill black. The home page's brew
+  methods also slide their arrow along.
+- **The announcement bar** is monstera green (`--monstera`).
 - **Even rows.** Cards side by side share one height, with their links or
   buttons at the foot, so rows line up (home, About, wishlist). The home
   page's brew methods are large buttons, one above another.
@@ -176,8 +190,8 @@ shop's. Full label names (English and Chinese), lots, processes, tasting notes
 (aroma, palate, finish) and the "About the estate" stories are translated from the
 roaster's notes for each coffee. `card` holds the printed card's lines, `art`
 its colour (`uploads/card-*.jpg`) and `bag` a photo of the bag
-(`uploads/bag-*.jpg`), shown beside the tasting notes. The roast (Giesen W1A, light, roasted within 7 days of
-shipping, best 13–15 days after roasting) and the roaster's cone and
+(`uploads/bag-*.jpg`), shown beside the tasting notes. The roast (Giesen W1A, light, best 13–15 days after
+roasting) and the roaster's cone and
 flat-bottom recipes are the same for every coffee and are written into
 `product.html`.
 

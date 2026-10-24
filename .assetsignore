@@ -1,0 +1,11 @@
+# Kept out of the published site: notes, tooling and deploy config.
+.git
+.gitignore
+.assetsignore
+.DS_Store
+wrangler.jsonc
+README.md
+tools
+public
+node_modules
+.wrangler
