@@ -6,6 +6,7 @@
 
 :root {
   --wood: #ead6b6;
+  --monstera: #2f5a3d;      /* the announcement bar; white on it is 8:1 */
   --paper: #ffffff;
   --ink: #121212;
   --grey: #5c5c5c;          /* 6.6:1 on white */
@@ -61,23 +62,46 @@ img { display: block; max-width: 100%; }
 .view { display: grid; gap: 20px; }
 
 /* ---- chrome ------------------------------------------------------------ */
-.announce { padding: 9px 16px; text-align: center; font-size: 12.5px; letter-spacing: .08em; margin: 0; }
+.announce { padding: 9px 16px; text-align: center; font-size: 12.5px; letter-spacing: .08em; margin: 0; background: var(--monstera); color: var(--paper); }
 /* Logo, then the menu spread evenly across the middle, then search,
    language and the wishlist cart. */
-.masthead { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; padding: 18px 28px; }
+.masthead { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; padding: 18px 28px; position: relative; z-index: 30; }
 .nav { flex: 1 1 auto; display: flex; justify-content: space-evenly; gap: 6px 20px; font-size: 15px; }
-.nav a { color: var(--grey); white-space: nowrap; }
-.nav a:hover, .nav a[aria-current="page"] { color: var(--ink); }
+.nav a, .nav__toggle { color: var(--grey); white-space: nowrap; font-size: inherit; }
+.nav a:hover, .nav a[aria-current="page"], .nav__toggle:hover, .nav__toggle.is-current, .nav__group.is-open .nav__toggle { color: var(--ink); }
 /* Menu items and the language switch share one underline: drawn left to
    right on hover or focus, and kept under the page you're on. */
-.nav a, .lang { position: relative; text-decoration: none; }
-.nav a::after, .lang::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px; background: currentColor;
+.nav a, .nav__toggle, .lang { position: relative; text-decoration: none; }
+.nav a::after, .nav__toggle::after, .lang::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 1px; background: currentColor;
   transform: scaleX(0); transform-origin: left center; transition: transform 300ms var(--ease);
 }
 .lang::after { left: 7px; right: 7px; bottom: 2px; }
 .nav a:hover::after, .nav a:focus-visible::after, .nav a[aria-current="page"]::after,
+.nav__toggle:hover::after, .nav__toggle:focus-visible::after, .nav__toggle.is-current::after,
 .lang:hover::after, .lang:focus-visible::after { transform: scaleX(1); }
+
+/* Learn opens a small white card holding Brew guide and Buying guide: on
+   hover with a mouse, on a tap or click, and from the keyboard. */
+.nav__group { position: relative; }
+.nav__toggle { display: inline-flex; flex-direction: row-reverse; gap: 4px; align-items: baseline; }
+.nav__toggle::before { content: "▾"; font-size: .7em; }
+.nav__menu {
+  position: absolute; top: 100%; left: 50%; z-index: 20; margin-top: 12px; min-width: 170px;
+  display: grid; gap: 2px; padding: 10px 6px; background: var(--paper); box-shadow: var(--shadow);
+  opacity: 0; visibility: hidden; transform: translate(-50%, -6px);
+  transition: opacity 200ms var(--ease), transform 200ms var(--ease), visibility 0s linear 200ms;
+}
+/* A bridge over the gap, so the pointer can travel from Learn to the card. */
+.nav__menu::before { content: ""; position: absolute; left: 0; right: 0; top: -14px; height: 14px; }
+.nav__menu a { padding: 8px 14px; justify-self: stretch; text-align: center; }
+.nav__menu a::after { left: 14px; right: 14px; bottom: 4px; }
+.nav__group.is-open .nav__menu, .nav__group:not([data-ready]):focus-within .nav__menu {
+  opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s;
+}
+@media (hover: hover) {
+  .nav__group:hover .nav__menu { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition-delay: 0s; }
+}
 .masthead__end { display: flex; align-items: center; gap: 18px; }
 
 /* Search is a magnifying glass. Hovered or focused, it slides left and an
@@ -170,11 +194,25 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 .prose p { margin: 0 0 12px; }
 .prose p:last-child { margin-bottom: 0; }
 .link { font-size: 14.5px; text-underline-offset: 3px; }
-.btn { display: inline-block; text-align: center; background: var(--ink); color: var(--paper); padding: 13px 22px; font-size: 15px; text-decoration: none; transition: opacity var(--t) var(--ease); }
-.btn:hover { opacity: .85; }
-.btn--ghost { background: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
-.btn[aria-pressed="true"] { background: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+/* Buttons and chips swap colour on hover with a sweep from left to right:
+   black ones fill white, white ones fill black. --from is the resting
+   colour, --to the colour that sweeps in. */
+.btn, .chip {
+  --from: var(--ink); --to: var(--paper); --text: var(--paper); --text-to: var(--ink);
+  color: var(--text);
+  background-color: var(--from);
+  background-image: linear-gradient(var(--to), var(--to));
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 0% 100%;
+  box-shadow: inset 0 0 0 1px var(--ink);
+  transition: background-size 320ms var(--ease), color 320ms var(--ease);
+}
+.btn:hover, .btn:focus-visible, .chip:hover, .chip:focus-visible { background-size: 100% 100%; color: var(--text-to); }
+.btn--ghost, .btn[aria-pressed="true"] { --from: var(--paper); --to: var(--ink); --text: var(--ink); --text-to: var(--paper); }
+.btn { display: inline-block; text-align: center; padding: 13px 22px; font-size: 15px; text-decoration: none; }
 .btn:disabled { opacity: .45; cursor: default; }
+.btn:disabled:hover { background-size: 0% 100%; color: var(--text); }
 .btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
 .specs { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px 20px; font-size: 15px; }
 .specs dt { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); padding-top: 3px; }
@@ -204,7 +242,10 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 .fill > .pad { align-self: stretch; }
 /* The brew methods on the home page: large, one above another. */
 .methods { display: grid; gap: 10px; align-self: stretch; }
-.methods .btn { padding: 16px 22px; font-size: 16px; }
+.methods .btn { padding: 16px 22px; font-size: 16px; display: flex; justify-content: space-between; align-items: center; text-align: left; }
+/* Each method's arrow slides on as the button fills. */
+.methods .btn::after { content: "→"; transition: transform 320ms var(--ease); }
+.methods .btn:hover::after, .methods .btn:focus-visible::after { transform: translateX(6px); }
 
 /* Without JavaScript the coffee cards can't be drawn; plain links stand in. */
 .fallback { margin: 0; padding: 22px 26px; list-style: none; display: grid; gap: 8px; }
@@ -280,9 +321,8 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 .bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px; padding: 12px 20px; }
 .bar__group { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
 .bar__label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--grey); margin-right: 6px; }
-.chip { padding: 5px 11px; font-size: 13.5px; border: 1px solid transparent; text-decoration: none; transition: background-color var(--t) var(--ease), color var(--t) var(--ease); }
-.chip:hover { border-color: var(--ink); }
-.chip[aria-pressed="true"], .chip[aria-current="page"] { background: var(--ink); color: var(--paper); }
+.chip { padding: 6px 12px; font-size: 13.5px; text-decoration: none; --from: transparent; --to: var(--ink); --text: var(--ink); --text-to: var(--paper); box-shadow: none; }
+.chip[aria-pressed="true"], .chip[aria-current="page"] { --from: var(--ink); --to: var(--paper); --text: var(--paper); --text-to: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
 /* Search and sort are a thin underline, not a box; focus thickens the line. */
 .search, .sort select { border: 0; border-bottom: 1px solid var(--ink); border-radius: 0; background-color: transparent; font-size: 14px; }
 .search { flex: 1 1 180px; max-width: 260px; padding: 6px 2px; }
@@ -350,6 +390,7 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 .step__n { font-size: 13px; color: var(--grey); padding-top: 3px; font-variant-numeric: tabular-nums; }
 .step h3 { font-size: 16.5px; }
 .step p { margin: 4px 0 0; color: var(--grey); font-size: 14.5px; line-height: 1.65; }
+.buying .step p { max-width: 66ch; }
 
 /* ---- café --------------------------------------------------------------- */
 .hours { display: grid; gap: 4px; font-size: 15px; }
@@ -415,6 +456,6 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 @media (hover: none) { .on-hover { display: none; } }
 @media (hover: hover) { .on-touch { display: none; } }
 @media (prefers-reduced-motion: reduce) {
-  .bean, .chip, .btn, .find__input, .nav a::after, .lang::after { transition: none !important; }
+  .bean, .chip, .btn, .find__input, .nav a::after, .nav__toggle::after, .lang::after, .methods .btn::after, .nav__menu { transition: none !important; }
   .bean:hover { transform: translate(var(--nx, 0px), var(--ny, 0px)) rotate(var(--tilt, 0deg)); }
 }

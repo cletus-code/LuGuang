@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title data-i18n="title.about">About | Lights Landing Coffee</title>
-<meta name="description" content="Small-lot coffee, roasted in daylight in Changsha and shipped the week it&#x27;s roasted.">
+<meta name="description" content="Small-lot coffee, roasted in daylight in Changsha.">
 <script>
 /* Hide the page until site.js has put it into Chinese, so Chinese readers
    never see a flash of English. site.js clears this; the timer is a guard. */
@@ -21,12 +21,12 @@ try {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=i18n-9">
+<link rel="stylesheet" href="assets/styles.css?v=i18n-12">
 </head>
 <body>
 
 <div class="wrap">
-  <p class="card announce" data-i18n="announce">Online shop opening soon · save coffees to your wishlist</p>
+  <p class="card announce" data-i18n="announce">Online ordering is coming soon. Bean reservations are open!</p>
 
   <header class="card masthead">
     <a class="brand" href="index.html">
@@ -35,7 +35,13 @@ try {
     </a>
     <nav class="nav" aria-label="Primary" data-i18n-attr="aria-label:nav.label">
       <a href="coffee.html" data-i18n="nav.coffee">Coffee</a>
-      <a href="brew.html" data-i18n="nav.brew">Brew guide</a>
+      <div class="nav__group" data-nav-group>
+        <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="learn-menu" data-i18n="nav.learn">Learn</button>
+        <div class="nav__menu" id="learn-menu">
+          <a href="brew.html" data-i18n="nav.brew">Brew guide</a>
+          <a href="buying.html" data-i18n="nav.buying">Buying guide</a>
+        </div>
+      </div>
       <a href="cafe.html" data-i18n="nav.cafe">Café</a>
       <a href="about.html" aria-current="page" data-i18n="nav.about">About</a>
     </nav>
@@ -54,7 +60,7 @@ try {
       <div class="split__text">
         <p class="eyebrow" data-i18n="about.eyebrow">About</p>
         <h1 class="h-page" data-i18n="about.title">Lu Guang · 陆光咖啡</h1>
-        <p class="lede" data-i18n="home.lede">Small-lot coffee, roasted in daylight and shipped the same week it’s roasted.</p>
+        <p class="lede" data-i18n="about.slogan">Bringing nature’s gift to your cup.</p>
       </div>
       <img src="uploads/about-sea.jpg" alt="The Lu Guang logo over the sea at sunrise" data-i18n-attr="alt:img.sea">
     </section>
@@ -74,7 +80,7 @@ try {
     <div class="three">
       <section class="card pad fill">
         <h2 class="eyebrow" data-i18n="product.roast">Roasting</h2>
-        <p class="prose" style="margin:0" data-i18n="about.roastText">Every coffee is roasted light on our Giesen W1A within 7 days before it ships, and is at its best 13–15 days after the roast date. Online ordering opens soon.</p>
+        <p class="prose" style="margin:0" data-i18n="about.roastText">Every coffee is roasted light on our Giesen W1A, and is at its best 13–15 days after the roast date. Online ordering opens soon.</p>
         <a class="link push" href="coffee.html" data-i18n="nav.coffee">Coffee</a>
       </section>
       <section class="card pad fill">
@@ -94,6 +100,7 @@ try {
     <a href="index.html"><strong data-i18n="footer.brand">Lights Landing</strong></a>
     <a href="coffee.html" data-i18n="nav.coffee">Coffee</a>
     <a href="brew.html" data-i18n="nav.brew">Brew guide</a>
+    <a href="buying.html" data-i18n="nav.buying">Buying guide</a>
     <a href="cafe.html" data-i18n="nav.cafe">Café</a>
     <a href="about.html" data-i18n="nav.about">About</a>
     <span data-i18n="footer.shipping">Shipping</span>
@@ -102,9 +109,9 @@ try {
   </footer>
 </div>
 
-<script src="assets/data.js?v=i18n-9"></script>
-<script src="assets/i18n.js?v=i18n-9"></script>
-<script src="assets/shop.js?v=i18n-9"></script>
-<script src="assets/site.js?v=i18n-9"></script>
+<script src="assets/data.js?v=i18n-12"></script>
+<script src="assets/i18n.js?v=i18n-12"></script>
+<script src="assets/shop.js?v=i18n-12"></script>
+<script src="assets/site.js?v=i18n-12"></script>
 </body>
 </html>

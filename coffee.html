@@ -21,12 +21,12 @@ try {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=i18n-9">
+<link rel="stylesheet" href="assets/styles.css?v=i18n-12">
 </head>
 <body>
 
 <div class="wrap">
-  <p class="card announce" data-i18n="announce">Online shop opening soon · save coffees to your wishlist</p>
+  <p class="card announce" data-i18n="announce">Online ordering is coming soon. Bean reservations are open!</p>
 
   <header class="card masthead">
     <a class="brand" href="index.html">
@@ -35,7 +35,13 @@ try {
     </a>
     <nav class="nav" aria-label="Primary" data-i18n-attr="aria-label:nav.label">
       <a href="coffee.html" aria-current="page" data-i18n="nav.coffee">Coffee</a>
-      <a href="brew.html" data-i18n="nav.brew">Brew guide</a>
+      <div class="nav__group" data-nav-group>
+        <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="learn-menu" data-i18n="nav.learn">Learn</button>
+        <div class="nav__menu" id="learn-menu">
+          <a href="brew.html" data-i18n="nav.brew">Brew guide</a>
+          <a href="buying.html" data-i18n="nav.buying">Buying guide</a>
+        </div>
+      </div>
       <a href="cafe.html" data-i18n="nav.cafe">Café</a>
       <a href="about.html" data-i18n="nav.about">About</a>
     </nav>
@@ -53,9 +59,9 @@ try {
     <section class="card pad shelf-head">
       <div class="shelf-head__title">
         <h1 class="h-page" data-i18n="coffee.title">Coffee</h1>
-        <p class="eyebrow" data-i18n="coffee.eyebrow">Single lots · updated weekly</p>
+        <p class="eyebrow" data-i18n="coffee.eyebrow">Single lots</p>
       </div>
-      <p class="prose" style="margin:0"><span data-i18n="coffee.intro">Everything on the shelf right now.</span> <span class="on-hover" data-i18n="coffee.howHover">Rest the pointer on a card to turn it over, and click it for the whole story.</span><span class="on-touch" data-i18n="coffee.howTouch">Swipe a card sideways to turn it over, and tap it for the whole story.</span> <span data-i18n="coffee.closed">Online ordering opens soon. Until then, add coffees to your wishlist.</span></p>
+      <p class="prose" style="margin:0" data-i18n="coffee.help">Need help?<br><a href="buying.html">Check out our buying guide.</a></p>
     </section>
 
     <form class="card bar" action="coffee.html" method="get" role="search" aria-label="Search, filter and sort" data-i18n-attr="aria-label:bar.label" data-search-form>
@@ -103,6 +109,7 @@ try {
     <a href="index.html"><strong data-i18n="footer.brand">Lights Landing</strong></a>
     <a href="coffee.html" data-i18n="nav.coffee">Coffee</a>
     <a href="brew.html" data-i18n="nav.brew">Brew guide</a>
+    <a href="buying.html" data-i18n="nav.buying">Buying guide</a>
     <a href="cafe.html" data-i18n="nav.cafe">Café</a>
     <a href="about.html" data-i18n="nav.about">About</a>
     <span data-i18n="footer.shipping">Shipping</span>
@@ -111,9 +118,9 @@ try {
   </footer>
 </div>
 
-<script src="assets/data.js?v=i18n-9"></script>
-<script src="assets/i18n.js?v=i18n-9"></script>
-<script src="assets/shop.js?v=i18n-9"></script>
-<script src="assets/site.js?v=i18n-9"></script>
+<script src="assets/data.js?v=i18n-12"></script>
+<script src="assets/i18n.js?v=i18n-12"></script>
+<script src="assets/shop.js?v=i18n-12"></script>
+<script src="assets/site.js?v=i18n-12"></script>
 </body>
 </html>

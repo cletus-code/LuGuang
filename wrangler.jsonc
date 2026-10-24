@@ -1,0 +1,12 @@
+// Cloudflare deploys the site as a Worker that serves static files.
+// Everything in this folder is published except what .assetsignore lists.
+{
+  "name": "lightslanding",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "."
+  },
+  // Pull requests get a preview build ("npx wrangler preview"), which needs
+  // this block; it can stay empty.
+  "previews": {}
+}
