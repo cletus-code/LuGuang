@@ -13,8 +13,11 @@
   --line: #e2e2e2;
   --shadow: 0 1px 1px rgba(64, 42, 14, .10), 0 8px 22px rgba(64, 42, 14, .18);
   --shadow-lift: 0 2px 2px rgba(64, 42, 14, .10), 0 16px 32px rgba(64, 42, 14, .24);
-  --sans: 'Helvetica Neue', Helvetica, Arial, 'Noto Sans SC', 'PingFang SC', sans-serif;
-  --zh: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  /* Chinese uses each device's own font (PingFang on Apple, Microsoft YaHei
+     on Windows, Noto Sans CJK on Android): nothing to download, so pages
+     load just as fast in mainland China, where Google Fonts is blocked. */
+  --sans: 'Helvetica Neue', Helvetica, Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif;
+  --zh: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif;
   --t: 200ms;
   --ease: cubic-bezier(.2, .7, .2, 1);
 }
@@ -413,6 +416,8 @@ h1, h2, h3 { margin: 0; font-weight: 400; letter-spacing: -.01em; text-wrap: bal
 .wish-row button { text-decoration: underline; text-underline-offset: 3px; font-size: 14px; }
 .reserve { display: grid; gap: 12px; }
 .reserve label { font-size: 14px; }
+.reserve__steps { margin: 0; padding-left: 20px; color: var(--grey); font-size: 15px; line-height: 1.7; }
+.reserve__steps li + li { margin-top: 4px; }
 .reserve__controls { display: flex; flex-wrap: wrap; gap: 10px; }
 .reserve input[type="email"] { flex: 1 1 240px; min-width: 0; border: 1px solid var(--ink); border-radius: 0; padding: 12px 14px; background: var(--paper); }
 .reserve__trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
