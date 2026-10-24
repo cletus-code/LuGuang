@@ -119,6 +119,14 @@ edge.
   buttons at the foot, so rows line up (home, About, wishlist). The home
   page's brew methods are large buttons, one above another.
 
+## Tab icon
+
+The browser tab, bookmarks and phone home screens show the logo
+(`uploads/logo.svg`). `favicon.svg` is the logo itself, black, turning white
+when the browser is in dark mode; `favicon.ico` (16, 32 and 48px) and
+`apple-touch-icon.png` (180px) are the black logo on white, for browsers and
+phones that don't take SVG icons. Redraw all three if the logo changes.
+
 ## Animated masthead logo
 
 Hover over or focus the upper-left logo to unfold its fan. Panels begin 0.2
