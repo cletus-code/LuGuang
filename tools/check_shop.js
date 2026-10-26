@@ -107,6 +107,8 @@ for (const name of fs.readdirSync(root).filter(name => name.endsWith('.html'))) 
   assert(order.every((at, n) => at > 0 && (n === 0 || at > order[n - 1])), name + ': data, Chinese, shop rules, then the UI');
   for (const id of links(html)) assert(catalog.some(coffee => coffee.id === id), name + ': links to a coffee on sale (' + id + ')');
   for (const [, file] of html.matchAll(/src="(uploads\/[^"]+)"/g)) assert(fs.existsSync(path.join(root, file)), name + ': ' + file + ' exists');
+  for (const [, file] of html.matchAll(/rel="(?:icon|apple-touch-icon)" href="([^"]+)"/g)) assert(fs.existsSync(path.join(root, file)), name + ': ' + file + ' exists');
+  assert(html.includes('href="favicon.svg"') && html.includes('href="apple-touch-icon.png"'), name + ': the logo as its tab icon');
   assert(!html.includes('\u2014'), name + ': no em dashes')
   for (const [, key] of html.matchAll(/data-i18n="([^"]+)"/g)) assert(typeof zh[key] === 'string', name + ': Chinese for ' + key);
   for (const [, pairs] of html.matchAll(/data-i18n-attr="([^"]+)"/g)) {
